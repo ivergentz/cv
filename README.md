@@ -1,70 +1,120 @@
-# Getting Started with Create React App
+# Iver Gentz — Portfolio
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Personal portfolio site. Built with Create React App, styled-components, and React Router.
 
-## Available Scripts
+## Stack
 
-In the project directory, you can run:
+- **Create React App** (react-scripts 5)
+- **React 18** + **React Router 6**
+- **styled-components 6** (alle Styles im Code, keine CSS-Dateien)
+- **Google Fonts** — Instrument Serif, Inter, JetBrains Mono
+- **Kein Tracking**, keine Cookies
 
-### `npm start`
+## Struktur
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+public/
+├── index.html             SEO-Metas, Open Graph, robots, canonical
+├── robots.txt             index, follow
+├── sitemap.xml
+├── manifest.json
+├── images/                RankBrief, S&I. Wedding, WERKRUF, Portrait
+└── documents/
+    └── cv-iver-gentz.pdf
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+src/
+├── App.js                 Routen + ThemeProvider + LanguageProvider
+├── index.js
+├── i18n/
+│   ├── dict.js            DE/EN Texte
+│   └── LanguageContext.js
+├── styles/
+│   ├── theme.js           Design-Tokens (Farben, Fonts, Breakpoints)
+│   └── GlobalStyle.js
+├── components/
+│   ├── Nav.js
+│   ├── Footer.js
+│   ├── Link.js            Animated underline link
+│   ├── Reveal.js          IntersectionObserver fade-in
+│   └── sections/
+│       ├── Hero.js
+│       ├── Positioning.js
+│       ├── Products.js
+│       ├── Clients.js
+│       ├── Stations.js
+│       ├── Principles.js
+│       └── Contact.js
+└── pages/
+    ├── Home.js            Alle Sections zusammen
+    ├── Impressum.js
+    └── Datenschutz.js
+```
 
-### `npm test`
+## Development
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+npm start
+```
 
-### `npm run build`
+Lokale Entwicklung unter http://localhost:3000
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Build
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm run build
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Produziert optimierte Dateien in `/build`.
 
-### `npm run eject`
+## Deployment (Vercel)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Neues Projekt in Vercel anlegen, GitHub-Repo verbinden
+2. Framework Preset: **Create React App** (wird automatisch erkannt)
+3. Build Command: `npm run build` (Default)
+4. Output Directory: `build` (Default)
+5. Root Directory: `/`
+6. Deploy
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Die `vercel.json` kümmert sich um SPA-Rewrites und Security-Header. Impressum
+und Datenschutz sind dadurch direkt per URL erreichbar.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Domain
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Vorgesehen: **ivergentz.de**
+- Canonical-URL in `public/index.html` und `public/sitemap.xml` ist darauf gesetzt.
+- Wenn die Domain wechselt, diese beiden Stellen anpassen.
 
-## Learn More
+## Accessibility
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Semantisches HTML: `<header>`, `<main>`, `<section>`, `<article>`, `<footer>`, `<nav>`
+- Richtige H1-H2-H3-Hierarchie (eine H1 auf Home, H2 pro Section, H3 pro Produkt/Prinzip)
+- aria-labelledby für Section-Headlines
+- Focus-visible Outlines
+- `prefers-reduced-motion` wird respektiert
+- Farbkontrast WCAG AA auf allen Texten
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Sprachen
 
-### Code Splitting
+DE (primär) / EN via Toggle oben rechts. Gespeichert im React-State (kein
+localStorage, da Cookies/Storage bewusst nicht genutzt werden).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+`<html lang>` wird auf die aktuelle Sprache gesetzt.
 
-### Analyzing the Bundle Size
+## SEO
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Title, Description, Open Graph, Twitter Cards in `public/index.html`
+- Canonical URL
+- Sitemap unter `/sitemap.xml`
+- robots.txt: `index, follow`
+- Keine noindex-Direktiven
 
-### Making a Progressive Web App
+## Anpassungen
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **CV austauschen:** `public/documents/cv-iver-gentz.pdf` ersetzen
+- **Screenshots austauschen:** `public/images/rankbrief.png`, `sarahiver.png`,
+  `werkruf.png` — gleiche Dateinamen, 16:10 optimal
+- **Portrait austauschen:** `public/images/portrait.png` (wird nur als OG-Image genutzt)
+- **Texte ändern:** `src/i18n/dict.js` — alle Strings zentral an einem Ort
+- **Farben/Fonts:** `src/styles/theme.js`
+```

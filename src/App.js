@@ -1,30 +1,62 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
-import GlobalStyle from './styles/GlobalStyle';
 import { theme } from './styles/theme';
+import { GlobalStyle } from './styles/GlobalStyle';
+import { LanguageProvider, useLanguage } from './i18n/LanguageContext';
 import Nav from './components/Nav';
-import Hero from './components/Hero';
-import Projects from './components/Projects';
-import Experience from './components/Experience';
-import Skills from './components/Skills';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import Impressum from './pages/Impressum';
+import Datenschutz from './pages/Datenschutz';
 
-function App() {
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [pathname]);
+  return null;
+}
+
+function TitleSync() {
+  const { lang } = useLanguage();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (pathname === '/') {
+      document.title =
+        lang === 'de'
+          ? 'Iver Gentz — Product Builder mit Architekturverständnis'
+          : "Iver Gentz — Product Builder with an Architect's Eye";
+    }
+  }, [lang, pathname]);
+
+  return null;
+}
+
+function Shell() {
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
+    <>
+      <ScrollToTop />
+      <TitleSync />
       <Nav />
-      <main>
-        <Hero />
-        <Projects />
-        <Experience />
-        <Skills />
-        <Contact />
-      </main>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/impressum" element={<Impressum />} />
+        <Route path="/datenschutz" element={<Datenschutz />} />
+      </Routes>
       <Footer />
-    </ThemeProvider>
+    </>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <LanguageProvider>
+        <Shell />
+      </LanguageProvider>
+    </ThemeProvider>
+  );
+}

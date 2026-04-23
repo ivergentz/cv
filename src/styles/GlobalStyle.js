@@ -1,25 +1,43 @@
 import { createGlobalStyle } from 'styled-components';
 
-const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700;800&family=Roboto:ital,wght@0,100;0,300;0,400;0,700;1,300&display=swap');
-
+export const GlobalStyle = createGlobalStyle`
   *, *::before, *::after {
     box-sizing: border-box;
+  }
+
+  html, body {
     margin: 0;
     padding: 0;
   }
 
   html {
     scroll-behavior: smooth;
-    font-size: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   body {
-    font-family: ${({ theme }) => theme.fontSans};
-    background: ${({ theme }) => theme.black};
-    color: ${({ theme }) => theme.white};
+    background: ${({ theme }) => theme.colors.bg};
+    color: ${({ theme }) => theme.colors.fg};
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: ${({ theme }) => theme.colors.fg};
+    color: ${({ theme }) => theme.colors.bg};
   }
 
   a {
@@ -27,99 +45,31 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
 
-  /* Fly-in animations */
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  h1, h2, h3, h4 {
+    margin: 0;
+    font-family: ${({ theme }) => theme.fonts.display};
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+  p {
+    margin: 0;
   }
 
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  img {
+    max-width: 100%;
+    display: block;
   }
 
-  @keyframes expandWidth {
-    from { width: 0; }
-    to   { width: 100%; }
+  :focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.accent};
+    outline-offset: 2px;
+    border-radius: 2px;
   }
-
-  .fly-up {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .fly-up.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .fly-left {
-    opacity: 0;
-    transform: translateX(-40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .fly-left.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .fly-right {
-    opacity: 0;
-    transform: translateX(40px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .fly-right.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .fade-in {
-    opacity: 0;
-    transition: opacity 0.8s ease;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-  }
-
-  /* Stagger delays */
-  .delay-1 { transition-delay: 0.1s; }
-  .delay-2 { transition-delay: 0.2s; }
-  .delay-3 { transition-delay: 0.3s; }
-  .delay-4 { transition-delay: 0.4s; }
-  .delay-5 { transition-delay: 0.5s; }
-  .delay-6 { transition-delay: 0.6s; }
 `;
-
-export default GlobalStyle;
