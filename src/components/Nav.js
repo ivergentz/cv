@@ -108,10 +108,18 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleBrandClick = (e) => {
+    if (isHome) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // Bei anderen Routen navigiert RouterLink normal zu "/"
+  };
+
   return (
     <NavBar $scrolled={scrolled}>
       <Inner>
-        <Brand to="/" aria-label="Iver Gentz — Startseite">
+        <Brand to="/" aria-label="Iver Gentz — Startseite" onClick={handleBrandClick}>
           Iver Gentz
         </Brand>
 

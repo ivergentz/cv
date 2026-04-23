@@ -168,8 +168,14 @@ const Shot = styled.figure`
   img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: top center;
+    object-fit: ${(props) => (props.$contain ? 'contain' : 'cover')};
+    object-position: ${(props) => (props.$contain ? 'center center' : 'top center')};
+    filter: grayscale(0.35) sepia(0.08) contrast(0.96) brightness(0.98);
+    transition: filter 300ms ease;
+  }
+
+  &:hover img {
+    filter: grayscale(0.2) sepia(0.05) contrast(1) brightness(1);
   }
 `;
 
@@ -222,7 +228,7 @@ export default function Products() {
           </URL>
           <OneLiner>{t.products.si.one}</OneLiner>
           <StackLabel>{L.stack}</StackLabel>
-          <Stack>React · Supabase<br/>Cloudinary · Brevo · Stripe</Stack>
+          <Stack>React · Supabase<br/>Cloudinary · Brevo</Stack>
         </Left>
         <Right>
           <Block><Label>{L.problem}</Label><Text>{t.products.si.problem}</Text></Block>
@@ -230,7 +236,7 @@ export default function Products() {
           <Block><Label>{L.scope}</Label><Text>{t.products.si.scope}</Text></Block>
           <Block><Label>{L.status}</Label><Text>{t.products.si.status}</Text></Block>
         </Right>
-        <Shot>
+        <Shot $contain>
           <img src={`${process.env.PUBLIC_URL}/images/sarahiver.png`} alt={t.shot.si} />
         </Shot>
       </Product>

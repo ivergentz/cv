@@ -2,7 +2,7 @@ export const cvContent = {
   de: {
     role: 'Product Builder mit Architekturverständnis',
     tagline:
-      '10 Jahre Produktmanagement und Marketing — vom Robert Bosch Konzern bis zum eigenen SaaS-Portfolio. Ich verbinde strategisches Produktdenken mit technischer Umsetzung und baue Produkte KI-nativ von der ersten Hypothese bis zur Stripe-Integration.',
+      '10 Jahre Produktmanagement und Marketing — vom Robert Bosch Konzern bis zum eigenen SaaS-Portfolio. Ich verbinde strategisches Produktdenken mit technischer Umsetzung und bringe Produkte KI-nativ von der ersten Hypothese bis zum Live-Go.',
     labels: {
       products: 'Eigene Produkte — Solo Founder',
       experience: 'Berufserfahrung',
@@ -36,7 +36,7 @@ export const cvContent = {
           'Premium-Multi-Tenant-Plattform für Hochzeitswebsites im DACH-Markt; sieben individuell gestaltete Themes, SuperAdmin-Layer, RSVP-System.',
           'Hochzeitsplaza-Partnerschaft live; A/B-Test zwischen Direct-Landing und Modal-Theme-Selector mit Variante B +3× Session-Dauer.',
         ],
-        stack: 'React · Supabase · Cloudinary · Brevo · Stripe',
+        stack: 'React · Supabase · Cloudinary · Brevo',
       },
       {
         name: 'WERKRUF',
@@ -129,7 +129,7 @@ export const cvContent = {
   en: {
     role: "Product Builder with an Architect's Eye",
     tagline:
-      'Ten years across product management and marketing — from the Robert Bosch group to my own SaaS portfolio. I bridge strategic product thinking with technical execution and build products AI-natively, from first hypothesis to Stripe integration.',
+      'Ten years across product management and marketing — from the Robert Bosch group to my own SaaS portfolio. I bridge strategic product thinking with technical execution and ship products AI-natively, from first hypothesis to going live.',
     labels: {
       products: 'Own Products — Solo Founder',
       experience: 'Experience',
@@ -163,7 +163,7 @@ export const cvContent = {
           'Premium multi-tenant platform for wedding websites in the DACH market; seven individually designed themes, SuperAdmin layer, RSVP system.',
           'Hochzeitsplaza partnership live; A/B test between direct landing and modal theme selector with variant B +3× session duration.',
         ],
-        stack: 'React · Supabase · Cloudinary · Brevo · Stripe',
+        stack: 'React · Supabase · Cloudinary · Brevo',
       },
       {
         name: 'WERKRUF',

@@ -5,7 +5,7 @@ export const theme = {
     muted: '#6B6B66',
     hairline: '#E5E4DE',
     hairlineStrong: '#D6D4CC',
-    accent: '#3D3A36',
+    accent: '#8B2E2A',
     shotBg: '#EEEDE8',
     shotLabel: '#8A8781',
   },
