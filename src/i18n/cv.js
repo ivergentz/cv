@@ -23,7 +23,7 @@ export const cvContent = {
         url: 'rankbrief.com',
         bullets: [
           'B2B-SaaS für vollautomatisierte monatliche SEO-Reports; von Idee bis Stripe-Integration in Solo-Umsetzung aufgebaut.',
-          'ICP-Definition und Pricing-Strategie (Basic 19 € / Pro 39 € / Agency 79 €); 8 Supabase Edge Functions, pg_cron, Brevo-Mail-Pipeline.',
+          'ICP-Definition und modulares Pricing (Grundgebühr 19 €/Property, Paketrabatte, Whitelabel-Add-on); 8 Supabase Edge Functions, pg_cron, Brevo-Mail-Pipeline.',
         ],
         stack: 'React · Supabase · Stripe · Google Search Console API · Claude API',
       },
@@ -150,7 +150,7 @@ export const cvContent = {
         url: 'rankbrief.com',
         bullets: [
           'B2B SaaS for fully automated monthly SEO reports; built solo from idea to Stripe integration.',
-          'ICP definition and pricing strategy (Basic €19 / Pro €39 / Agency €79); 8 Supabase Edge Functions, pg_cron, Brevo mail pipeline.',
+          'ICP definition and modular pricing (base fee €19/property, volume discounts, white-label add-on); 8 Supabase Edge Functions, pg_cron, Brevo mail pipeline.',
         ],
         stack: 'React · Supabase · Stripe · Google Search Console API · Claude API',
       },

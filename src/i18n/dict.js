@@ -39,7 +39,7 @@ export const dict = {
         one: 'B2B SaaS für automatisierte monatliche SEO-Reports.',
         problem: 'SEO-Agenturen verbringen jeden Monat Stunden damit, GSC-Daten für Kundenreports zusammenzustellen — manuelle, repetitive Arbeit ohne Mehrwert.',
         solution: 'Vollautomatisierte Report-Pipeline: OAuth-Anbindung an Google Search Console, pg_cron-basierter Monatslauf, AI-generierte Executive Summaries, PDF-Generierung und Mail-Versand. Kunden sehen Reports im Dashboard, bekommen sie per Mail, zahlen über Stripe.',
-        scope: 'Produktstrategie, ICP-Definition, Pricing (Basic 19 € / Pro 39 € / Agency 79 €), UI/UX, Architektur mit acht Supabase Edge Functions, Stripe-Integration, Go-to-Market. Von der ersten Zeile Code bis zum Live-Go.',
+        scope: 'Produktstrategie, ICP-Definition, modulares Pricing (Grundgebühr 19 €/Property, Paketrabatte für Agenturen, Whitelabel als Add-on), UI/UX, Architektur mit acht Supabase Edge Functions, Stripe-Integration, Go-to-Market. Von der ersten Zeile Code bis zum Live-Go.',
         status: 'Live seit Q1 2026. Aktuelle Phase: organisches Wachstum über SEO-Communities und Direct Outreach.',
       },
       si: {
@@ -158,7 +158,7 @@ export const dict = {
         one: 'B2B SaaS for automated monthly SEO reports.',
         problem: 'SEO agencies spend hours each month compiling GSC data into client reports — manual, repetitive work with no added value.',
         solution: 'Fully automated report pipeline: OAuth into Google Search Console, pg_cron-driven monthly runs, AI-generated executive summaries, PDF generation and email delivery. Clients see reports in the dashboard, receive them by mail, pay via Stripe.',
-        scope: 'Product strategy, ICP definition, pricing (Basic €19 / Pro €39 / Agency €79), UI/UX, architecture with eight Supabase Edge Functions, Stripe integration, go-to-market. From the first line of code to going live.',
+        scope: 'Product strategy, ICP definition, modular pricing (base fee €19/property, volume discounts for agencies, white-label as add-on), UI/UX, architecture with eight Supabase Edge Functions, Stripe integration, go-to-market. From the first line of code to going live.',
         status: 'Live since Q1 2026. Current phase: organic growth through SEO communities and direct outreach.',
       },
       si: {
