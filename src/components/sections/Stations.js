@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link as RouterLink } from 'react-router-dom';
 import Reveal from '../Reveal';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
@@ -112,9 +113,8 @@ export default function Stations() {
         ))}
       </List>
       <CVLink
-        href={`${process.env.PUBLIC_URL}/documents/cv-iver-gentz.pdf`}
-        target="_blank"
-        rel="noopener noreferrer"
+        as={RouterLink}
+        to="/cv"
       >
         {t.stations.cv}
       </CVLink>

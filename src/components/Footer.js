@@ -16,6 +16,10 @@ const Wrap = styled.footer`
   gap: 16px;
   font-size: 13px;
   color: ${({ theme }) => theme.colors.muted};
+
+  @media print {
+    display: none;
+  }
 `;
 
 const Links = styled.div`

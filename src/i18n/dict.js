@@ -65,7 +65,7 @@ export const dict = {
     stations: {
       title: 'Stationen.',
       intro: 'Zehn Jahre zwischen Marketing, Produkt und Umsetzung — in Konzern, Startup und als Solo Founder.',
-      cv: 'Vollständiger Lebenslauf als PDF →',
+      cv: 'Lebenslauf ansehen →',
       items: [
         { year: '2025 — heute', role: 'Fachreferent Kommunikation', company: 'VBG Hamburg' },
         { year: '2024', role: 'Produktmanager', company: 'SEMA Systems' },
@@ -184,7 +184,7 @@ export const dict = {
     stations: {
       title: 'Experience.',
       intro: 'Ten years across marketing, product and execution — in corporate, startup and as a solo founder.',
-      cv: 'Full CV as PDF →',
+      cv: 'View CV →',
       items: [
         { year: '2025 — today', role: 'Communications Specialist', company: 'VBG Hamburg' },
         { year: '2024', role: 'Product Manager', company: 'SEMA Systems' },

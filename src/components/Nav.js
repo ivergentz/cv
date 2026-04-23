@@ -14,6 +14,10 @@ const NavBar = styled.header`
   transition:
     border-color 300ms ease,
     background 300ms ease;
+
+  @media print {
+    display: none;
+  }
 `;
 
 const Inner = styled.div`
