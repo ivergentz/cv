@@ -12,10 +12,28 @@ import Datenschutz from './pages/Datenschutz';
 import CV from './pages/CV';
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
+    // Bei Hash-Links nicht zum Top springen — den Hash-Anker anscrollen
+    if (hash) {
+      const id = hash.replace('#', '');
+      // Kurz warten, bis Section im DOM ist
+      const scrollToAnchor = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+      };
+      // requestAnimationFrame + kleines timeout stellt sicher, dass DOM bereit ist
+      requestAnimationFrame(() => {
+        setTimeout(scrollToAnchor, 50);
+      });
+      return;
+    }
     window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [pathname]);
+  }, [pathname, hash]);
   return null;
 }
 

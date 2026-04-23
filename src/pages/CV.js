@@ -365,7 +365,7 @@ export default function CV() {
   return (
     <Page>
       <Toolbar>
-        <ToolbarLeft as={RouterLink} to="/">
+        <ToolbarLeft as={RouterLink} to="/#stationen">
           ← {cv.labels.back}
         </ToolbarLeft>
         <ToolbarRight>
