@@ -391,7 +391,7 @@ export default function CV() {
             <Meta>
               <span>Hamburg, Deutschland</span>
               <span className="sep">·</span>
-              <span>ivergentz@gmail.com</span>
+              <span>hallo@ivergentz.de</span>
               <span className="sep">·</span>
               <span>+49 176 66631237</span>
               <span className="sep">·</span>

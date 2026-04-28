@@ -75,8 +75,8 @@ function DE({ t }) {
           Große Freiheit 82, 22767 Hamburg
           <br />
           E-Mail:{' '}
-          <AnimatedLink href="mailto:ivergentz@gmail.com">
-            ivergentz@gmail.com
+          <AnimatedLink href="mailto:hallo@ivergentz.de">
+            hallo@ivergentz.de
           </AnimatedLink>
         </p>
       </Block>
@@ -204,8 +204,8 @@ function EN({ t }) {
           Große Freiheit 82, 22767 Hamburg, Germany
           <br />
           Email:{' '}
-          <AnimatedLink href="mailto:ivergentz@gmail.com">
-            ivergentz@gmail.com
+          <AnimatedLink href="mailto:hallo@ivergentz.de">
+            hallo@ivergentz.de
           </AnimatedLink>
         </p>
       </Block>

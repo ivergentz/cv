@@ -84,8 +84,8 @@ export default function Impressum() {
           {lang === 'de' ? 'Telefon' : 'Phone'}: +49 176 66631237
           <br />
           E-Mail:{' '}
-          <AnimatedLink href="mailto:ivergentz@gmail.com">
-            ivergentz@gmail.com
+          <AnimatedLink href="mailto:hallo@ivergentz.de">
+            hallo@ivergentz.de
           </AnimatedLink>
         </p>
       </Block>
