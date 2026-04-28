@@ -373,7 +373,7 @@ export default function CV() {
             {cv.labels.print}
           </Button>
           <DownloadLink
-            href={`${process.env.PUBLIC_URL}/documents/cv-iver-gentz.pdf`}
+            href={`${process.env.PUBLIC_URL}/documents/cv-iver-gentz-${lang}.pdf`}
             target="_blank"
             rel="noopener noreferrer"
           >
