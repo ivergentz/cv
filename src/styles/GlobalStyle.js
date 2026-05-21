@@ -10,8 +10,8 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     background: ${({ theme }) => theme.colors.bg};
     /* Global safety net against any horizontal overflow from descendant
-       sections (e.g. GSAP-transformed tracks during resize). `hidden`
-       has full cross-browser support and is sufficient here. */
+       sections during scroll or viewport resize. Has full cross-browser
+       support and is sufficient for this use case. */
     overflow-x: hidden;
   }
 
