@@ -1,22 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import Reveal from '../Reveal';
+import SectionFrame from '../SectionFrame';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const Section = styled.section`
-  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
-  max-width: ${({ theme }) => theme.sizes.maxWidth};
-  margin: 0 auto;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
-`;
-
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 28px;
 `;
 
@@ -26,6 +20,7 @@ const H2 = styled.h2`
   font-size: clamp(32px, 3.6vw, 48px);
   letter-spacing: -0.025em;
   margin-bottom: 40px;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Row = styled.div`
@@ -33,6 +28,8 @@ const Row = styled.div`
   grid-template-columns: 1fr 2fr auto;
   gap: 40px;
   align-items: baseline;
+  padding-top: 24px;
+  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
@@ -44,10 +41,11 @@ const ClientName = styled.div`
   font-family: ${({ theme }) => theme.fonts.display};
   font-size: 24px;
   letter-spacing: -0.01em;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Desc = styled.p`
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgMuted};
   font-size: 15px;
   line-height: 1.6;
 `;
@@ -56,12 +54,13 @@ const URL = styled(AnimatedLink)`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
   letter-spacing: 0.05em;
+  color: ${({ theme }) => theme.colors.crimson};
 `;
 
 export default function Clients() {
   const { t } = useLanguage();
   return (
-    <Section aria-labelledby="clients-heading">
+    <SectionFrame bg="elevated" aria-labelledby="clients-heading">
       <Reveal>
         <Num>{t.sectionNum.clients}</Num>
       </Reveal>
@@ -75,6 +74,6 @@ export default function Clients() {
           lais-ottensen.de ↗
         </URL>
       </Row>
-    </Section>
+    </SectionFrame>
   );
 }

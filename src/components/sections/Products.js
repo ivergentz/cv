@@ -1,23 +1,40 @@
-import React from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import styled from 'styled-components';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import SectionFrame from '../SectionFrame';
 import Reveal from '../Reveal';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const Section = styled.section`
-  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
+gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * Products — GSAP horizontal force-scroll, Tri-Color palette.
+ *
+ * Same mechanics as v1.3.1 — pinning, horizontal translate, scrub-driven
+ * progress. Color palette updated: white slides, crimson accents, black
+ * structure. Mock browser chrome uses light bg.
+ */
+
+const Outer = styled.section`
+  position: relative;
+  background: ${({ theme }) => theme.colors.bg};
+`;
+
+const Heading = styled.div`
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
+  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter} clamp(40px, 6vw, 80px);
 `;
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
-  margin-bottom: 40px;
+  color: ${({ theme }) => theme.colors.crimson};
+  margin-bottom: 28px;
 `;
 
 const Head = styled.div`
@@ -25,12 +42,10 @@ const Head = styled.div`
   grid-template-columns: 2fr 1fr;
   gap: 40px;
   align-items: end;
-  margin-bottom: 80px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
     gap: 20px;
-    margin-bottom: 60px;
   }
 `;
 
@@ -40,53 +55,94 @@ const H2 = styled.h2`
   font-size: clamp(44px, 5.6vw, 84px);
   line-height: 1;
   letter-spacing: -0.028em;
+  color: ${({ theme }) => theme.colors.fg};
 
   .ital {
     font-style: italic;
-    color: ${({ theme }) => theme.colors.muted};
+    color: ${({ theme }) => theme.colors.crimson};
   }
 `;
 
 const Intro = styled.p`
   max-width: 48ch;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgMuted};
   font-size: 16px;
   line-height: 1.6;
 `;
 
-const Product = styled.article`
-  display: grid;
-  grid-template-columns: 2fr 3fr;
-  gap: 60px;
-  padding: 60px 0;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
-  transition: transform 200ms ease;
-
-  &:hover { transform: translateY(-2px); }
+const Pinner = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    &:hover { transform: none; }
+    height: auto;
+    overflow: visible;
   }
 `;
 
-const Left = styled.div`
+const Track = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  height: 100%;
+  will-change: transform;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+  }
+`;
+
+const Slide = styled.div`
+  flex: 0 0 100vw;
+  height: 100vh;
+  padding: 60px ${({ theme }) => theme.gutter};
+  display: grid;
+  grid-template-columns: 5fr 6fr;
+  gap: 60px;
+  align-items: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    flex: none;
+    width: 100%;
+    height: auto;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 80px ${({ theme }) => theme.gutter};
+    border-top: 1px solid ${({ theme }) => theme.colors.hairlineDim};
+    &:first-child { border-top: 0; }
+  }
+`;
+
+const SlideMax = styled.div`
+  max-width: ${({ theme }) => theme.sizes.maxWidth};
+  margin: 0 auto;
+  width: 100%;
+  display: contents;
+`;
+
+const TextCol = styled.div`
+  display: grid;
+  gap: 14px;
+  align-content: center;
+`;
+
+const SlotMeta = styled.div`
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: ${({ theme }) => theme.colors.crimson};
 `;
 
 const ProductName = styled.h3`
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(36px, 4.4vw, 56px);
+  font-size: clamp(36px, 4.4vw, 64px);
   line-height: 1;
   letter-spacing: -0.02em;
   font-weight: 400;
+  color: ${({ theme }) => theme.colors.fg};
+  margin: 0;
 
   .amp { font-style: italic; }
 `;
@@ -98,84 +154,171 @@ const Badge = styled.span`
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
-  padding: 5px 10px;
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
+  background: ${({ theme }) => theme.colors.crimson};
+  color: #FFFFFF;
+  padding: 3px 10px;
   border-radius: 2px;
 `;
 
 const URL = styled(AnimatedLink)`
-  color: ${(props) => (props.$muted ? props.theme.colors.muted : props.theme.colors.fg)};
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.fgDim};
+  font-size: 13px;
+  font-family: ${({ theme }) => theme.fonts.mono};
+  letter-spacing: 0.04em;
 `;
 
 const OneLiner = styled.p`
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.55;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgMuted};
+  margin: 6px 0 0;
+  max-width: 42ch;
 `;
 
-const StackLabel = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.accent};
-  margin-top: 12px;
-`;
-
-const Stack = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  line-height: 1.7;
-  color: ${({ theme }) => theme.colors.fg};
-`;
-
-const Right = styled.div`
+const Metrics = styled.div`
   display: grid;
-  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid ${({ theme }) => theme.colors.fg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.fg};
+  margin: 8px 0;
 `;
 
-const Block = styled.div``;
-
-const Label = styled.span`
-  display: block;
+const MetricLabel = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
+  font-size: 9px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.accent};
-  margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.crimson};
+  margin-bottom: 4px;
 `;
 
-const Text = styled.p`
-  font-size: 15.5px;
-  line-height: 1.65;
+const MetricValue = styled.div`
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-size: clamp(24px, 2.8vw, 34px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: ${({ theme }) => theme.colors.fg};
+
+  .unit {
+    font-size: 13px;
+    color: ${({ theme }) => theme.colors.fgDim};
+    margin-left: 4px;
+  }
 `;
 
-const Shot = styled.figure`
-  grid-column: 1 / -1;
-  margin: 48px 0 0;
+const DetailLabel = styled.span`
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.fgDim};
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 4px;
+`;
+
+const DetailText = styled.p`
+  font-size: 14px;
+  line-height: 1.6;
+  color: ${({ theme }) => theme.colors.fgMuted};
+  margin: 0;
+`;
+
+const MockupCol = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+const BrowserFrame = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 700px;
   aspect-ratio: 16 / 10;
-  background: ${({ theme }) => theme.colors.shotBg};
+  background: ${({ theme }) => theme.colors.bgElevated};
   border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
   border-radius: 4px;
   overflow: hidden;
-  transition: border-color 300ms ease;
+`;
 
-  &:hover { border-color: #a8a59c; }
+const Chrome = styled.div`
+  height: 28px;
+  background: ${({ theme }) => theme.colors.bgFade};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(10,10,10,0.18);
+  }
+
+  .url {
+    margin-left: 12px;
+    font-family: ${({ theme }) => theme.fonts.mono};
+    font-size: 10px;
+    color: ${({ theme }) => theme.colors.fgDim};
+    letter-spacing: 0.03em;
+  }
+`;
+
+const Shot = styled.div`
+  position: relative;
+  width: 100%;
+  height: calc(100% - 28px);
 
   img {
     width: 100%;
     height: 100%;
-    object-fit: ${(props) => (props.$contain ? 'contain' : 'cover')};
-    object-position: ${(props) => (props.$contain ? 'center center' : 'top center')};
-    filter: grayscale(0.35) sepia(0.08) contrast(0.96) brightness(0.98);
-    transition: filter 300ms ease;
+    object-fit: cover;
+    object-position: top center;
+  }
+`;
+
+const Counter = styled.div`
+  position: absolute;
+  bottom: 40px;
+  right: ${({ theme }) => theme.gutter};
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.crimson};
+  z-index: 5;
+  pointer-events: none;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: none;
+  }
+`;
+
+const ProgressTrack = styled.div`
+  position: absolute;
+  bottom: 30px;
+  left: ${({ theme }) => theme.gutter};
+  right: ${({ theme }) => theme.gutter};
+  height: 2px;
+  background: ${({ theme }) => theme.colors.hairlineDim};
+  z-index: 5;
+  pointer-events: none;
+
+  .fill {
+    position: absolute;
+    inset: 0;
+    background: ${({ theme }) => theme.colors.crimson};
+    transform-origin: left center;
+    will-change: transform;
   }
 
-  &:hover img {
-    filter: grayscale(0.2) sepia(0.05) contrast(1) brightness(1);
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: none;
   }
 `;
 
@@ -183,85 +326,175 @@ export default function Products() {
   const { t } = useLanguage();
   const L = t.products.labels;
 
+  const pinnerRef = useRef(null);
+  const trackRef = useRef(null);
+  const counterRef = useRef(null);
+  const progressRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.matches) return undefined;
+    const tabletMq = window.matchMedia('(max-width: 820px)');
+    if (tabletMq.matches) return undefined;
+
+    const pinner = pinnerRef.current;
+    const track = trackRef.current;
+    if (!pinner || !track) return undefined;
+
+    const ctx = gsap.context(() => {
+      const slides = track.querySelectorAll('[data-slide]');
+      const slideCount = slides.length;
+      const distance = () => -(track.scrollWidth - window.innerWidth);
+
+      const tween = gsap.to(track, {
+        x: distance,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: pinner,
+          start: 'top top',
+          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const idx = Math.min(
+              slideCount - 1,
+              Math.floor(self.progress * slideCount + 0.0001)
+            );
+            if (counterRef.current) {
+              counterRef.current.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(slideCount).padStart(2, '0')}`;
+            }
+            if (progressRef.current) {
+              progressRef.current.style.transform = `scaleX(${self.progress})`;
+            }
+          },
+        },
+      });
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
+    }, pinner);
+
+    return () => ctx.revert();
+  }, []);
+
+  const products = [
+    {
+      key: 'rb',
+      slot: '01 / 03',
+      name: 'RankBrief',
+      url: 'https://rankbrief.com',
+      urlLabel: 'rankbrief.com ↗',
+      domain: 'rankbrief.com/dashboard',
+      img: 'rankbrief.png',
+      alt: t.shot.rb,
+      data: t.products.rb,
+    },
+    {
+      key: 'si',
+      slot: '02 / 03',
+      name: (<>S<span className="amp">&amp;</span>I. Wedding</>),
+      url: 'https://sarahiver.com',
+      urlLabel: 'sarahiver.com ↗',
+      domain: 'sarahiver.com',
+      img: 'sarahiver.png',
+      alt: t.shot.si,
+      data: t.products.si,
+    },
+    {
+      key: 'wr',
+      slot: '03 / 03',
+      name: 'WERKRUF',
+      url: 'https://werkruf.com',
+      urlLabel: 'werkruf.com ↗',
+      domain: 'werkruf.com',
+      img: 'werkruf.png',
+      alt: t.shot.wr,
+      data: t.products.wr,
+      badge: t.products.wr.badge,
+    },
+  ];
+
   return (
-    <Section id="arbeit" aria-labelledby="products-heading">
-      <Reveal>
-        <Num>{t.sectionNum.products}</Num>
-      </Reveal>
-      <Head>
+    <Outer id="arbeit" aria-labelledby="products-heading">
+      <Heading>
         <Reveal>
-          <H2 id="products-heading">
-            {t.products.title1} <span className="ital">{t.products.title2}</span>
-          </H2>
+          <Num>{t.sectionNum.products}</Num>
         </Reveal>
-        <Reveal>
-          <Intro>{t.products.intro}</Intro>
-        </Reveal>
-      </Head>
+        <Head>
+          <Reveal>
+            <H2 id="products-heading">
+              {t.products.title1} <span className="ital">{t.products.title2}</span>
+            </H2>
+          </Reveal>
+          <Reveal>
+            <Intro>{t.products.intro}</Intro>
+          </Reveal>
+        </Head>
+      </Heading>
 
-      <Product>
-        <Left>
-          <ProductName>RankBrief</ProductName>
-          <URL href="https://rankbrief.com" target="_blank" rel="noopener noreferrer">
-            rankbrief.com ↗
-          </URL>
-          <OneLiner>{t.products.rb.one}</OneLiner>
-          <StackLabel>{L.stack}</StackLabel>
-          <Stack>React · Supabase · Stripe<br/>Google Search Console API<br/>Claude API</Stack>
-        </Left>
-        <Right>
-          <Block><Label>{L.problem}</Label><Text>{t.products.rb.problem}</Text></Block>
-          <Block><Label>{L.solution}</Label><Text>{t.products.rb.solution}</Text></Block>
-          <Block><Label>{L.scope}</Label><Text>{t.products.rb.scope}</Text></Block>
-          <Block><Label>{L.status}</Label><Text>{t.products.rb.status}</Text></Block>
-        </Right>
-        <Shot>
-          <img src={`${process.env.PUBLIC_URL}/images/rankbrief.png`} alt={t.shot.rb} />
-        </Shot>
-      </Product>
+      <Pinner ref={pinnerRef}>
+        <Track ref={trackRef}>
+          {products.map((p) => (
+            <Slide key={p.key} data-slide>
+              <SlideMax>
+                <TextCol>
+                  <SlotMeta>/ {p.slot}</SlotMeta>
+                  <ProductName>{p.name}</ProductName>
+                  {p.badge && <Badge>{p.badge}</Badge>}
+                  <URL href={p.url} target="_blank" rel="noopener noreferrer">
+                    {p.urlLabel}
+                  </URL>
+                  <OneLiner>{p.data.one}</OneLiner>
 
-      <Product>
-        <Left>
-          <ProductName>S<span className="amp">&amp;</span>I. Wedding</ProductName>
-          <URL href="https://sarahiver.com" target="_blank" rel="noopener noreferrer">
-            sarahiver.com ↗
-          </URL>
-          <OneLiner>{t.products.si.one}</OneLiner>
-          <StackLabel>{L.stack}</StackLabel>
-          <Stack>React · Supabase<br/>Cloudinary · Brevo</Stack>
-        </Left>
-        <Right>
-          <Block><Label>{L.problem}</Label><Text>{t.products.si.problem}</Text></Block>
-          <Block><Label>{L.solution}</Label><Text>{t.products.si.solution}</Text></Block>
-          <Block><Label>{L.scope}</Label><Text>{t.products.si.scope}</Text></Block>
-          <Block><Label>{L.status}</Label><Text>{t.products.si.status}</Text></Block>
-        </Right>
-        <Shot $contain>
-          <img src={`${process.env.PUBLIC_URL}/images/sarahiver.png`} alt={t.shot.si} />
-        </Shot>
-      </Product>
+                  {p.data.metrics && p.data.metrics.length > 0 && (
+                    <Metrics>
+                      {p.data.metrics.map((m, i) => (
+                        <div key={i}>
+                          <MetricLabel>{m.label}</MetricLabel>
+                          <MetricValue>
+                            {m.value}
+                            {m.unit && <span className="unit">{m.unit}</span>}
+                          </MetricValue>
+                        </div>
+                      ))}
+                    </Metrics>
+                  )}
 
-      <Product>
-        <Left>
-          <ProductName>WERKRUF</ProductName>
-          <Badge>{t.products.wr.badge}</Badge>
-          <URL href="https://werkruf.com" target="_blank" rel="noopener noreferrer" $muted>
-            werkruf.com ↗
-          </URL>
-          <OneLiner>{t.products.wr.one}</OneLiner>
-          <StackLabel>{L.stack}</StackLabel>
-          <Stack>React · Supabase · Stripe<br/>Google Places API<br/>Google Business Profile API<br/>Cloudinary · Claude API</Stack>
-        </Left>
-        <Right>
-          <Block><Label>{L.problem}</Label><Text>{t.products.wr.problem}</Text></Block>
-          <Block><Label>{L.solution}</Label><Text>{t.products.wr.solution}</Text></Block>
-          <Block><Label>{L.scope}</Label><Text>{t.products.wr.scope}</Text></Block>
-          <Block><Label>{L.status}</Label><Text>{t.products.wr.status}</Text></Block>
-        </Right>
-        <Shot>
-          <img src={`${process.env.PUBLIC_URL}/images/werkruf.png`} alt={t.shot.wr} />
-        </Shot>
-      </Product>
-    </Section>
+                  <div>
+                    <DetailLabel>{L.scope}</DetailLabel>
+                    <DetailText>{p.data.scope}</DetailText>
+                  </div>
+                </TextCol>
+
+                <MockupCol>
+                  <BrowserFrame>
+                    <Chrome>
+                      <span className="dot" /><span className="dot" /><span className="dot" />
+                      <span className="url">{p.domain}</span>
+                    </Chrome>
+                    <Shot>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/images/${p.img}`}
+                        alt={p.alt}
+                        loading="lazy"
+                      />
+                    </Shot>
+                  </BrowserFrame>
+                </MockupCol>
+              </SlideMax>
+            </Slide>
+          ))}
+        </Track>
+
+        <Counter ref={counterRef} aria-hidden="true">01 / 03</Counter>
+        <ProgressTrack aria-hidden="true">
+          <div className="fill" ref={progressRef} style={{ transform: 'scaleX(0)' }} />
+        </ProgressTrack>
+      </Pinner>
+    </Outer>
   );
 }

@@ -8,6 +8,7 @@ export const GlobalStyle = createGlobalStyle`
   html, body {
     margin: 0;
     padding: 0;
+    background: ${({ theme }) => theme.colors.bg};
   }
 
   html {
@@ -36,14 +37,11 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background: ${({ theme }) => theme.colors.fg};
-    color: ${({ theme }) => theme.colors.bg};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
   }
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+  a { color: inherit; text-decoration: none; }
 
   h1, h2, h3, h4 {
     margin: 0;
@@ -52,23 +50,12 @@ export const GlobalStyle = createGlobalStyle`
     letter-spacing: -0.02em;
   }
 
-  p {
-    margin: 0;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  img {
-    max-width: 100%;
-    display: block;
-  }
+  p { margin: 0; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  img { max-width: 100%; display: block; }
 
   :focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.accent};
+    outline: 2px solid ${({ theme }) => theme.colors.crimson};
     outline-offset: 2px;
     border-radius: 2px;
   }

@@ -12,6 +12,10 @@ export const dict = {
       sub: '10 Jahre Produktmanagement und Marketing — vom Robert Bosch Konzern bis zum eigenen SaaS-Portfolio. Ich verbinde strategisches Produktdenken mit technischer Umsetzung.',
       loc: 'Hamburg',
       avail: 'Offen für Gespräche',
+      cta: {
+        primary: '↓ Projekte ansehen',
+        secondary: 'Gespräch vereinbaren',
+      },
     },
     sectionNum: {
       positioning: '01 — Positionierung',
@@ -41,6 +45,11 @@ export const dict = {
         solution: 'Vollautomatisierte Report-Pipeline: OAuth-Anbindung an Google Search Console, pg_cron-basierter Monatslauf, AI-generierte Executive Summaries, PDF-Generierung und Mail-Versand. Kunden sehen Reports im Dashboard, bekommen sie per Mail, zahlen über Stripe.',
         scope: 'Produktstrategie, ICP-Definition, modulares Pricing (Grundgebühr 19 €/Property, Paketrabatte für Agenturen, Whitelabel als Add-on), UI/UX, Architektur mit acht Supabase Edge Functions, Stripe-Integration, Go-to-Market. Von der ersten Zeile Code bis zum Live-Go.',
         status: 'Live seit Q1 2026. Aktuelle Phase: organisches Wachstum über SEO-Communities und Direct Outreach.',
+        metrics: [
+          { label: 'Live seit', value: 'Q1', unit: '2026' },
+          { label: 'Edge Functions', value: '8', unit: 'deployed' },
+          { label: 'Pricing ab', value: '€19', unit: '/Property' },
+        ],
       },
       si: {
         one: 'Premium Multi-Tenant-Plattform für Hochzeitswebsites im DACH-Markt.',
@@ -48,6 +57,11 @@ export const dict = {
         solution: 'Sieben individuell gestaltete Themes, Multi-Tenant-Architektur mit SuperAdmin-Layer, RSVP mit Duplicate-Check, Multi-Image-Gallery, passwortgeschützte Coming-Soon-Seiten, automatisierte Gästelisten-Reminder.',
         scope: 'Gesamte Produktarchitektur, alle sieben Themes, Admin-Infrastruktur, Partner-Referral-System, GA4- und DSGVO-Cookie-Integration. Hochzeitsplaza-Partnerschaft live.',
         status: 'Live, zahlende Kunden, A/B-Tests laufen aktiv.',
+        metrics: [
+          { label: 'Individuelle Themes', value: '7', unit: 'Stück' },
+          { label: 'Partnership', value: 'Hochzeitsplaza', unit: 'live' },
+          { label: 'Status', value: 'Live', unit: 'paying customers' },
+        ],
       },
       wr: {
         badge: 'Launch Q3 2026',
@@ -56,6 +70,10 @@ export const dict = {
         solution: 'Zentrale Plattform für Google-Präsenz und Reputationsmanagement: automatisierte KI-Antworten auf Bewertungen, signierter Cloudinary-Upload für Fotos, QR-Code- und Review-Link-Generator für Kundengewinnung, dynamisches Audit des GBP-Profils. Alles DSGVO-konform, mit ProGate-Paywall und 3-stufigem Onboarding.',
         scope: 'Produktstrategie, ICP-Definition, gesamte Architektur, Admin-Dashboard, Stripe-Anbindung, Migration der Google Places API von Classic auf v1, Integration der Google Business Profile API (in finaler Freigabephase).',
         status: 'Kernplattform fertig entwickelt. Aktuell in finaler API-Freigabephase bei Google Business Profile API. Launch geplant für Q3 2026.',
+        metrics: [
+          { label: 'Launch', value: 'Q3', unit: '2026' },
+          { label: 'GBP API', value: 'final', unit: 'approval' },
+        ],
       },
     },
     clients: {
@@ -106,6 +124,8 @@ export const dict = {
       netLabel: 'Netzwerk',
       availLabel: 'Verfügbarkeit',
       availValue: 'Offen für Gespräche',
+      ticker: 'Lass uns etwas Skalierbares bauen.   ·   Verfügbar ab Q3 2026.   ·',
+      cta: '[ Gespräch vereinbaren → ]',
     },
     footer: {
       imprint: 'Impressum',
@@ -131,6 +151,10 @@ export const dict = {
       sub: 'Ten years across product management and marketing — from the Robert Bosch group to my own SaaS portfolio. I bridge strategic product thinking with technical execution.',
       loc: 'Hamburg',
       avail: 'Open to conversations',
+      cta: {
+        primary: '↓ Explore projects',
+        secondary: 'Book a conversation',
+      },
     },
     sectionNum: {
       positioning: '01 — Positioning',
@@ -160,6 +184,11 @@ export const dict = {
         solution: 'Fully automated report pipeline: OAuth into Google Search Console, pg_cron-driven monthly runs, AI-generated executive summaries, PDF generation and email delivery. Clients see reports in the dashboard, receive them by mail, pay via Stripe.',
         scope: 'Product strategy, ICP definition, modular pricing (base fee €19/property, volume discounts for agencies, white-label as add-on), UI/UX, architecture with eight Supabase Edge Functions, Stripe integration, go-to-market. From the first line of code to going live.',
         status: 'Live since Q1 2026. Current phase: organic growth through SEO communities and direct outreach.',
+        metrics: [
+          { label: 'Live since', value: 'Q1', unit: '2026' },
+          { label: 'Edge Functions', value: '8', unit: 'deployed' },
+          { label: 'Pricing from', value: '€19', unit: '/property' },
+        ],
       },
       si: {
         one: 'Premium multi-tenant platform for wedding websites in the DACH market.',
@@ -167,6 +196,11 @@ export const dict = {
         solution: 'Seven individually designed themes, multi-tenant architecture with a SuperAdmin layer, RSVP with duplicate detection, multi-image gallery, password-protected coming-soon pages, automated guestlist reminders.',
         scope: 'Entire product architecture, all seven themes, admin infrastructure, partner referral system, GA4 and GDPR cookie integration. Hochzeitsplaza partnership live.',
         status: 'Live, paying customers, A/B tests running.',
+        metrics: [
+          { label: 'Custom themes', value: '7', unit: 'designs' },
+          { label: 'Partnership', value: 'Hochzeitsplaza', unit: 'live' },
+          { label: 'Status', value: 'Live', unit: 'paying customers' },
+        ],
       },
       wr: {
         badge: 'Launching Q3 2026',
@@ -175,6 +209,10 @@ export const dict = {
         solution: 'Central platform for Google presence and reputation management: automated AI replies to reviews, signed Cloudinary uploads for photos, QR-code and review-link generator for customer acquisition, dynamic GBP audit. Fully GDPR-compliant, with ProGate paywall and a three-step onboarding.',
         scope: 'Product strategy, ICP definition, full architecture, admin dashboard, Stripe integration, migration of the Google Places API from Classic to v1, integration of the Google Business Profile API (in final approval phase).',
         status: 'Core platform finished. Currently in final API approval with Google Business Profile API. Launch scheduled for Q3 2026.',
+        metrics: [
+          { label: 'Launch', value: 'Q3', unit: '2026' },
+          { label: 'GBP API', value: 'final', unit: 'approval' },
+        ],
       },
     },
     clients: {
@@ -225,6 +263,8 @@ export const dict = {
       netLabel: 'Network',
       availLabel: 'Availability',
       availValue: 'Open to conversations',
+      ticker: "Let's build something scalable.   ·   Available from Q3 2026.   ·",
+      cta: '[ Book a conversation → ]',
     },
     footer: {
       imprint: 'Imprint',

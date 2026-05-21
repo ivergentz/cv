@@ -1,14 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Reveal from '../Reveal';
+import SectionFrame from '../SectionFrame';
 import { useLanguage } from '../../i18n/LanguageContext';
-
-const Section = styled.section`
-  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
-  max-width: ${({ theme }) => theme.sizes.maxWidth};
-  margin: 0 auto;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
-`;
 
 const Inner = styled.div`
   max-width: 62ch;
@@ -16,10 +10,10 @@ const Inner = styled.div`
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 40px;
 `;
 
@@ -31,31 +25,27 @@ const Body = styled.p`
   em {
     font-family: ${({ theme }) => theme.fonts.display};
     font-style: italic;
-    font-size: 1.08em;
+    color: ${({ theme }) => theme.colors.crimson};
   }
 `;
 
 export default function Positioning() {
   const { t } = useLanguage();
   return (
-    <Section id="positionierung" aria-labelledby="pos-heading">
+    <SectionFrame bg="fade" id="positionierung" aria-labelledby="pos-heading">
       <Inner>
         <Reveal>
           <Num id="pos-heading">{t.sectionNum.positioning}</Num>
         </Reveal>
         <Reveal>
-          <Body>
-            {/* Render with em-tags around product names */}
-            {renderPositioning(t.positioning.body)}
-          </Body>
+          <Body>{renderPositioning(t.positioning.body)}</Body>
         </Reveal>
       </Inner>
-    </Section>
+    </SectionFrame>
   );
 }
 
 function renderPositioning(text) {
-  // highlight RankBrief and S&I. Wedding
   const parts = text
     .replace(/RankBrief/g, '§§RankBrief§§')
     .replace(/S&I\. Wedding/g, '§§S&I. Wedding§§')

@@ -1,22 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
 import Reveal from '../Reveal';
+import SectionFrame from '../SectionFrame';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const Section = styled.section`
-  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
-  max-width: ${({ theme }) => theme.sizes.maxWidth};
-  margin: 0 auto;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
-`;
+/**
+ * Contact — Tri-Color, reduced layout.
+ *
+ * v1.3.2: Ticker and CTA finale panel removed per request.
+ * Only the upper block remains: H2, big mail link, meta grid.
+ */
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 28px;
 `;
 
@@ -26,12 +27,17 @@ const H2 = styled.h2`
   font-size: clamp(44px, 5.6vw, 84px);
   line-height: 1;
   letter-spacing: -0.028em;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
   max-width: 18ch;
+  color: ${({ theme }) => theme.colors.fg};
 
   .ital {
     font-style: italic;
-    color: ${({ theme }) => theme.colors.muted};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
+    padding: 0 0.16em 0.04em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 `;
 
@@ -40,14 +46,15 @@ const Mail = styled(AnimatedLink)`
   font-family: ${({ theme }) => theme.fonts.display};
   font-size: clamp(28px, 3.8vw, 48px);
   letter-spacing: -0.02em;
-  margin-bottom: 64px;
+  margin-bottom: 56px;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Meta = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
-  padding-top: 40px;
+  padding-top: 32px;
   border-top: 1px solid ${({ theme }) => theme.colors.hairline};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
@@ -66,17 +73,19 @@ const MLabel = styled.span`
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgDim};
 `;
 
 const MValue = styled.span`
   font-size: 15px;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 export default function Contact() {
   const { t } = useLanguage();
+
   return (
-    <Section id="kontakt" aria-labelledby="contact-heading">
+    <SectionFrame bg="dark" id="kontakt" aria-labelledby="contact-heading">
       <Reveal>
         <Num>{t.sectionNum.contact}</Num>
       </Reveal>
@@ -110,6 +119,6 @@ export default function Contact() {
           <MValue>{t.contact.availValue}</MValue>
         </Cell>
       </Meta>
-    </Section>
+    </SectionFrame>
   );
 }

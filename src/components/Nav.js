@@ -7,13 +7,12 @@ const NavBar = styled.header`
   position: sticky;
   top: 0;
   z-index: 40;
-  backdrop-filter: saturate(140%) blur(8px);
-  -webkit-backdrop-filter: saturate(140%) blur(8px);
-  background: color-mix(in srgb, ${({ theme }) => theme.colors.bg} 82%, transparent);
-  border-bottom: 1px solid ${(props) => (props.$scrolled ? props.theme.colors.hairline : 'transparent')};
-  transition:
-    border-color 300ms ease,
-    background 300ms ease;
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  background: ${(props) =>
+    props.$scrolled ? 'rgba(255,255,255,0.82)' : 'transparent'};
+  border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(10,10,10,0.10)' : 'transparent')};
+  transition: background 300ms ease, border-color 300ms ease;
 
   @media print {
     display: none;
@@ -23,7 +22,7 @@ const NavBar = styled.header`
 const Inner = styled.div`
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  padding: 18px ${({ theme }) => theme.gutter};
+  padding: 16px ${({ theme }) => theme.gutter};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -31,10 +30,13 @@ const Inner = styled.div`
 `;
 
 const Brand = styled(RouterLink)`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: ${({ theme }) => theme.colors.crimson};
+  text-transform: uppercase;
+
+  .bracket { opacity: 0.55; color: ${({ theme }) => theme.colors.fg}; }
 `;
 
 const NavRight = styled.nav`
@@ -46,14 +48,17 @@ const NavRight = styled.nav`
 const NavLinks = styled.ul`
   display: flex;
   gap: 22px;
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.muted};
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.fgMuted};
 
   a {
-    letter-spacing: 0.01em;
+    transition: color 200ms ease;
   }
   a:hover {
-    color: ${({ theme }) => theme.colors.fg};
+    color: ${({ theme }) => theme.colors.crimson};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
@@ -63,36 +68,29 @@ const NavLinks = styled.ul`
 
 const LangToggle = styled.button`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  color: ${({ theme }) => theme.colors.muted};
+  font-size: 11px;
+  color: ${({ theme }) => theme.colors.crimson};
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
+  border: 1px solid rgba(220,20,60,0.45);
   border-radius: 2px;
-  padding: 6px 10px;
+  padding: 5px 9px;
   cursor: pointer;
-  transition:
-    color 200ms,
-    border-color 200ms;
-  letter-spacing: 0.05em;
+  transition: color 200ms, border-color 200ms, background 200ms;
+  letter-spacing: 0.08em;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.fg};
-    border-color: ${({ theme }) => theme.colors.fg};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
   }
 
   span {
     opacity: 0.4;
     transition: opacity 300ms ease;
   }
-  span.active {
-    opacity: 1;
-    color: ${({ theme }) => theme.colors.fg};
-  }
+  span.active { opacity: 1; }
+  .sep { opacity: 0.3; margin: 0 4px; }
 
-  .sep {
-    opacity: 0.3;
-    margin: 0 4px;
-  }
+  &:hover span { opacity: 1; }
 `;
 
 export default function Nav() {
@@ -113,31 +111,22 @@ export default function Nav() {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    // Bei anderen Routen navigiert RouterLink normal zu "/"
   };
 
   return (
     <NavBar $scrolled={scrolled}>
       <Inner>
         <Brand to="/" aria-label="Iver Gentz — Startseite" onClick={handleBrandClick}>
-          Iver Gentz
+          <span className="bracket">[</span>IG<span className="bracket">]</span>&nbsp;&nbsp;IVER GENTZ
         </Brand>
 
         <NavRight aria-label="Hauptnavigation">
           {isHome && (
             <NavLinks>
-              <li>
-                <a href="#arbeit">{t.nav.work}</a>
-              </li>
-              <li>
-                <a href="#stationen">{t.nav.experience}</a>
-              </li>
-              <li>
-                <a href="#prinzipien">{t.nav.principles}</a>
-              </li>
-              <li>
-                <a href="#kontakt">{t.nav.contact}</a>
-              </li>
+              <li><a href="#arbeit">01 / {t.nav.work}</a></li>
+              <li><a href="#stationen">02 / {t.nav.experience}</a></li>
+              <li><a href="#prinzipien">03 / {t.nav.principles}</a></li>
+              <li><a href="#kontakt">04 / {t.nav.contact}</a></li>
             </NavLinks>
           )}
 
