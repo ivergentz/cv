@@ -8,33 +8,10 @@ import { useLanguage } from '../../i18n/LanguageContext';
 /**
  * Hero — Tri-Color (White / Crimson / Black).
  *
- * Background: white with subtle crimson Blueprint grid (10% opacity)
- * Status badge: crimson pill, white text
- * H1: black, italic phrase wrapped in a CRIMSON highlight block (the R3 move)
- * Primary CTA: black on white with crimson border
- * Secondary CTA: crimson outline
- *
- * All animations remain GPU-only (transform + opacity).
+ * v1.3.3: Corner markers (coordinates + version stamp) removed.
+ * They were overlapping with the status badge and adding visual noise
+ * for no informational gain.
  */
-
-const Corner = styled.div`
-  position: absolute;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 9.5px;
-  color: ${({ theme }) => theme.colors.crimson};
-  letter-spacing: 0.18em;
-  opacity: 0.85;
-  z-index: 2;
-
-  &.tl { top: 24px; left: ${({ theme }) => theme.gutter}; }
-  &.tr { top: 24px; right: ${({ theme }) => theme.gutter}; }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    font-size: 9px;
-    &.tl { top: 14px; }
-    &.tr { top: 14px; }
-  }
-`;
 
 const Content = styled.div`
   position: relative;
@@ -108,7 +85,6 @@ const H1 = styled(motion.h1)`
     will-change: transform, opacity;
   }
 
-  /* Tri-color signature move: italic phrase in crimson highlight block */
   .em {
     font-style: italic;
     background: ${({ theme }) => theme.colors.crimson};
@@ -206,15 +182,10 @@ export default function Hero() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
   };
 
-  const dateStamp = `v.2026.${String(new Date().getMonth() + 1).padStart(2, '0')}`;
-
   return (
     <SectionFrame bg="dark" hero hideHairline aria-labelledby="hero-heading">
       <div ref={ref} style={{ position: 'relative' }}>
         <BlueprintGrid />
-
-        <Corner className="tl">[ 53.55°N · 9.99°E ]</Corner>
-        <Corner className="tr">{dateStamp}</Corner>
 
         <Content>
           {reduce ? (
