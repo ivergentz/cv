@@ -1,42 +1,40 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import Hairline from '../Hairline';
+import SectionFrame from '../SectionFrame';
 import Reveal from '../Reveal';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * Pinned Products Scroll-Story.
+ * Pinned Products Story with rotating section backgrounds.
  *
- * Behavior on desktop (≥ tablet breakpoint):
- *   - Section becomes ~300vh tall.
- *   - Inside a sticky 100vh viewport, the right column shows screenshots
- *     that crossfade based on scroll progress (rankbrief → sarahiver → werkruf).
- *   - The left column scrolls naturally with three product text blocks
- *     spaced to align with the crossfade thresholds.
+ * On desktop, the section is ~320vh tall. A sticky viewport pins the
+ * screenshot stack on the right and the layered text cards on the left.
+ * As scroll progresses, the active product changes — and so does the
+ * background colour of the entire section interior, cycling through:
  *
- * Behavior on mobile (< tablet breakpoint):
- *   - Pinning is disabled; layout collapses to the same vertical stack
- *     as the original Products component to keep the page readable.
+ *   Product 1 (RankBrief)      → CREAM
+ *   Product 2 (S&I. Wedding)   → WHITE
+ *   Product 3 (WERKRUF)        → LIME
  *
- * Reduced motion:
- *   - No pinning, no transforms, all screenshots visible in a regular stack.
+ * The background uses Framer Motion's `useTransform` to interpolate
+ * between fixed hex values, with sharp handoffs around the 33% and 66%
+ * thresholds for clean visual phase changes.
+ *
+ * On mobile, pinning is disabled and the cards stack vertically. The
+ * three coloured backgrounds become three stacked coloured cards.
+ *
+ * Reduced motion: all bg cycling disabled, single cream background,
+ * standard stacked layout.
  */
-
-const Outer = styled.section`
-  position: relative;
-  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter} 0;
-  max-width: ${({ theme }) => theme.sizes.maxWidth};
-  margin: 0 auto;
-`;
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 11.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: var(--muted);
   margin-bottom: 40px;
 `;
 
@@ -60,27 +58,28 @@ const H2 = styled.h2`
   font-size: clamp(44px, 5.6vw, 84px);
   line-height: 1;
   letter-spacing: -0.028em;
+  color: var(--ink);
 
   .ital {
     font-style: italic;
-    color: ${({ theme }) => theme.colors.muted};
+    color: var(--muted);
   }
 `;
 
 const Intro = styled.p`
   max-width: 48ch;
-  color: ${({ theme }) => theme.colors.muted};
+  color: var(--muted);
   font-size: 16px;
   line-height: 1.6;
 `;
 
-/* === The pinned story container === */
+/* === Story wrapper with the scroll-driven bg === */
 
-const Story = styled.div`
-  /* On desktop, the outer story is tall — three viewport heights of scroll
-     drive three crossfades. On mobile, height collapses to auto. */
+const StoryOuter = styled(motion.div)`
   position: relative;
-  padding-bottom: clamp(80px, 11vw, 160px);
+  margin: 0 calc(-1 * ${({ theme }) => theme.gutter});
+  padding: 0 ${({ theme }) => theme.gutter};
+  /* full-bleed within the SectionFrame inner */
 
   @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
     min-height: 320vh;
@@ -88,11 +87,10 @@ const Story = styled.div`
 `;
 
 const Sticky = styled.div`
-  /* On desktop, this becomes the sticky viewport.
-     On mobile, it falls back to normal flow. */
   display: grid;
   grid-template-columns: 1fr;
   gap: 40px;
+  padding: 60px 0;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
     position: sticky;
@@ -106,7 +104,6 @@ const Sticky = styled.div`
 `;
 
 const LeftCol = styled.div`
-  /* On desktop, this column lets the three text blocks scroll through. */
   @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: grid;
     grid-template-rows: 1fr;
@@ -126,14 +123,9 @@ const RightCol = styled.div`
   }
 `;
 
-/* === Text card (one per product) ===
-   On desktop, all three cards stack at the same position and individual
-   opacity is driven by scroll progress so only one is "active" at a time.
-   On mobile, they flow naturally one after another. */
-
 const TextCard = styled(motion.article)`
   display: grid;
-  gap: 16px;
+  gap: 14px;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-row: 1;
@@ -143,8 +135,7 @@ const TextCard = styled(motion.article)`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     padding: 48px 0;
-    border-top: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
-
+    border-top: 1px solid var(--hairline);
     &:first-of-type { border-top: 0; }
   }
 `;
@@ -155,6 +146,7 @@ const ProductName = styled.h3`
   line-height: 1;
   letter-spacing: -0.02em;
   font-weight: 400;
+  color: var(--ink);
   margin: 0;
 
   .amp { font-style: italic; }
@@ -167,27 +159,27 @@ const Badge = styled.span`
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
-  padding: 5px 10px;
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
+  background: ${({ theme }) => theme.colors.highlightInk};
+  color: ${({ theme }) => theme.colors.highlightFg};
+  padding: 4px 10px;
   border-radius: 2px;
 `;
 
 const URL = styled(AnimatedLink)`
-  color: ${(props) => (props.$muted ? props.theme.colors.muted : props.theme.colors.fg)};
+  color: var(--ink);
   font-size: 14px;
 `;
 
 const OneLiner = styled.p`
   font-size: 15px;
   line-height: 1.55;
-  color: ${({ theme }) => theme.colors.muted};
+  color: var(--muted);
   margin: 0;
 `;
 
 const Blocks = styled.div`
   display: grid;
-  gap: 18px;
+  gap: 16px;
   margin-top: 8px;
 `;
 
@@ -199,13 +191,17 @@ const Label = styled.span`
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.highlightInk};
+  background: ${({ theme }) => theme.colors.lime};
+  padding: 2px 6px;
+  border-radius: 2px;
   margin-bottom: 6px;
 `;
 
 const Text = styled.p`
   font-size: 15.5px;
   line-height: 1.6;
+  color: var(--ink);
   margin: 0;
 `;
 
@@ -214,26 +210,36 @@ const StackLabel = styled.div`
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.highlightInk};
+  background: ${({ theme }) => theme.colors.lime};
+  padding: 2px 6px;
+  border-radius: 2px;
   margin-top: 12px;
+  align-self: flex-start;
+  display: inline-block;
+  width: fit-content;
 `;
 
 const Stack = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
   line-height: 1.7;
-  color: ${({ theme }) => theme.colors.fg};
+  color: var(--ink);
+  white-space: pre-line;
 `;
 
-/* === Screenshot stack === */
+const ShotFrame = styled.div`
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+`;
 
 const ShotLayer = styled(motion.figure)`
   position: absolute;
   inset: 0;
   margin: 0;
-  aspect-ratio: 16 / 10;
-  background: ${({ theme }) => theme.colors.shotBg};
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(10,10,10,0.18);
   border-radius: 4px;
   overflow: hidden;
   will-change: opacity, transform;
@@ -243,27 +249,15 @@ const ShotLayer = styled(motion.figure)`
     height: 100%;
     object-fit: ${(props) => (props.$contain ? 'contain' : 'cover')};
     object-position: ${(props) => (props.$contain ? 'center center' : 'top center')};
-    filter: grayscale(0.35) sepia(0.08) contrast(0.96) brightness(0.98);
+    filter: contrast(0.97);
   }
 
-  /* On mobile, all shots render inline (no absolute stacking) */
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     position: relative;
     inset: auto;
     margin-top: 32px;
   }
 `;
-
-const ShotFrame = styled.div`
-  position: relative;
-  width: 100%;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    aspect-ratio: 16 / 10;
-  }
-`;
-
-/* === Caption that follows the active product === */
 
 const Caption = styled(motion.div)`
   position: absolute;
@@ -274,7 +268,7 @@ const Caption = styled(motion.div)`
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: var(--muted);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: none;
@@ -283,40 +277,39 @@ const Caption = styled(motion.div)`
 
 const ease = [0.2, 0.7, 0.2, 1];
 
-export default function PinnedProducts() {
+/* Fixed bg colours for the three product slots */
+const BG_CREAM = '#F1ECE0';
+const BG_WHITE = '#FAFAF8';
+const BG_LIME  = '#C8FF1A';
+
+export default function Products() {
   const { t } = useLanguage();
   const L = t.products.labels;
   const reduce = useReducedMotion();
   const ref = useRef(null);
 
-  /**
-   * Map scroll progress (0 → 1 over the height of the Story container)
-   * to opacity values for three layered screenshots and three text cards.
-   *
-   * Thresholds:
-   *   0.00 – 0.33  → product 1 active
-   *   0.33 – 0.66  → product 2 active
-   *   0.66 – 1.00  → product 3 active
-   *
-   * Each transition uses a short crossfade window of ~0.08 around the
-   * threshold so handoff feels deliberate, not abrupt.
-   */
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
   });
 
-  // Opacity curves for the three screenshots (and texts)
+  /* Background colour cycles through cream → white → lime */
+  const bg = useTransform(
+    scrollYProgress,
+    [0, 0.30, 0.38, 0.63, 0.71, 1],
+    [BG_CREAM, BG_CREAM, BG_WHITE, BG_WHITE, BG_LIME, BG_LIME]
+  );
+
+  /* Opacity curves for products (and texts) */
   const opacity1 = useTransform(scrollYProgress, [0.0, 0.05, 0.30, 0.38], [1, 1, 1, 0]);
   const opacity2 = useTransform(scrollYProgress, [0.30, 0.38, 0.63, 0.71], [0, 1, 1, 0]);
   const opacity3 = useTransform(scrollYProgress, [0.63, 0.71, 1.0, 1.0], [0, 1, 1, 1]);
 
-  // Subtle scale "breath" so screenshots feel alive when active
+  /* Subtle scale breath */
   const scale1 = useTransform(scrollYProgress, [0.0, 0.30], [1.02, 1]);
   const scale2 = useTransform(scrollYProgress, [0.30, 0.63], [1.02, 1]);
   const scale3 = useTransform(scrollYProgress, [0.63, 1.0], [1.02, 1]);
 
-  // Caption x-shift (mono caption beneath the screenshot drifts slightly)
   const captionX = useTransform(scrollYProgress, [0, 1], [0, 12]);
 
   const products = [
@@ -368,8 +361,7 @@ export default function PinnedProducts() {
   ];
 
   return (
-    <Outer id="arbeit" aria-labelledby="products-heading" ref={ref}>
-      <Hairline />
+    <SectionFrame bg="cream" id="arbeit" aria-labelledby="products-heading">
       <Reveal>
         <Num>{t.sectionNum.products}</Num>
       </Reveal>
@@ -384,9 +376,11 @@ export default function PinnedProducts() {
         </Reveal>
       </Head>
 
-      <Story>
+      <StoryOuter
+        ref={ref}
+        style={reduce ? undefined : { background: bg }}
+      >
         <Sticky>
-          {/* === LEFT: Stacked text cards, opacity-driven on desktop === */}
           <LeftCol>
             {products.map((p) => (
               <TextCard
@@ -396,53 +390,31 @@ export default function PinnedProducts() {
               >
                 <ProductName>{p.name}</ProductName>
                 {p.badge && <Badge>{p.badge}</Badge>}
-                <URL
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  $muted={!!p.badge}
-                >
+                <URL href={p.url} target="_blank" rel="noopener noreferrer">
                   {p.urlLabel}
                 </URL>
                 <OneLiner>{p.data.one}</OneLiner>
 
                 <Blocks>
-                  <Block>
-                    <Label>{L.problem}</Label>
-                    <Text>{p.data.problem}</Text>
-                  </Block>
-                  <Block>
-                    <Label>{L.solution}</Label>
-                    <Text>{p.data.solution}</Text>
-                  </Block>
-                  <Block>
-                    <Label>{L.scope}</Label>
-                    <Text>{p.data.scope}</Text>
-                  </Block>
-                  <Block>
-                    <Label>{L.status}</Label>
-                    <Text>{p.data.status}</Text>
-                  </Block>
+                  <Block><Label>{L.problem}</Label><Text>{p.data.problem}</Text></Block>
+                  <Block><Label>{L.solution}</Label><Text>{p.data.solution}</Text></Block>
+                  <Block><Label>{L.scope}</Label><Text>{p.data.scope}</Text></Block>
+                  <Block><Label>{L.status}</Label><Text>{p.data.status}</Text></Block>
                 </Blocks>
 
                 <StackLabel>{L.stack}</StackLabel>
-                <Stack style={{ whiteSpace: 'pre-line' }}>{p.stack}</Stack>
+                <Stack>{p.stack}</Stack>
               </TextCard>
             ))}
           </LeftCol>
 
-          {/* === RIGHT: Layered screenshots, opacity-driven crossfade === */}
           <RightCol>
             <ShotFrame>
               {products.map((p) => (
                 <ShotLayer
                   key={p.key}
                   $contain={p.contain}
-                  style={
-                    reduce
-                      ? undefined
-                      : { opacity: p.opacity, scale: p.scale }
-                  }
+                  style={reduce ? undefined : { opacity: p.opacity, scale: p.scale }}
                 >
                   <img
                     src={`${process.env.PUBLIC_URL}/images/${p.img}`}
@@ -459,16 +431,11 @@ export default function PinnedProducts() {
             </ShotFrame>
           </RightCol>
         </Sticky>
-      </Story>
-    </Outer>
+      </StoryOuter>
+    </SectionFrame>
   );
 }
 
-/**
- * Scroll progress indicator: "01 / 03", "02 / 03", "03 / 03"
- * Updates based on the same scroll progress so the caption stays in sync
- * with the active screenshot.
- */
 function ScrollIndicator({ scrollYProgress }) {
   const [n, setN] = React.useState(1);
 

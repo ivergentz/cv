@@ -24,7 +24,9 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: ${({ theme }) => theme.colors.bg};
+    /* Default cream — individual sections override with their own bg.
+       Nav sits on top with a semi-transparent backdrop. */
+    background: ${({ theme }) => theme.colors.bgCream};
     color: ${({ theme }) => theme.colors.fg};
     font-family: ${({ theme }) => theme.fonts.sans};
     font-weight: 400;
@@ -36,8 +38,8 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background: ${({ theme }) => theme.colors.fg};
-    color: ${({ theme }) => theme.colors.bg};
+    background: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.highlightInk};
   }
 
   a {
@@ -68,7 +70,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   :focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.accent};
+    outline: 2px solid ${({ theme }) => theme.colors.limeShadow};
     outline-offset: 2px;
     border-radius: 2px;
   }

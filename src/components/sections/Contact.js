@@ -1,23 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import Reveal from '../Reveal';
-import Hairline from '../Hairline';
+import SectionFrame from '../SectionFrame';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
-
-const Section = styled.section`
-  position: relative;
-  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
-  max-width: ${({ theme }) => theme.sizes.maxWidth};
-  margin: 0 auto;
-`;
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 11.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: var(--ink);
   margin-bottom: 28px;
 `;
 
@@ -29,10 +22,15 @@ const H2 = styled.h2`
   letter-spacing: -0.028em;
   margin-bottom: 48px;
   max-width: 18ch;
+  color: var(--ink);
 
   .ital {
     font-style: italic;
-    color: ${({ theme }) => theme.colors.muted};
+    background: ${({ theme }) => theme.colors.highlightInk};
+    color: ${({ theme }) => theme.colors.highlightFg};
+    padding: 0 0.18em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 `;
 
@@ -42,6 +40,7 @@ const Mail = styled(AnimatedLink)`
   font-size: clamp(28px, 3.8vw, 48px);
   letter-spacing: -0.02em;
   margin-bottom: 64px;
+  color: var(--ink);
 `;
 
 const Meta = styled.div`
@@ -49,7 +48,7 @@ const Meta = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   padding-top: 40px;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
+  border-top: 1px solid var(--hairline);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
@@ -67,18 +66,18 @@ const MLabel = styled.span`
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: var(--muted);
 `;
 
 const MValue = styled.span`
   font-size: 15px;
+  color: var(--ink);
 `;
 
 export default function Contact() {
   const { t } = useLanguage();
   return (
-    <Section id="kontakt" aria-labelledby="contact-heading">
-      <Hairline />
+    <SectionFrame bg="lime" id="kontakt" aria-labelledby="contact-heading">
       <Reveal>
         <Num>{t.sectionNum.contact}</Num>
       </Reveal>
@@ -112,6 +111,6 @@ export default function Contact() {
           <MValue>{t.contact.availValue}</MValue>
         </Cell>
       </Meta>
-    </Section>
+    </SectionFrame>
   );
 }

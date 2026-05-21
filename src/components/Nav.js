@@ -3,17 +3,26 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../i18n/LanguageContext';
 
+/**
+ * Nav — sits on top of multi-coloured page (cream / white / lime).
+ *
+ * Approach: keep nav itself transparent until scrolled, so it visually
+ * inherits the section colour behind it. Once scrolled, add a subtle
+ * frosted-glass effect with a soft hairline below.
+ */
+
 const NavBar = styled.header`
   position: sticky;
   top: 0;
   z-index: 40;
-  backdrop-filter: saturate(140%) blur(8px);
-  -webkit-backdrop-filter: saturate(140%) blur(8px);
-  background: color-mix(in srgb, ${({ theme }) => theme.colors.bg} 82%, transparent);
-  border-bottom: 1px solid ${(props) => (props.$scrolled ? props.theme.colors.hairline : 'transparent')};
-  transition:
-    border-color 300ms ease,
-    background 300ms ease;
+  backdrop-filter: saturate(160%) blur(10px);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  background: ${(props) =>
+    props.$scrolled
+      ? 'rgba(241, 236, 224, 0.82)'
+      : 'transparent'};
+  border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(10,10,10,0.10)' : 'transparent')};
+  transition: background 300ms ease, border-color 300ms ease;
 
   @media print {
     display: none;
@@ -35,6 +44,7 @@ const Brand = styled(RouterLink)`
   font-size: 20px;
   font-weight: 400;
   letter-spacing: -0.01em;
+  color: ${({ theme }) => theme.colors.highlightInk};
 `;
 
 const NavRight = styled.nav`
@@ -47,13 +57,15 @@ const NavLinks = styled.ul`
   display: flex;
   gap: 22px;
   font-size: 13px;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.highlightInk};
 
   a {
     letter-spacing: 0.01em;
+    opacity: 0.7;
+    transition: opacity 200ms ease;
   }
   a:hover {
-    color: ${({ theme }) => theme.colors.fg};
+    opacity: 1;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
@@ -64,20 +76,18 @@ const NavLinks = styled.ul`
 const LangToggle = styled.button`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.highlightInk};
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
+  border: 1px solid rgba(10,10,10,0.30);
   border-radius: 2px;
   padding: 6px 10px;
   cursor: pointer;
-  transition:
-    color 200ms,
-    border-color 200ms;
+  transition: color 200ms, border-color 200ms, background 200ms;
   letter-spacing: 0.05em;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.fg};
-    border-color: ${({ theme }) => theme.colors.fg};
+    border-color: ${({ theme }) => theme.colors.highlightInk};
+    background: ${({ theme }) => theme.colors.lime};
   }
 
   span {
@@ -86,7 +96,6 @@ const LangToggle = styled.button`
   }
   span.active {
     opacity: 1;
-    color: ${({ theme }) => theme.colors.fg};
   }
 
   .sep {
@@ -113,7 +122,6 @@ export default function Nav() {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    // Bei anderen Routen navigiert RouterLink normal zu "/"
   };
 
   return (
@@ -126,18 +134,10 @@ export default function Nav() {
         <NavRight aria-label="Hauptnavigation">
           {isHome && (
             <NavLinks>
-              <li>
-                <a href="#arbeit">{t.nav.work}</a>
-              </li>
-              <li>
-                <a href="#stationen">{t.nav.experience}</a>
-              </li>
-              <li>
-                <a href="#prinzipien">{t.nav.principles}</a>
-              </li>
-              <li>
-                <a href="#kontakt">{t.nav.contact}</a>
-              </li>
+              <li><a href="#arbeit">{t.nav.work}</a></li>
+              <li><a href="#stationen">{t.nav.experience}</a></li>
+              <li><a href="#prinzipien">{t.nav.principles}</a></li>
+              <li><a href="#kontakt">{t.nav.contact}</a></li>
             </NavLinks>
           )}
 

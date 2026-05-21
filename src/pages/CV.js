@@ -1,11 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../i18n/LanguageContext';
 import { cvContent } from '../i18n/cv';
 import { AnimatedLink } from '../components/Link';
 
+/* @react-pdf/renderer is imported dynamically to keep initial bundle small.
+   See handleDownload below. */
+
 const Page = styled.main`
+  background: ${({ theme }) => theme.colors.bgCream};
+  min-height: 100vh;
+`;
+
+const Wrap = styled.div`
   max-width: 960px;
   margin: 0 auto;
   padding: 32px ${({ theme }) => theme.gutter} 80px;
@@ -22,7 +30,7 @@ const Toolbar = styled.div`
   align-items: center;
   margin-bottom: 40px;
   padding-bottom: 16px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
+  border-bottom: 1px solid rgba(10,10,10,0.10);
   flex-wrap: wrap;
   gap: 12px;
 
@@ -44,47 +52,47 @@ const ToolbarRight = styled.div`
   align-items: center;
 `;
 
-const Button = styled.button`
+const ToolbarButton = styled.button`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.fg};
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
+  color: ${({ theme }) => theme.colors.fg};
+  border: 1px solid rgba(10,10,10,0.20);
   border-radius: 2px;
   padding: 8px 14px;
   cursor: pointer;
-  transition: border-color 200ms, background 200ms;
+  transition: border-color 200ms, background 200ms, color 200ms;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.fg};
+    border-color: ${({ theme }) => theme.colors.highlightInk};
+    background: ${({ theme }) => theme.colors.lime};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: progress;
   }
 `;
 
-const DownloadLink = styled(AnimatedLink)`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.fg};
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
-  border-radius: 2px;
-  padding: 8px 14px;
-  transition: border-color 200ms;
+const DownloadButton = styled(ToolbarButton)`
+  background: ${({ theme }) => theme.colors.highlightInk};
+  color: ${({ theme }) => theme.colors.lime};
+  border-color: ${({ theme }) => theme.colors.highlightInk};
 
-  &::after { display: none; }
   &:hover {
-    border-color: ${({ theme }) => theme.colors.fg};
+    background: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.highlightInk};
   }
 `;
 
-/* ---------- DOCUMENT AREA ---------- */
+/* ---------- DOC ---------- */
 
 const Doc = styled.article`
-  /* Screen: editorial block. Print: fills A4 naturally. */
-  background: ${({ theme }) => theme.colors.bg};
+  background: ${({ theme }) => theme.colors.bgCream};
 
   @media print {
-    background: #FAFAF8 !important;
+    background: #F1ECE0 !important;
     color: #141414 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -97,7 +105,7 @@ const Header = styled.header`
   gap: 32px;
   align-items: start;
   padding-bottom: 24px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
+  border-bottom: 1px solid rgba(10,10,10,0.10);
   margin-bottom: 28px;
 
   @media (max-width: 620px) {
@@ -120,9 +128,16 @@ const Role = styled.p`
   font-family: ${({ theme }) => theme.fonts.display};
   font-style: italic;
   font-size: clamp(18px, 2.4vw, 24px);
-  color: ${({ theme }) => theme.colors.muted};
   letter-spacing: -0.005em;
   margin-bottom: 20px;
+
+  span.hl {
+    background: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.highlightInk};
+    padding: 0 0.18em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
 `;
 
 const Meta = styled.div`
@@ -135,14 +150,14 @@ const Meta = styled.div`
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.muted};
 
-  .sep { color: ${({ theme }) => theme.colors.accent}; }
+  .sep { color: ${({ theme }) => theme.colors.highlightInk}; }
 `;
 
 const Photo = styled.div`
   width: 120px;
   height: 150px;
   background: ${({ theme }) => theme.colors.shotBg};
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
+  border: 1px solid rgba(10,10,10,0.16);
   overflow: hidden;
   justify-self: end;
 
@@ -151,7 +166,6 @@ const Photo = styled.div`
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
-    filter: grayscale(100%);
   }
 
   @media (max-width: 620px) {
@@ -166,15 +180,12 @@ const Tagline = styled.p`
   font-style: italic;
   font-size: clamp(16px, 1.9vw, 20px);
   line-height: 1.45;
-  color: ${({ theme }) => theme.colors.fg};
   max-width: 62ch;
   margin-bottom: 36px;
 `;
 
-/* ---------- SECTIONS ---------- */
-
 const Section = styled.section`
-  margin-bottom: 28px;
+  margin-bottom: 36px;
   page-break-inside: avoid;
 `;
 
@@ -183,17 +194,19 @@ const SectionLabel = styled.div`
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
-  margin-bottom: 14px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
+  background: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.highlightInk};
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 2px;
+  margin-bottom: 18px;
 `;
 
 const Row = styled.div`
   display: grid;
   grid-template-columns: 140px 1fr;
   gap: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   page-break-inside: avoid;
 
   @media (max-width: 620px) {
@@ -251,7 +264,7 @@ const Bullet = styled.li`
     content: '—';
     position: absolute;
     left: 0;
-    color: ${({ theme }) => theme.colors.accent};
+    color: ${({ theme }) => theme.colors.highlightInk};
   }
 `;
 
@@ -271,7 +284,11 @@ const ProductUrl = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.highlightInk};
+  background: ${({ theme }) => theme.colors.lime};
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 2px;
   margin-bottom: 8px;
 `;
 
@@ -284,14 +301,6 @@ const EduSchool = styled(Company)`
   margin-bottom: 0;
 `;
 
-/* Print page break before Experience – forces 2-page layout */
-const PageBreak = styled.div`
-  @media print {
-    page-break-before: always;
-  }
-`;
-
-/* Skills Grid */
 const SkillsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -315,7 +324,6 @@ const SkillCol = styled.div`
   .items {
     font-size: 12.5px;
     line-height: 1.5;
-    color: ${({ theme }) => theme.colors.fg};
   }
 `;
 
@@ -338,8 +346,6 @@ const LangGrid = styled.div`
   }
 `;
 
-/* ---------- PRINT GLOBAL ---------- */
-
 const PrintStyles = styled.div`
   @media print {
     @page {
@@ -352,6 +358,7 @@ const PrintStyles = styled.div`
 export default function CV() {
   const { lang } = useLanguage();
   const cv = cvContent[lang];
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     document.title =
@@ -362,134 +369,158 @@ export default function CV() {
     window.print();
   };
 
+  /**
+   * Generate PDF on demand using @react-pdf/renderer.
+   * Code-split via dynamic import so the heavy renderer only loads when used.
+   */
+  const handleDownload = async () => {
+    try {
+      setDownloading(true);
+      const [{ pdf }, { default: CVPdfDocument }] = await Promise.all([
+        import('@react-pdf/renderer'),
+        import('../components/CVPdfDocument'),
+      ]);
+      const blob = await pdf(<CVPdfDocument cv={cv} lang={lang} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cv-iver-gentz-${lang}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+      alert(lang === 'de'
+        ? 'PDF-Generierung fehlgeschlagen. Bitte versuche die Drucken-Funktion.'
+        : 'PDF generation failed. Please try the Print function.');
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <Page>
-      <Toolbar>
-        <ToolbarLeft as={RouterLink} to="/#stationen">
-          ← {cv.labels.back}
-        </ToolbarLeft>
-        <ToolbarRight>
-          <Button type="button" onClick={handlePrint}>
-            {cv.labels.print}
-          </Button>
-          <DownloadLink
-            href={`${process.env.PUBLIC_URL}/documents/cv-iver-gentz-${lang}.pdf`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {cv.labels.download} ↓
-          </DownloadLink>
-        </ToolbarRight>
-      </Toolbar>
+      <Wrap>
+        <Toolbar>
+          <ToolbarLeft as={RouterLink} to="/#stationen">
+            ← {cv.labels.back}
+          </ToolbarLeft>
+          <ToolbarRight>
+            <ToolbarButton type="button" onClick={handlePrint}>
+              {cv.labels.print}
+            </ToolbarButton>
+            <DownloadButton type="button" onClick={handleDownload} disabled={downloading}>
+              {downloading
+                ? (lang === 'de' ? 'Generiere...' : 'Generating...')
+                : `${cv.labels.download} ↓`}
+            </DownloadButton>
+          </ToolbarRight>
+        </Toolbar>
 
-      <PrintStyles />
-      <Doc>
-        <Header>
-          <HeaderLeft>
-            <Name>Iver Gentz</Name>
-            <Role>{cv.role}</Role>
-            <Meta>
-              <span>Hamburg, Deutschland</span>
-              <span className="sep">·</span>
-              <span>hallo@ivergentz.de</span>
-              <span className="sep">·</span>
-              <span>+49 176 66631237</span>
-              <span className="sep">·</span>
-              <span>ivergentz.de</span>
-            </Meta>
-          </HeaderLeft>
-          <Photo>
-            <img src={`${process.env.PUBLIC_URL}/images/portrait.png`} alt="Iver Gentz" />
-          </Photo>
-        </Header>
+        <PrintStyles />
+        <Doc>
+          <Header>
+            <HeaderLeft>
+              <Name>Iver Gentz</Name>
+              <Role>
+                <span className="hl">{cv.role}</span>
+              </Role>
+              <Meta>
+                <span>Hamburg, Deutschland</span>
+                <span className="sep">·</span>
+                <span>hallo@ivergentz.de</span>
+                <span className="sep">·</span>
+                <span>+49 176 66631237</span>
+                <span className="sep">·</span>
+                <span>ivergentz.de</span>
+              </Meta>
+            </HeaderLeft>
+            <Photo>
+              <img src={`${process.env.PUBLIC_URL}/images/portrait.png`} alt="Iver Gentz" />
+            </Photo>
+          </Header>
 
-        <Tagline>{cv.tagline}</Tagline>
+          <Tagline>{cv.tagline}</Tagline>
 
-        {/* ========== EIGENE PRODUKTE ========== */}
-        <Section>
-          <SectionLabel>{cv.labels.products}</SectionLabel>
-          {cv.products.map((p, i) => (
-            <Row key={i}>
-              <Period>
-                {p.period}
-                <span className="status">{p.status}</span>
-              </Period>
-              <Body>
-                <ProductName>{p.name}</ProductName>
-                <ProductUrl>{p.url}</ProductUrl>
-                <BulletList>
-                  {p.bullets.map((b, j) => (
-                    <Bullet key={j}>{b}</Bullet>
-                  ))}
-                </BulletList>
-                <Stack>{p.stack}</Stack>
-              </Body>
-            </Row>
-          ))}
-        </Section>
-
-        {/* Force page break before experience for print */}
-        <PageBreak />
-
-        {/* ========== BERUFSERFAHRUNG ========== */}
-        <Section>
-          <SectionLabel>{cv.labels.experience}</SectionLabel>
-          {cv.experience.map((e, i) => (
-            <Row key={i}>
-              <Period>{e.period}</Period>
-              <Body>
-                <Title>{e.title}</Title>
-                <Company>{e.company}</Company>
-                <BulletList>
-                  {e.bullets.map((b, j) => (
-                    <Bullet key={j}>{b}</Bullet>
-                  ))}
-                </BulletList>
-              </Body>
-            </Row>
-          ))}
-        </Section>
-
-        {/* ========== AUSBILDUNG ========== */}
-        <Section>
-          <SectionLabel>{cv.labels.education}</SectionLabel>
-          {cv.education.map((e, i) => (
-            <Row key={i}>
-              <Period>{e.period}</Period>
-              <Body>
-                <EduTitle>{e.title}</EduTitle>
-                <EduSchool>{e.school}</EduSchool>
-              </Body>
-            </Row>
-          ))}
-        </Section>
-
-        {/* ========== FÄHIGKEITEN ========== */}
-        <Section>
-          <SectionLabel>{cv.labels.skills}</SectionLabel>
-          <SkillsGrid>
-            {cv.skills.map((s, i) => (
-              <SkillCol key={i}>
-                <div className="label">{s.label}</div>
-                <div className="items">{s.items}</div>
-              </SkillCol>
+          <Section>
+            <SectionLabel>{cv.labels.products}</SectionLabel>
+            {cv.products.map((p, i) => (
+              <Row key={i}>
+                <Period>
+                  {p.period}
+                  <span className="status">{p.status}</span>
+                </Period>
+                <Body>
+                  <ProductName>{p.name}</ProductName>
+                  <ProductUrl>{p.url}</ProductUrl>
+                  <BulletList>
+                    {p.bullets.map((b, j) => (
+                      <Bullet key={j}>{b}</Bullet>
+                    ))}
+                  </BulletList>
+                  <Stack>{p.stack}</Stack>
+                </Body>
+              </Row>
             ))}
-          </SkillsGrid>
-        </Section>
+          </Section>
 
-        {/* ========== SPRACHEN ========== */}
-        <Section>
-          <SectionLabel>{cv.labels.languages}</SectionLabel>
-          <LangGrid>
-            {cv.languages.map((l, i) => (
-              <div key={i}>
-                <strong>{l.name}</strong>
-                <span>— {l.level}</span>
-              </div>
+          <Section>
+            <SectionLabel>{cv.labels.experience}</SectionLabel>
+            {cv.experience.map((e, i) => (
+              <Row key={i}>
+                <Period>{e.period}</Period>
+                <Body>
+                  <Title>{e.title}</Title>
+                  <Company>{e.company}</Company>
+                  <BulletList>
+                    {e.bullets.map((b, j) => (
+                      <Bullet key={j}>{b}</Bullet>
+                    ))}
+                  </BulletList>
+                </Body>
+              </Row>
             ))}
-          </LangGrid>
-        </Section>
-      </Doc>
+          </Section>
+
+          <Section>
+            <SectionLabel>{cv.labels.education}</SectionLabel>
+            {cv.education.map((e, i) => (
+              <Row key={i}>
+                <Period>{e.period}</Period>
+                <Body>
+                  <EduTitle>{e.title}</EduTitle>
+                  <EduSchool>{e.school}</EduSchool>
+                </Body>
+              </Row>
+            ))}
+          </Section>
+
+          <Section>
+            <SectionLabel>{cv.labels.skills}</SectionLabel>
+            <SkillsGrid>
+              {cv.skills.map((s, i) => (
+                <SkillCol key={i}>
+                  <div className="label">{s.label}</div>
+                  <div className="items">{s.items}</div>
+                </SkillCol>
+              ))}
+            </SkillsGrid>
+          </Section>
+
+          <Section>
+            <SectionLabel>{cv.labels.languages}</SectionLabel>
+            <LangGrid>
+              {cv.languages.map((l, i) => (
+                <div key={i}>
+                  <strong>{l.name}</strong>
+                  <span>— {l.level}</span>
+                </div>
+              ))}
+            </LangGrid>
+          </Section>
+        </Doc>
+      </Wrap>
     </Page>
   );
 }

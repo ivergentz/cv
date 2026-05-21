@@ -1,15 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Reveal from '../Reveal';
-import Hairline from '../Hairline';
+import SectionFrame from '../SectionFrame';
 import { useLanguage } from '../../i18n/LanguageContext';
-
-const Section = styled.section`
-  position: relative;
-  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
-  max-width: ${({ theme }) => theme.sizes.maxWidth};
-  margin: 0 auto;
-`;
 
 const Inner = styled.div`
   max-width: 62ch;
@@ -20,44 +13,45 @@ const Num = styled.div`
   font-size: 11.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: var(--muted);
   margin-bottom: 40px;
 `;
 
 const Body = styled.p`
   font-size: clamp(18px, 1.6vw, 22px);
   line-height: 1.55;
-  color: ${({ theme }) => theme.colors.fg};
+  color: var(--ink);
 
   em {
     font-family: ${({ theme }) => theme.fonts.display};
     font-style: italic;
     font-size: 1.08em;
+    background: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.highlightInk};
+    padding: 0 0.18em;
+    margin: 0 -0.05em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 `;
 
 export default function Positioning() {
   const { t } = useLanguage();
   return (
-    <Section id="positionierung" aria-labelledby="pos-heading">
-      <Hairline />
+    <SectionFrame bg="cream" id="positionierung" aria-labelledby="pos-heading">
       <Inner>
         <Reveal>
           <Num id="pos-heading">{t.sectionNum.positioning}</Num>
         </Reveal>
         <Reveal>
-          <Body>
-            {/* Render with em-tags around product names */}
-            {renderPositioning(t.positioning.body)}
-          </Body>
+          <Body>{renderPositioning(t.positioning.body)}</Body>
         </Reveal>
       </Inner>
-    </Section>
+    </SectionFrame>
   );
 }
 
 function renderPositioning(text) {
-  // highlight RankBrief and S&I. Wedding
   const parts = text
     .replace(/RankBrief/g, '§§RankBrief§§')
     .replace(/S&I\. Wedding/g, '§§S&I. Wedding§§')
