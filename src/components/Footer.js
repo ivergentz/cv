@@ -9,9 +9,7 @@ const Band = styled.footer`
   border-top: 1px solid ${({ theme }) => theme.colors.hairline};
   color: ${({ theme }) => theme.colors.fgMuted};
 
-  @media print {
-    display: none;
-  }
+  @media print { display: none; }
 `;
 
 const Inner = styled.div`

@@ -13,7 +13,7 @@ const Num = styled.div`
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 40px;
 `;
 
@@ -25,7 +25,7 @@ const Body = styled.p`
   em {
     font-family: ${({ theme }) => theme.fonts.display};
     font-style: italic;
-    color: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.crimson};
   }
 `;
 

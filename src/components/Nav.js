@@ -3,14 +3,6 @@ import { Link as RouterLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useLanguage } from '../i18n/LanguageContext';
 
-/**
- * Nav — dark mono nav over Blueprint dark hero.
- *
- * The brand mark is a mono "[IG] IVER GENTZ" tag, the section links are
- * mono section numbers. Background stays transparent until scrolled,
- * then darkens with a subtle lime hairline beneath.
- */
-
 const NavBar = styled.header`
   position: sticky;
   top: 0;
@@ -18,8 +10,8 @@ const NavBar = styled.header`
   backdrop-filter: saturate(160%) blur(12px);
   -webkit-backdrop-filter: saturate(160%) blur(12px);
   background: ${(props) =>
-    props.$scrolled ? 'rgba(10,10,10,0.78)' : 'transparent'};
-  border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(200,255,26,0.18)' : 'transparent')};
+    props.$scrolled ? 'rgba(255,255,255,0.82)' : 'transparent'};
+  border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(10,10,10,0.10)' : 'transparent')};
   transition: background 300ms ease, border-color 300ms ease;
 
   @media print {
@@ -41,10 +33,10 @@ const Brand = styled(RouterLink)`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
   letter-spacing: 0.18em;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   text-transform: uppercase;
 
-  .bracket { opacity: 0.6; }
+  .bracket { opacity: 0.55; color: ${({ theme }) => theme.colors.fg}; }
 `;
 
 const NavRight = styled.nav`
@@ -66,7 +58,7 @@ const NavLinks = styled.ul`
     transition: color 200ms ease;
   }
   a:hover {
-    color: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.crimson};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
@@ -77,9 +69,9 @@ const NavLinks = styled.ul`
 const LangToggle = styled.button`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 11px;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   background: transparent;
-  border: 1px solid rgba(200,255,26,0.4);
+  border: 1px solid rgba(220,20,60,0.45);
   border-radius: 2px;
   padding: 5px 9px;
   cursor: pointer;
@@ -87,8 +79,8 @@ const LangToggle = styled.button`
   letter-spacing: 0.08em;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.limeShadow};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
   }
 
   span {

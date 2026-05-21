@@ -5,20 +5,12 @@ import SectionFrame from '../SectionFrame';
 import Reveal from '../Reveal';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-/**
- * Principles — bento grid with 3D mouse-tilt cards on dark.
- *
- * Each card responds to the mouse position with a subtle 3D rotation,
- * making the section feel alive and explorable. Lime border lights up
- * on hover. Roman numeral has an animated underline.
- */
-
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 28px;
 `;
 
@@ -33,7 +25,11 @@ const H2 = styled.h2`
 
   .ital {
     font-style: italic;
-    color: ${({ theme }) => theme.colors.lime};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
+    padding: 0 0.16em 0.04em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 `;
 
@@ -67,7 +63,8 @@ const Card = styled(motion.div)`
   transition: border-color 280ms ease, background 280ms ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.lime};
+    border-color: ${({ theme }) => theme.colors.crimson};
+    background: #FFFFFF;
   }
 `;
 
@@ -80,7 +77,7 @@ const Roman = styled.span`
   font-family: ${({ theme }) => theme.fonts.display};
   font-style: italic;
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   letter-spacing: 0.02em;
   position: relative;
   padding-bottom: 2px;
@@ -118,26 +115,17 @@ const ease = [0.2, 0.7, 0.2, 1];
 
 const container = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.10, delayChildren: 0.05 },
-  },
+  visible: { transition: { staggerChildren: 0.10, delayChildren: 0.05 } },
 };
 
 const cardVariants = {
   hidden: { opacity: 0, y: 22 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
 };
 
 const underlineVariants = {
   hidden: { pathLength: 0 },
-  visible: {
-    pathLength: 1,
-    transition: { duration: 0.8, ease, delay: 0.3 },
-  },
+  visible: { pathLength: 1, transition: { duration: 0.8, ease, delay: 0.3 } },
 };
 
 function TiltCard({ children, reduce }) {
@@ -205,7 +193,7 @@ export default function Principles() {
                     <RomanUnderline aria-hidden="true" viewBox="0 0 30 4" preserveAspectRatio="none">
                       <motion.path
                         d="M 0 2 L 30 2"
-                        stroke="#C8FF1A"
+                        stroke="#DC143C"
                         strokeWidth="1.5"
                         fill="none"
                         variants={reduce ? undefined : underlineVariants}

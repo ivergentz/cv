@@ -6,22 +6,24 @@ import BlueprintGrid from '../BlueprintGrid';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * Hero — Blueprint dark hero.
+ * Hero — Tri-Color (White / Crimson / Black).
  *
- * Backdrop: <BlueprintGrid /> draws a fine architectural grid from the
- * centre outward on mount. Coordinate markers in the corners reinforce
- * the architecture theme. H1 stays large serif with italic phrase in lime.
+ * Background: white with subtle crimson Blueprint grid (10% opacity)
+ * Status badge: crimson pill, white text
+ * H1: black, italic phrase wrapped in a CRIMSON highlight block (the R3 move)
+ * Primary CTA: black on white with crimson border
+ * Secondary CTA: crimson outline
  *
- * All animations use transform + opacity only (no width/height/margin).
+ * All animations remain GPU-only (transform + opacity).
  */
 
 const Corner = styled.div`
   position: absolute;
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 9.5px;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   letter-spacing: 0.18em;
-  opacity: 0.7;
+  opacity: 0.85;
   z-index: 2;
 
   &.tl { top: 24px; left: ${({ theme }) => theme.gutter}; }
@@ -46,14 +48,17 @@ const Status = styled(motion.div)`
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
-  margin-bottom: 28px;
+  background: ${({ theme }) => theme.colors.crimson};
+  color: #FFFFFF;
+  padding: 8px 14px;
+  border-radius: 2px;
+  margin-bottom: 32px;
 
   .dot-wrap {
     position: relative;
     width: 18px;
     height: 18px;
-    margin: 0 12px;
+    margin: 0 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -63,16 +68,15 @@ const Status = styled(motion.div)`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.colors.lime};
+    background: #FFFFFF;
     will-change: transform;
   }
 
-  /* Ring uses scale (GPU) and opacity, not box-shadow */
   .ring {
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    background: ${({ theme }) => theme.colors.lime};
+    background: #FFFFFF;
     opacity: 0.4;
     will-change: transform, opacity;
     animation: ringPulse 2s ease-out infinite;
@@ -103,9 +107,16 @@ const H1 = styled(motion.h1)`
     display: inline-block;
     will-change: transform, opacity;
   }
+
+  /* Tri-color signature move: italic phrase in crimson highlight block */
   .em {
     font-style: italic;
-    color: ${({ theme }) => theme.colors.lime};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
+    padding: 0 0.16em 0.04em;
+    margin: 0 -0.05em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 
   transition: letter-spacing 400ms ease;
@@ -145,24 +156,24 @@ const CTA = styled.a`
   transition: transform 200ms ease, background 200ms ease, color 200ms ease;
 
   &.primary {
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.limeShadow};
-    border: 1px solid ${({ theme }) => theme.colors.lime};
+    background: ${({ theme }) => theme.colors.fg};
+    color: #FFFFFF;
+    border: 1px solid ${({ theme }) => theme.colors.fg};
   }
-
   &.primary:hover {
+    background: ${({ theme }) => theme.colors.crimson};
+    border-color: ${({ theme }) => theme.colors.crimson};
     transform: translateY(-2px);
   }
 
   &.secondary {
     background: transparent;
-    color: ${({ theme }) => theme.colors.lime};
-    border: 1px solid ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.crimson};
+    border: 1px solid ${({ theme }) => theme.colors.crimson};
   }
-
   &.secondary:hover {
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.limeShadow};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -200,7 +211,6 @@ export default function Hero() {
   return (
     <SectionFrame bg="dark" hero hideHairline aria-labelledby="hero-heading">
       <div ref={ref} style={{ position: 'relative' }}>
-        {/* Blueprint backdrop — draws from centre on mount */}
         <BlueprintGrid />
 
         <Corner className="tl">[ 53.55°N · 9.99°E ]</Corner>

@@ -4,22 +4,8 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 /**
  * BlueprintGrid — architectural blueprint backdrop.
- *
- * A grid of horizontal + vertical lines that draw themselves from the
- * centre outwards on mount, like a technical drawing being constructed.
- *
- * Performance:
- *   - Animates only `transform: scaleX/scaleY` (GPU-accelerated)
- *   - No layout-property animation (no width/height/margin)
- *   - `will-change: transform` hints the compositor
- *   - Lines are absolutely positioned, transform-origin at centre
- *
- * Customisation:
- *   - `density` controls cells per side (default 12)
- *   - `lineColor` defaults to a sparing lime tint
- *   - `duration` controls the draw-in speed (default 1.4s)
- *
- * Respects prefers-reduced-motion: lines appear static, fully drawn.
+ * Default color updated to crimson tint at low opacity for the white world.
+ * All animation is `transform: scaleX/scaleY` + `opacity` — GPU only.
  */
 
 const Wrap = styled.div`
@@ -50,7 +36,6 @@ const VLine = styled(Line)`
   transform-origin: center;
 `;
 
-/* Centre cross — drawn first, slightly more present than the rest */
 const CenterCross = styled(motion.div)`
   position: absolute;
   top: 50%;
@@ -67,54 +52,33 @@ const CenterCross = styled(motion.div)`
     position: absolute;
     background: ${({ $color }) => $color};
   }
-  &::before {
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    transform: translateY(-50%);
-  }
-  &::after {
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    transform: translateX(-50%);
-  }
+  &::before { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-50%); }
+  &::after  { left: 50%; top: 0; bottom: 0; width: 1px;  transform: translateX(-50%); }
 `;
 
 const ease = [0.2, 0.7, 0.2, 1];
 
 export default function BlueprintGrid({
   density = 12,
-  lineColor = 'rgba(200, 255, 26, 0.08)',
+  lineColor = 'rgba(220, 20, 60, 0.10)',
   duration = 1.4,
 }) {
   const reduce = useReducedMotion();
   const ref = useRef(null);
 
-  /* Compute line positions as percentages so the grid scales with viewport */
   const hLines = Array.from({ length: density - 1 }, (_, i) => ((i + 1) / density) * 100);
   const vLines = Array.from({ length: density - 1 }, (_, i) => ((i + 1) / density) * 100);
 
-  /**
-   * Stagger delay function — lines closer to the centre draw first.
-   * Distance from 50% determines the delay (0 at centre, max at edges).
-   */
   const delayFor = (pct) => {
-    const distance = Math.abs(pct - 50) / 50; // 0 at centre, 1 at edge
-    return distance * 0.6; // up to 0.6s spread
+    const distance = Math.abs(pct - 50) / 50;
+    return distance * 0.6;
   };
 
   if (reduce) {
     return (
       <Wrap ref={ref} aria-hidden="true">
-        {hLines.map((y, i) => (
-          <HLine key={`h-${i}`} $color={lineColor} style={{ top: `${y}%` }} />
-        ))}
-        {vLines.map((x, i) => (
-          <VLine key={`v-${i}`} $color={lineColor} style={{ left: `${x}%` }} />
-        ))}
+        {hLines.map((y, i) => (<HLine key={`h-${i}`} $color={lineColor} style={{ top: `${y}%` }} />))}
+        {vLines.map((x, i) => (<VLine key={`v-${i}`} $color={lineColor} style={{ left: `${x}%` }} />))}
         <CenterCross $color={lineColor} />
       </Wrap>
     );
@@ -122,7 +86,6 @@ export default function BlueprintGrid({
 
   return (
     <Wrap ref={ref} aria-hidden="true">
-      {/* Horizontal lines — scale from centre outward */}
       {hLines.map((y, i) => (
         <HLine
           key={`h-${i}`}
@@ -136,8 +99,6 @@ export default function BlueprintGrid({
           }}
         />
       ))}
-
-      {/* Vertical lines — scale from centre outward */}
       {vLines.map((x, i) => (
         <VLine
           key={`v-${i}`}
@@ -151,8 +112,6 @@ export default function BlueprintGrid({
           }}
         />
       ))}
-
-      {/* Centre crosshair — pops in last */}
       <CenterCross
         $color={lineColor}
         initial={{ opacity: 0, scale: 0.6 }}

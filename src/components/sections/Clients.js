@@ -10,7 +10,7 @@ const Num = styled.div`
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 28px;
 `;
 
@@ -54,7 +54,7 @@ const URL = styled(AnimatedLink)`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
 `;
 
 export default function Clients() {

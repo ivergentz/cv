@@ -7,20 +7,7 @@ import Reveal from '../Reveal';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * Stations — career timeline with mouse-glow rows.
- *
- * Each row tracks the mouse position via CSS variables (--mx, --my) and
- * uses a `radial-gradient` to render a soft lime spotlight that follows
- * the cursor. The bottom separator of the row animates as a left-to-right
- * lime sweep on hover.
- *
- * Performance:
- *   - Mouse spotlight uses background-position offset (compositor-friendly)
- *   - Separator sweep is a 200%-wide gradient shifted via background-position
- *   - No layout properties animated
- *   - Mouse handler throttled via rAF
- *
- * Vertical timeline line stays from v1.3 — draws itself in on scroll.
+ * Stations — Tri-Color (white bg, crimson timeline, mouse-glow in crimson).
  */
 
 const Num = styled.div`
@@ -28,7 +15,7 @@ const Num = styled.div`
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 28px;
 `;
 
@@ -72,25 +59,20 @@ const TimelineSVG = styled.svg`
   }
 `;
 
-/* === Glowing row === */
-
 const Row = styled(motion.div)`
   position: relative;
   padding: 28px 0 28px;
   --mx: 50%;
   --my: 50%;
 
-  /* The spotlight layer — radial gradient that follows the mouse.
-     Uses transform: translateZ(0) to force GPU compositing without
-     animating layout properties. */
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     background: radial-gradient(
       circle 260px at var(--mx) var(--my),
-      rgba(200, 255, 26, 0.10) 0%,
-      rgba(200, 255, 26, 0.04) 30%,
+      rgba(220, 20, 60, 0.10) 0%,
+      rgba(220, 20, 60, 0.04) 30%,
       transparent 70%
     );
     opacity: 0;
@@ -128,7 +110,7 @@ const Node = styled.span`
   top: 38px;
   width: 12px;
   height: 12px;
-  background: ${({ theme }) => theme.colors.lime};
+  background: ${({ theme }) => theme.colors.crimson};
   border-radius: 1px;
   z-index: 2;
 
@@ -144,7 +126,7 @@ const Year = styled.span`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
 `;
 
 const Role = styled.span`
@@ -163,18 +145,16 @@ const Company = styled.span`
   }
 `;
 
-/* The separator below each row — sweeps left to right on hover.
-   200%-wide gradient + background-position-x shift = sweep, no width animation. */
 const Separator = styled.div`
   position: relative;
   height: 1px;
   margin-top: 18px;
   background: linear-gradient(
     90deg,
-    ${({ theme }) => theme.colors.lime} 0%,
-    ${({ theme }) => theme.colors.lime} 50%,
-    ${({ theme }) => theme.colors.hairlineDim} 50%,
-    ${({ theme }) => theme.colors.hairlineDim} 100%
+    ${({ theme }) => theme.colors.crimson} 0%,
+    ${({ theme }) => theme.colors.crimson} 50%,
+    ${({ theme }) => theme.colors.hairline} 50%,
+    ${({ theme }) => theme.colors.hairline} 100%
   );
   background-size: 200% 100%;
   background-position: 100% 0;
@@ -187,7 +167,7 @@ const Separator = styled.div`
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
-    background: ${({ theme }) => theme.colors.hairlineDim};
+    background: ${({ theme }) => theme.colors.hairline};
   }
 `;
 
@@ -203,14 +183,17 @@ const CVLink = styled(RouterLink)`
   font-size: 13px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  background: ${({ theme }) => theme.colors.lime};
-  color: ${({ theme }) => theme.colors.limeShadow};
+  background: ${({ theme }) => theme.colors.fg};
+  color: #FFFFFF;
   padding: 14px 22px;
   border-radius: 2px;
   will-change: transform;
-  transition: transform 200ms ease;
+  transition: transform 200ms ease, background 200ms ease;
 
-  &:hover { transform: translateY(-2px); }
+  &:hover {
+    background: ${({ theme }) => theme.colors.crimson};
+    transform: translateY(-2px);
+  }
   .arrow { transition: transform 200ms ease; }
   &:hover .arrow { transform: translateX(3px); }
 
@@ -222,11 +205,6 @@ const CVLink = styled(RouterLink)`
 
 const ease = [0.2, 0.7, 0.2, 1];
 
-/**
- * Custom hook: track the mouse inside an element and write its position
- * to CSS variables on a target ref, throttled to one update per animation
- * frame. CSS variables are GPU-cheap and don't trigger layout.
- */
 function useMouseTracking(reduce) {
   const rafRef = useRef(0);
   const pendingRef = useRef(null);
@@ -287,7 +265,7 @@ export default function Stations() {
         <TimelineSVG aria-hidden="true" preserveAspectRatio="none">
           <motion.line
             x1="6" y1="0" x2="6" y2="100%"
-            stroke="#C8FF1A"
+            stroke="#DC143C"
             strokeWidth="1.5"
             style={reduce ? undefined : { pathLength: lineLength }}
             initial={reduce ? undefined : { pathLength: 0 }}

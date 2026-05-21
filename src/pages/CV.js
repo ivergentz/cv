@@ -19,8 +19,6 @@ const Wrap = styled.div`
   @media print {
     padding: 0;
     max-width: 100%;
-    color: #141414;
-    background: #F1ECE0;
   }
 `;
 
@@ -34,9 +32,7 @@ const Toolbar = styled.div`
   flex-wrap: wrap;
   gap: 12px;
 
-  @media print {
-    display: none;
-  }
+  @media print { display: none; }
 `;
 
 const ToolbarLeft = styled(AnimatedLink)`
@@ -66,8 +62,8 @@ const ToolbarButton = styled.button`
   transition: border-color 200ms, background 200ms, color 200ms;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.lime};
+    border-color: ${({ theme }) => theme.colors.crimson};
+    color: ${({ theme }) => theme.colors.crimson};
   }
 
   &:disabled {
@@ -77,14 +73,14 @@ const ToolbarButton = styled.button`
 `;
 
 const DownloadButton = styled(ToolbarButton)`
-  background: ${({ theme }) => theme.colors.lime};
-  color: ${({ theme }) => theme.colors.limeShadow};
-  border-color: ${({ theme }) => theme.colors.lime};
+  background: ${({ theme }) => theme.colors.fg};
+  color: #FFFFFF;
+  border-color: ${({ theme }) => theme.colors.fg};
 
   &:hover {
-    background: transparent;
-    color: ${({ theme }) => theme.colors.lime};
-    border-color: ${({ theme }) => theme.colors.lime};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
+    border-color: ${({ theme }) => theme.colors.crimson};
   }
 `;
 
@@ -92,8 +88,8 @@ const Doc = styled.article`
   background: transparent;
 
   @media print {
-    background: #F1ECE0 !important;
-    color: #141414 !important;
+    background: #FFFFFF !important;
+    color: #0A0A0A !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -131,7 +127,7 @@ const Role = styled.p`
   font-size: clamp(18px, 2.4vw, 24px);
   letter-spacing: -0.005em;
   margin-bottom: 20px;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
 `;
 
 const Meta = styled.div`
@@ -144,7 +140,7 @@ const Meta = styled.div`
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.fgMuted};
 
-  .sep { color: ${({ theme }) => theme.colors.lime}; }
+  .sep { color: ${({ theme }) => theme.colors.crimson}; }
 `;
 
 const Photo = styled.div`
@@ -160,7 +156,6 @@ const Photo = styled.div`
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
-    filter: grayscale(0.2) contrast(0.95);
   }
 
   @media (max-width: 620px) {
@@ -190,10 +185,11 @@ const SectionLabel = styled.div`
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  background: ${({ theme }) => theme.colors.crimson};
+  color: #FFFFFF;
   display: inline-block;
-  padding-bottom: 6px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.lime};
+  padding: 4px 8px;
+  border-radius: 2px;
   margin-bottom: 18px;
 `;
 
@@ -261,7 +257,7 @@ const Bullet = styled.li`
     content: '—';
     position: absolute;
     left: 0;
-    color: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.crimson};
   }
 `;
 
@@ -281,7 +277,7 @@ const ProductUrl = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 8px;
 `;
 
@@ -311,7 +307,7 @@ const SkillCol = styled.div`
     font-size: 9.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.crimson};
     margin-bottom: 4px;
   }
   .items {

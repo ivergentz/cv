@@ -37,14 +37,11 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.limeShadow};
+    background: ${({ theme }) => theme.colors.crimson};
+    color: #FFFFFF;
   }
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+  a { color: inherit; text-decoration: none; }
 
   h1, h2, h3, h4 {
     margin: 0;
@@ -58,7 +55,7 @@ export const GlobalStyle = createGlobalStyle`
   img { max-width: 100%; display: block; }
 
   :focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.lime};
+    outline: 2px solid ${({ theme }) => theme.colors.crimson};
     outline-offset: 2px;
     border-radius: 2px;
   }

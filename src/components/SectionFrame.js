@@ -3,20 +3,6 @@ import styled from 'styled-components';
 import { motion, useReducedMotion } from 'framer-motion';
 import { bgFor, fgFor, mutedFor, hairlineFor } from '../styles/theme';
 
-/**
- * SectionFrame — full-bleed section band for the dark Blueprint design.
- *
- * Backgrounds in dark mode are subtle elevation changes rather than
- * colour changes. The lime band is reserved for the Contact CTA finale.
- *
- *   bg="dark"     → #0A0A0A (default)
- *   bg="elevated" → #121212 (slight elevation)
- *   bg="fade"     → #1A1A18 (soft fade tone between sections)
- *   bg="lime"     → #C8FF1A (CTA finale only)
- *
- * The animated hairline at top adapts colour to the section bg.
- */
-
 const Band = styled.section`
   position: relative;
   background: ${({ $bg }) => bgFor($bg)};
@@ -50,7 +36,7 @@ const HairlineWrap = styled.div`
 
 function Hairline({ bg }) {
   const reduce = useReducedMotion();
-  const stroke = bg === 'lime' ? 'rgba(10,10,10,0.30)' : 'rgba(200,255,26,0.35)';
+  const stroke = bg === 'lime' ? 'rgba(255,255,255,0.40)' : 'rgba(10,10,10,0.18)';
 
   if (reduce) {
     return (

@@ -10,28 +10,12 @@ import { useLanguage } from '../../i18n/LanguageContext';
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Products — Horizontal force-scroll story driven by GSAP ScrollTrigger.
+ * Products — GSAP horizontal force-scroll, Tri-Color palette.
  *
- * Behaviour on desktop (≥ tablet breakpoint):
- *   - Section pins for the duration of a vertical scroll equivalent to
- *     N × viewport height (one per slide). Vertical scroll input is
- *     translated into horizontal track movement via `translateX`.
- *   - Three full-bleed slides (RankBrief, S&I. Wedding, WERKRUF) scroll
- *     left as the user scrolls down. Pin releases automatically.
- *
- * Behaviour on mobile (< tablet breakpoint):
- *   - Pinning is disabled. Slides stack vertically with normal scroll.
- *
- * Reduced motion:
- *   - Disable pinning + horizontal translation. Slides stack vertically.
- *
- * Performance:
- *   - Animates only `translateX` on the track (GPU)
- *   - Container uses `will-change: transform`
- *   - Strict-mode-safe cleanup via gsap.context().revert()
+ * Same mechanics as v1.3.1 — pinning, horizontal translate, scrub-driven
+ * progress. Color palette updated: white slides, crimson accents, black
+ * structure. Mock browser chrome uses light bg.
  */
-
-/* === Layout containers === */
 
 const Outer = styled.section`
   position: relative;
@@ -49,7 +33,7 @@ const Num = styled.div`
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 28px;
 `;
 
@@ -75,7 +59,7 @@ const H2 = styled.h2`
 
   .ital {
     font-style: italic;
-    color: ${({ theme }) => theme.colors.fgDim};
+    color: ${({ theme }) => theme.colors.crimson};
   }
 `;
 
@@ -86,15 +70,12 @@ const Intro = styled.p`
   line-height: 1.6;
 `;
 
-/* === Horizontal scroll mechanics === */
-
 const Pinner = styled.div`
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
 
-  /* On mobile, drop the pin: container collapses to auto and slides stack */
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     height: auto;
     overflow: visible;
@@ -106,7 +87,6 @@ const Track = styled.div`
   height: 100%;
   will-change: transform;
 
-  /* Mobile: vertical stack */
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     flex-direction: column;
     height: auto;
@@ -131,7 +111,6 @@ const Slide = styled.div`
     gap: 32px;
     padding: 80px ${({ theme }) => theme.gutter};
     border-top: 1px solid ${({ theme }) => theme.colors.hairlineDim};
-
     &:first-child { border-top: 0; }
   }
 `;
@@ -143,8 +122,6 @@ const SlideMax = styled.div`
   display: contents;
 `;
 
-/* === Slide content — left text column === */
-
 const TextCol = styled.div`
   display: grid;
   gap: 14px;
@@ -155,7 +132,7 @@ const SlotMeta = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10px;
   letter-spacing: 0.22em;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
 `;
 
 const ProductName = styled.h3`
@@ -177,8 +154,8 @@ const Badge = styled.span`
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  background: ${({ theme }) => theme.colors.lime};
-  color: ${({ theme }) => theme.colors.limeShadow};
+  background: ${({ theme }) => theme.colors.crimson};
+  color: #FFFFFF;
   padding: 3px 10px;
   border-radius: 2px;
 `;
@@ -203,8 +180,8 @@ const Metrics = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 16px;
   padding: 18px 0;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
+  border-top: 1px solid ${({ theme }) => theme.colors.fg};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.fg};
   margin: 8px 0;
 `;
 
@@ -213,7 +190,7 @@ const MetricLabel = styled.div`
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   margin-bottom: 4px;
 `;
 
@@ -249,8 +226,6 @@ const DetailText = styled.p`
   margin: 0;
 `;
 
-/* === Slide content — right mockup column === */
-
 const MockupCol = styled.div`
   display: flex;
   align-items: center;
@@ -264,7 +239,7 @@ const BrowserFrame = styled.div`
   max-width: 700px;
   aspect-ratio: 16 / 10;
   background: ${({ theme }) => theme.colors.bgElevated};
-  border: 1px solid ${({ theme }) => theme.colors.hairline};
+  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -272,7 +247,7 @@ const BrowserFrame = styled.div`
 const Chrome = styled.div`
   height: 28px;
   background: ${({ theme }) => theme.colors.bgFade};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.hairlineDim};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
   display: flex;
   align-items: center;
   padding: 0 12px;
@@ -282,7 +257,7 @@ const Chrome = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: rgba(245,245,240,0.18);
+    background: rgba(10,10,10,0.18);
   }
 
   .url {
@@ -304,11 +279,9 @@ const Shot = styled.div`
     height: 100%;
     object-fit: cover;
     object-position: top center;
-    filter: contrast(0.95) brightness(0.95);
   }
 `;
 
-/* Slide-counter pinned to right side of viewport during scroll */
 const Counter = styled.div`
   position: absolute;
   bottom: 40px;
@@ -317,7 +290,7 @@ const Counter = styled.div`
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.crimson};
   z-index: 5;
   pointer-events: none;
 
@@ -339,7 +312,7 @@ const ProgressTrack = styled.div`
   .fill {
     position: absolute;
     inset: 0;
-    background: ${({ theme }) => theme.colors.lime};
+    background: ${({ theme }) => theme.colors.crimson};
     transform-origin: left center;
     will-change: transform;
   }
@@ -359,11 +332,8 @@ export default function Products() {
   const progressRef = useRef(null);
 
   useLayoutEffect(() => {
-    /* Respect reduced motion: no pinning, no horizontal motion */
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (mq.matches) return undefined;
-
-    /* Mobile guard: skip on narrow screens */
     const tabletMq = window.matchMedia('(max-width: 820px)');
     if (tabletMq.matches) return undefined;
 
@@ -371,17 +341,9 @@ export default function Products() {
     const track = trackRef.current;
     if (!pinner || !track) return undefined;
 
-    /**
-     * gsap.context() automatically tracks all ScrollTriggers and tweens
-     * created inside it. When we call ctx.revert() in cleanup, everything
-     * is removed cleanly — including the pin spacer ScrollTrigger creates.
-     * This is the key to surviving React Strict Mode's double mount.
-     */
     const ctx = gsap.context(() => {
       const slides = track.querySelectorAll('[data-slide]');
       const slideCount = slides.length;
-
-      /* Travel distance = (N - 1) viewport widths */
       const distance = () => -(track.scrollWidth - window.innerWidth);
 
       const tween = gsap.to(track, {
@@ -396,7 +358,6 @@ export default function Products() {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            /* Update counter */
             const idx = Math.min(
               slideCount - 1,
               Math.floor(self.progress * slideCount + 0.0001)
@@ -404,7 +365,6 @@ export default function Products() {
             if (counterRef.current) {
               counterRef.current.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(slideCount).padStart(2, '0')}`;
             }
-            /* Update progress bar via transform (GPU) */
             if (progressRef.current) {
               progressRef.current.style.transform = `scaleX(${self.progress})`;
             }

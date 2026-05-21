@@ -2,23 +2,19 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 /**
- * CVPdfDocument — A4 PDF, stays light for print/email compatibility.
- *
- * Even though the web CV is dark, the downloadable PDF uses a light
- * cream base — a dark PDF would waste printer toner and look hostile
- * in a recruiter's inbox. The lime accent reads in both contexts.
+ * CVPdfDocument — A4, white base, crimson accent.
  */
 
-const LIME = '#C8FF1A';
+const CRIMSON = '#DC143C';
 const INK = '#0A0A0A';
 const FG = '#141414';
 const MUTED = '#6B6B66';
 const HAIRLINE = '#D6D4CC';
-const CREAM = '#F1ECE0';
+const PAPER = '#FFFFFF';
 
 const styles = StyleSheet.create({
   page: {
-    backgroundColor: CREAM,
+    backgroundColor: PAPER,
     paddingTop: 40,
     paddingBottom: 40,
     paddingHorizontal: 48,
@@ -49,8 +45,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   roleHl: {
-    backgroundColor: LIME,
-    color: INK,
+    backgroundColor: CRIMSON,
+    color: PAPER,
     padding: 2,
   },
   meta: {
@@ -61,7 +57,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Courier',
   },
   metaItem: { marginRight: 10 },
-  metaSep: { color: INK, marginRight: 10 },
+  metaSep: { color: CRIMSON, marginRight: 10 },
   tagline: {
     fontFamily: 'Times-Italic',
     fontSize: 12,
@@ -75,8 +71,8 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontFamily: 'Courier-Bold',
     fontSize: 8,
-    color: INK,
-    backgroundColor: LIME,
+    color: PAPER,
+    backgroundColor: CRIMSON,
     paddingTop: 2,
     paddingBottom: 2,
     paddingLeft: 6,
@@ -114,21 +110,17 @@ const styles = StyleSheet.create({
   productUrl: {
     fontFamily: 'Courier',
     fontSize: 8,
-    color: INK,
-    backgroundColor: LIME,
+    color: PAPER,
+    backgroundColor: CRIMSON,
     paddingTop: 1,
     paddingBottom: 1,
     paddingLeft: 4,
     paddingRight: 4,
   },
-  company: {
-    fontSize: 9.5,
-    color: MUTED,
-    marginBottom: 5,
-  },
+  company: { fontSize: 9.5, color: MUTED, marginBottom: 5 },
   bulletList: { marginTop: 2 },
   bullet: { flexDirection: 'row', marginBottom: 2 },
-  bulletMark: { width: 10, color: INK, fontSize: 9.5 },
+  bulletMark: { width: 10, color: CRIMSON, fontSize: 9.5 },
   bulletText: { flex: 1, fontSize: 9.5, lineHeight: 1.4, color: FG },
   stack: {
     fontFamily: 'Courier',
@@ -136,18 +128,14 @@ const styles = StyleSheet.create({
     color: MUTED,
     marginTop: 4,
   },
-  eduTitle: {
-    fontFamily: 'Times-Roman',
-    fontSize: 11,
-    color: FG,
-  },
+  eduTitle: { fontFamily: 'Times-Roman', fontSize: 11, color: FG },
   eduSchool: { fontSize: 8.5, color: MUTED },
   skillsGrid: { flexDirection: 'row', gap: 14 },
   skillCol: { flex: 1 },
   skillLabel: {
     fontFamily: 'Courier',
     fontSize: 7,
-    color: MUTED,
+    color: CRIMSON,
     marginBottom: 2,
     letterSpacing: 1,
   },
@@ -220,9 +208,7 @@ export default function CVPdfDocument({ cv, lang }) {
           </View>
           {cv.experience.map((e, i) => (
             <View key={i} style={styles.row} wrap={false}>
-              <View style={styles.period}>
-                <Text>{e.period}</Text>
-              </View>
+              <View style={styles.period}><Text>{e.period}</Text></View>
               <View style={styles.body}>
                 <Text style={styles.title}>{e.title}</Text>
                 <Text style={styles.company}>{e.company}</Text>
@@ -245,9 +231,7 @@ export default function CVPdfDocument({ cv, lang }) {
           </View>
           {cv.education.map((e, i) => (
             <View key={i} style={styles.row} wrap={false}>
-              <View style={styles.period}>
-                <Text>{e.period}</Text>
-              </View>
+              <View style={styles.period}><Text>{e.period}</Text></View>
               <View style={styles.body}>
                 <Text style={styles.eduTitle}>{e.title}</Text>
                 <Text style={styles.eduSchool}>{e.school}</Text>
