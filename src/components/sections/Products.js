@@ -10,16 +10,21 @@ import { useLanguage } from '../../i18n/LanguageContext';
 gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Products — GSAP horizontal force-scroll, Tri-Color palette.
+ * Products — GSAP horizontal force-scroll on desktop, vertical stack on mobile.
  *
- * Same mechanics as v1.3.1 — pinning, horizontal translate, scrub-driven
- * progress. Color palette updated: white slides, crimson accents, black
- * structure. Mock browser chrome uses light bg.
+ * v1.3.4 fixes:
+ *   - Slide `flex-basis` drops from 100vw to `auto` on mobile, removing the
+ *     horizontal page-overflow that caused a sideways scrollbar to appear.
+ *   - `Pinner` keeps `overflow: hidden` even on mobile as a safety net.
+ *   - `Track` resets `transform: none !important` on mobile to clear any
+ *     leftover GSAP matrix from a desktop→mobile resize.
+ *   - `Outer` gets `overflow-x: clip` as a final guard.
  */
 
 const Outer = styled.section`
   position: relative;
   background: ${({ theme }) => theme.colors.bg};
+  overflow-x: clip; /* safety net against any descendant overflow */
 `;
 
 const Heading = styled.div`
@@ -78,7 +83,8 @@ const Pinner = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     height: auto;
-    overflow: visible;
+    /* Keep overflow: hidden on mobile — this prevents any leftover
+       transform on the Track from causing a horizontal page scroll. */
   }
 `;
 
@@ -91,6 +97,9 @@ const Track = styled.div`
     flex-direction: column;
     height: auto;
     width: 100%;
+    /* Reset any matrix transform GSAP might leave behind when the
+       viewport resizes from desktop into the mobile breakpoint. */
+    transform: none !important;
   }
 `;
 
@@ -104,8 +113,9 @@ const Slide = styled.div`
   align-items: center;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    flex: none;
+    flex: 0 0 auto;            /* was 0 0 100vw — caused horizontal overflow */
     width: 100%;
+    max-width: 100%;
     height: auto;
     grid-template-columns: 1fr;
     gap: 32px;
@@ -126,6 +136,7 @@ const TextCol = styled.div`
   display: grid;
   gap: 14px;
   align-content: center;
+  min-width: 0; /* allow grid item to shrink, preventing overflow from long URLs */
 `;
 
 const SlotMeta = styled.div`
@@ -231,6 +242,7 @@ const MockupCol = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  min-width: 0; /* allow grid column to shrink instead of pushing the row wider */
 `;
 
 const BrowserFrame = styled.div`
@@ -332,10 +344,18 @@ export default function Products() {
   const progressRef = useRef(null);
 
   useLayoutEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mq.matches) return undefined;
+    const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
     const tabletMq = window.matchMedia('(max-width: 820px)');
-    if (tabletMq.matches) return undefined;
+
+    /* Skip GSAP setup on mobile or when reduced motion is requested.
+       Also clear any inline transform left on the Track from a previous
+       desktop render so the mobile stack starts clean. */
+    if (reduceMq.matches || tabletMq.matches) {
+      if (trackRef.current) {
+        trackRef.current.style.transform = '';
+      }
+      return undefined;
+    }
 
     const pinner = pinnerRef.current;
     const track = trackRef.current;
@@ -378,7 +398,14 @@ export default function Products() {
       };
     }, pinner);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      /* Belt and suspenders: explicitly clear track transform on cleanup
+         so a viewport resize past the breakpoint can't leave a stale matrix. */
+      if (trackRef.current) {
+        trackRef.current.style.transform = '';
+      }
+    };
   }, []);
 
   const products = [

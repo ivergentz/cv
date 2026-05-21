@@ -9,6 +9,11 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     background: ${({ theme }) => theme.colors.bg};
+    /* Global safety net: clip any accidental horizontal overflow from
+       descendant sections (e.g. GSAP-transformed tracks during resize).
+       `clip` is preferred over `hidden` because it doesn't create a new
+       scroll context and won't break sticky positioning inside sections. */
+    overflow-x: clip;
   }
 
   html {
