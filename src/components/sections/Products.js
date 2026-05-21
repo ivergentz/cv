@@ -18,13 +18,13 @@ gsap.registerPlugin(ScrollTrigger);
  *   - `Pinner` keeps `overflow: hidden` even on mobile as a safety net.
  *   - `Track` resets `transform: none !important` on mobile to clear any
  *     leftover GSAP matrix from a desktop→mobile resize.
- *   - `Outer` gets `overflow-x: clip` as a final guard.
+ *   - `Outer` gets `overflow-x: hidden` as a final guard.
  */
 
 const Outer = styled.section`
   position: relative;
   background: ${({ theme }) => theme.colors.bg};
-  overflow-x: clip; /* safety net against any descendant overflow */
+  overflow-x: hidden; /* safety net against any descendant overflow */
 `;
 
 const Heading = styled.div`
