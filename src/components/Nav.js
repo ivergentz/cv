@@ -4,24 +4,22 @@ import styled from 'styled-components';
 import { useLanguage } from '../i18n/LanguageContext';
 
 /**
- * Nav — sits on top of multi-coloured page (cream / white / lime).
+ * Nav — dark mono nav over Blueprint dark hero.
  *
- * Approach: keep nav itself transparent until scrolled, so it visually
- * inherits the section colour behind it. Once scrolled, add a subtle
- * frosted-glass effect with a soft hairline below.
+ * The brand mark is a mono "[IG] IVER GENTZ" tag, the section links are
+ * mono section numbers. Background stays transparent until scrolled,
+ * then darkens with a subtle lime hairline beneath.
  */
 
 const NavBar = styled.header`
   position: sticky;
   top: 0;
   z-index: 40;
-  backdrop-filter: saturate(160%) blur(10px);
-  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
   background: ${(props) =>
-    props.$scrolled
-      ? 'rgba(241, 236, 224, 0.82)'
-      : 'transparent'};
-  border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(10,10,10,0.10)' : 'transparent')};
+    props.$scrolled ? 'rgba(10,10,10,0.78)' : 'transparent'};
+  border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(200,255,26,0.18)' : 'transparent')};
   transition: background 300ms ease, border-color 300ms ease;
 
   @media print {
@@ -32,7 +30,7 @@ const NavBar = styled.header`
 const Inner = styled.div`
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  padding: 18px ${({ theme }) => theme.gutter};
+  padding: 16px ${({ theme }) => theme.gutter};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,11 +38,13 @@ const Inner = styled.div`
 `;
 
 const Brand = styled(RouterLink)`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  color: ${({ theme }) => theme.colors.highlightInk};
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: ${({ theme }) => theme.colors.lime};
+  text-transform: uppercase;
+
+  .bracket { opacity: 0.6; }
 `;
 
 const NavRight = styled.nav`
@@ -56,16 +56,17 @@ const NavRight = styled.nav`
 const NavLinks = styled.ul`
   display: flex;
   gap: 22px;
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.highlightInk};
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.fgMuted};
 
   a {
-    letter-spacing: 0.01em;
-    opacity: 0.7;
-    transition: opacity 200ms ease;
+    transition: color 200ms ease;
   }
   a:hover {
-    opacity: 1;
+    color: ${({ theme }) => theme.colors.lime};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
@@ -75,33 +76,29 @@ const NavLinks = styled.ul`
 
 const LangToggle = styled.button`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  color: ${({ theme }) => theme.colors.highlightInk};
+  font-size: 11px;
+  color: ${({ theme }) => theme.colors.lime};
   background: transparent;
-  border: 1px solid rgba(10,10,10,0.30);
+  border: 1px solid rgba(200,255,26,0.4);
   border-radius: 2px;
-  padding: 6px 10px;
+  padding: 5px 9px;
   cursor: pointer;
   transition: color 200ms, border-color 200ms, background 200ms;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.highlightInk};
     background: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.limeShadow};
   }
 
   span {
     opacity: 0.4;
     transition: opacity 300ms ease;
   }
-  span.active {
-    opacity: 1;
-  }
+  span.active { opacity: 1; }
+  .sep { opacity: 0.3; margin: 0 4px; }
 
-  .sep {
-    opacity: 0.3;
-    margin: 0 4px;
-  }
+  &:hover span { opacity: 1; }
 `;
 
 export default function Nav() {
@@ -128,16 +125,16 @@ export default function Nav() {
     <NavBar $scrolled={scrolled}>
       <Inner>
         <Brand to="/" aria-label="Iver Gentz — Startseite" onClick={handleBrandClick}>
-          Iver Gentz
+          <span className="bracket">[</span>IG<span className="bracket">]</span>&nbsp;&nbsp;IVER GENTZ
         </Brand>
 
         <NavRight aria-label="Hauptnavigation">
           {isHome && (
             <NavLinks>
-              <li><a href="#arbeit">{t.nav.work}</a></li>
-              <li><a href="#stationen">{t.nav.experience}</a></li>
-              <li><a href="#prinzipien">{t.nav.principles}</a></li>
-              <li><a href="#kontakt">{t.nav.contact}</a></li>
+              <li><a href="#arbeit">01 / {t.nav.work}</a></li>
+              <li><a href="#stationen">02 / {t.nav.experience}</a></li>
+              <li><a href="#prinzipien">03 / {t.nav.principles}</a></li>
+              <li><a href="#kontakt">04 / {t.nav.contact}</a></li>
             </NavLinks>
           )}
 

@@ -8,6 +8,7 @@ export const GlobalStyle = createGlobalStyle`
   html, body {
     margin: 0;
     padding: 0;
+    background: ${({ theme }) => theme.colors.bg};
   }
 
   html {
@@ -24,9 +25,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    /* Default cream — individual sections override with their own bg.
-       Nav sits on top with a semi-transparent backdrop. */
-    background: ${({ theme }) => theme.colors.bgCream};
+    background: ${({ theme }) => theme.colors.bg};
     color: ${({ theme }) => theme.colors.fg};
     font-family: ${({ theme }) => theme.fonts.sans};
     font-weight: 400;
@@ -39,7 +38,7 @@ export const GlobalStyle = createGlobalStyle`
 
   ::selection {
     background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.highlightInk};
+    color: ${({ theme }) => theme.colors.limeShadow};
   }
 
   a {
@@ -54,23 +53,12 @@ export const GlobalStyle = createGlobalStyle`
     letter-spacing: -0.02em;
   }
 
-  p {
-    margin: 0;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  img {
-    max-width: 100%;
-    display: block;
-  }
+  p { margin: 0; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  img { max-width: 100%; display: block; }
 
   :focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.limeShadow};
+    outline: 2px solid ${({ theme }) => theme.colors.lime};
     outline-offset: 2px;
     border-radius: 2px;
   }

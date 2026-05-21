@@ -1,34 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion, useReducedMotion } from 'framer-motion';
-import { fgFor, mutedFor, hairlineFor } from '../styles/theme';
+import { bgFor, fgFor, mutedFor, hairlineFor } from '../styles/theme';
 
 /**
- * SectionFrame — the colour engine for the page.
+ * SectionFrame — full-bleed section band for the dark Blueprint design.
  *
- * Wraps a section in a full-width coloured band (cream / white / lime),
- * sets the appropriate ink + muted colours via CSS variables, and draws
- * an animated hairline at the top of the section that adapts to the
- * background colour.
+ * Backgrounds in dark mode are subtle elevation changes rather than
+ * colour changes. The lime band is reserved for the Contact CTA finale.
  *
- * Usage:
- *   <SectionFrame bg="lime" id="kontakt">
- *     <SectionInner>...content...</SectionInner>
- *   </SectionFrame>
+ *   bg="dark"     → #0A0A0A (default)
+ *   bg="elevated" → #121212 (slight elevation)
+ *   bg="fade"     → #1A1A18 (soft fade tone between sections)
+ *   bg="lime"     → #C8FF1A (CTA finale only)
  *
- * The wrapper is full-bleed so the colour reaches the viewport edges.
- * Content stays constrained inside SectionInner.
+ * The animated hairline at top adapts colour to the section bg.
  */
 
 const Band = styled.section`
-  /* Full-width colour band */
   position: relative;
-  background: ${({ $bg, theme }) =>
-    $bg === 'lime' ? theme.colors.bgLime :
-    $bg === 'white' ? theme.colors.bgWhite :
-    theme.colors.bgCream};
-
-  /* Local colour tokens — children can use these via CSS variables */
+  background: ${({ $bg }) => bgFor($bg)};
   --ink: ${({ $bg }) => fgFor($bg)};
   --muted: ${({ $bg }) => mutedFor($bg)};
   --hairline: ${({ $bg }) => hairlineFor($bg)};
@@ -41,8 +32,7 @@ const Inner = styled.div`
   margin: 0 auto;
   padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
 
-  /* If this is the hero (first section, denser top padding) */
-  ${({ $hero, theme }) => $hero && `
+  ${({ $hero }) => $hero && `
     padding-top: clamp(120px, 20vh, 220px);
     padding-bottom: clamp(110px, 18vh, 200px);
   `}
@@ -60,11 +50,7 @@ const HairlineWrap = styled.div`
 
 function Hairline({ bg }) {
   const reduce = useReducedMotion();
-  const stroke = bg === 'lime'
-    ? 'rgba(10,10,10,0.25)'
-    : bg === 'white'
-      ? 'rgba(20,20,20,0.10)'
-      : 'rgba(20,20,20,0.16)';
+  const stroke = bg === 'lime' ? 'rgba(10,10,10,0.30)' : 'rgba(200,255,26,0.35)';
 
   if (reduce) {
     return (
@@ -80,10 +66,7 @@ function Hairline({ bg }) {
     <HairlineWrap aria-hidden="true">
       <svg width="100%" height="1" viewBox="0 0 100 1" preserveAspectRatio="none" style={{ display: 'block' }}>
         <motion.line
-          x1="0"
-          y1="0.5"
-          x2="100"
-          y2="0.5"
+          x1="0" y1="0.5" x2="100" y2="0.5"
           stroke={stroke}
           strokeWidth="1"
           vectorEffect="non-scaling-stroke"
@@ -100,7 +83,7 @@ function Hairline({ bg }) {
   );
 }
 
-export default function SectionFrame({ bg = 'cream', hero = false, hideHairline = false, children, ...rest }) {
+export default function SectionFrame({ bg = 'dark', hero = false, hideHairline = false, children, ...rest }) {
   return (
     <Band $bg={bg} {...rest}>
       {!hideHairline && <Hairline bg={bg} />}

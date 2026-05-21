@@ -10,35 +10,29 @@ const Inner = styled.div`
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: ${({ theme }) => theme.colors.lime};
   margin-bottom: 40px;
 `;
 
 const Body = styled.p`
   font-size: clamp(18px, 1.6vw, 22px);
   line-height: 1.55;
-  color: var(--ink);
+  color: ${({ theme }) => theme.colors.fg};
 
   em {
     font-family: ${({ theme }) => theme.fonts.display};
     font-style: italic;
-    font-size: 1.08em;
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.highlightInk};
-    padding: 0 0.18em;
-    margin: 0 -0.05em;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
+    color: ${({ theme }) => theme.colors.lime};
   }
 `;
 
 export default function Positioning() {
   const { t } = useLanguage();
   return (
-    <SectionFrame bg="cream" id="positionierung" aria-labelledby="pos-heading">
+    <SectionFrame bg="fade" id="positionierung" aria-labelledby="pos-heading">
       <Inner>
         <Reveal>
           <Num id="pos-heading">{t.sectionNum.positioning}</Num>

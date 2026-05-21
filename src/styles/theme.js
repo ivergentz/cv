@@ -1,28 +1,34 @@
 export const theme = {
   colors: {
-    /* Base palette */
-    bg: '#FAFAF8',          // legacy default body
-    fg: '#141414',
-    muted: '#6B6B66',
-    hairline: '#E5E4DE',
-    hairlineStrong: '#D6D4CC',
-    accent: '#8B2E2A',      // legacy oxblood, kept for backwards compat in places
-    shotBg: '#EEEDE8',
-    shotLabel: '#8A8781',
+    /* === Dark Mode Base === */
+    bg: '#0A0A0A',                 // primary dark base
+    bgElevated: '#121212',          // raised surfaces (cards, panels)
+    bgFade: '#1A1A18',              // softer dark tone for fade transitions
+    fg: '#F5F5F0',                  // primary text on dark
+    fgMuted: 'rgba(245,245,240,0.6)',
+    fgDim: 'rgba(245,245,240,0.4)',
 
-    /* === Lime statement palette === */
-    lime: '#C8FF1A',           // primary lime (Hero, Stations, Contact bg)
-    limeDeep: '#A8DD00',       // darker lime for hover/strokes
-    limeShadow: '#1F2A05',     // text on lime, slight green-shifted black
+    /* === Hairlines on dark === */
+    hairline: 'rgba(200,255,26,0.18)',     // lime-tinted hairlines
+    hairlineDim: 'rgba(245,245,240,0.08)', // neutral hairlines
+    hairlineStrong: 'rgba(200,255,26,0.4)',
 
-    /* === Section backgrounds === */
-    bgCream: '#F1ECE0',
-    bgWhite: '#FAFAF8',
-    bgLime:  '#C8FF1A',
+    /* === Lime accent — dosed === */
+    lime: '#C8FF1A',
+    limeDim: 'rgba(200,255,26,0.5)',
+    limeDeep: '#A8DD00',
+    limeShadow: '#0A0A0A',          // ink on lime
 
-    /* === Highlight blocks (used for italic phrases on Lime) === */
+    /* === Legacy tokens — kept for backwards compat in unmigrated files === */
+    muted: 'rgba(245,245,240,0.6)',
+    accent: '#C8FF1A',
+    shotBg: '#121212',
+    shotLabel: 'rgba(245,245,240,0.4)',
+    bgCream: '#1A1A18',             // legacy alias → dark fade tone
+    bgWhite: '#0A0A0A',             // legacy alias → primary dark
+    bgLime: '#C8FF1A',
     highlightInk: '#0A0A0A',
-    highlightFg:  '#C8FF1A',
+    highlightFg: '#C8FF1A',
   },
   fonts: {
     display: "'Instrument Serif', 'Cormorant Garamond', Georgia, serif",
@@ -42,27 +48,28 @@ export const theme = {
 };
 
 /**
- * Helper: get foreground colour appropriate to a given section bg.
- * Cream/White → dark ink; Lime → lime-shadow ink.
+ * Per-section background palette.
+ * In dark mode, sections use subtle elevation rather than colour changes.
+ * The lime "section" is reserved for the Contact CTA finale.
  */
+export function bgFor(key) {
+  switch (key) {
+    case 'lime': return '#C8FF1A';
+    case 'elevated': return '#121212';
+    case 'fade': return '#1A1A18';
+    default: return '#0A0A0A';
+  }
+}
+
 export function fgFor(bgKey) {
-  if (bgKey === 'lime') return '#0A0A0A';
-  return '#141414';
+  return bgKey === 'lime' ? '#0A0A0A' : '#F5F5F0';
 }
 
-/**
- * Helper: get muted colour appropriate to a given section bg.
- */
 export function mutedFor(bgKey) {
-  if (bgKey === 'lime') return '#2B3309';
-  return '#6B6B66';
+  return bgKey === 'lime' ? '#2B3309' : 'rgba(245,245,240,0.6)';
 }
 
-/**
- * Helper: get hairline colour appropriate to a given section bg.
- */
 export function hairlineFor(bgKey) {
   if (bgKey === 'lime') return 'rgba(10,10,10,0.18)';
-  if (bgKey === 'white') return '#E5E4DE';
-  return '#D6D4CC';
+  return 'rgba(200,255,26,0.18)';
 }

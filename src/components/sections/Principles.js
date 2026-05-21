@@ -1,25 +1,24 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import SectionFrame from '../SectionFrame';
 import Reveal from '../Reveal';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * Principles section — four cards on cream with:
- *   - Drawn-in SVG underline per roman numeral (pathLength animation)
- *   - Staggered card reveal as they enter viewport
- *   - Hover lift with lime accent edge
+ * Principles — bento grid with 3D mouse-tilt cards on dark.
  *
- * Each card has a colored top hairline that grows in width on hover.
+ * Each card responds to the mouse position with a subtle 3D rotation,
+ * making the section feel alive and explorable. Lime border lights up
+ * on hover. Roman numeral has an animated underline.
  */
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: ${({ theme }) => theme.colors.lime};
   margin-bottom: 28px;
 `;
 
@@ -29,78 +28,59 @@ const H2 = styled.h2`
   font-size: clamp(44px, 5.6vw, 84px);
   line-height: 1;
   letter-spacing: -0.028em;
-  margin-bottom: 80px;
-  color: var(--ink);
+  margin-bottom: 64px;
+  color: ${({ theme }) => theme.colors.fg};
 
   .ital {
     font-style: italic;
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.highlightInk};
-    padding: 0 0.18em;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
+    color: ${({ theme }) => theme.colors.lime};
   }
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  gap: 16px;
+  perspective: 1000px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 14px;
   }
+`;
+
+const CardWrap = styled(motion.div)`
+  position: relative;
+  will-change: transform;
 `;
 
 const Card = styled(motion.div)`
   position: relative;
   display: grid;
-  gap: 14px;
+  gap: 12px;
   padding: 32px 28px 30px;
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid var(--hairline);
+  background: ${({ theme }) => theme.colors.bgElevated};
+  border: 1px solid ${({ theme }) => theme.colors.hairline};
   border-radius: 4px;
-  cursor: default;
-  overflow: hidden;
-  isolation: isolate;
+  height: 100%;
+  transform-style: preserve-3d;
   transition: border-color 280ms ease, background 280ms ease;
 
-  /* The growing top edge (lime accent) */
-  &::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 0;
-    height: 3px;
-    width: 36px;
-    background: ${({ theme }) => theme.colors.highlightInk};
-    transition: width 380ms cubic-bezier(0.2, 0.7, 0.2, 1);
-    z-index: 1;
-  }
-
-  &:hover::before {
-    width: 100%;
-    background: ${({ theme }) => theme.colors.highlightInk};
-  }
-
   &:hover {
-    border-color: ${({ theme }) => theme.colors.highlightInk};
-    background: ${({ theme }) => theme.colors.lime};
+    border-color: ${({ theme }) => theme.colors.lime};
   }
 `;
 
 const RomanWrap = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 10px;
 `;
 
 const Roman = styled.span`
   font-family: ${({ theme }) => theme.fonts.display};
   font-style: italic;
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.highlightInk};
+  color: ${({ theme }) => theme.colors.lime};
   letter-spacing: 0.02em;
   position: relative;
   padding-bottom: 2px;
@@ -122,25 +102,24 @@ const PName = styled.h3`
   line-height: 1.2;
   letter-spacing: -0.015em;
   max-width: 22ch;
-  color: var(--ink);
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Body = styled.p`
-  font-size: 15.5px;
+  font-size: 14.5px;
   line-height: 1.65;
   max-width: 40ch;
-  color: var(--ink);
+  color: ${({ theme }) => theme.colors.fgMuted};
   margin: 0;
 `;
 
 const romans = ['i', 'ii', 'iii', 'iv'];
-
 const ease = [0.2, 0.7, 0.2, 1];
 
 const container = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.05 },
+    transition: { staggerChildren: 0.10, delayChildren: 0.05 },
   },
 };
 
@@ -161,12 +140,46 @@ const underlineVariants = {
   },
 };
 
+function TiltCard({ children, reduce }) {
+  const ref = useRef(null);
+
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+
+  const rotateX = useSpring(useTransform(mouseY, [0, 1], [4, -4]), { stiffness: 120, damping: 18 });
+  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-4, 4]), { stiffness: 120, damping: 18 });
+
+  const handleMove = (e) => {
+    if (reduce || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width);
+    mouseY.set((e.clientY - rect.top) / rect.height);
+  };
+
+  const handleLeave = () => {
+    if (reduce) return;
+    mouseX.set(0.5);
+    mouseY.set(0.5);
+  };
+
+  return (
+    <Card
+      ref={ref}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      style={reduce ? undefined : { rotateX, rotateY }}
+    >
+      {children}
+    </Card>
+  );
+}
+
 export default function Principles() {
   const { t } = useLanguage();
   const reduce = useReducedMotion();
 
   return (
-    <SectionFrame bg="cream" id="prinzipien" aria-labelledby="principles-heading">
+    <SectionFrame bg="dark" id="prinzipien" aria-labelledby="principles-heading">
       <Reveal>
         <Num>{t.sectionNum.principles}</Num>
       </Reveal>
@@ -184,29 +197,27 @@ export default function Principles() {
       >
         <Grid>
           {t.principles.items.map((item, i) => (
-            <Card key={i} variants={reduce ? undefined : cardVariants}>
-              <RomanWrap>
-                <Roman>
-                  {romans[i]}.
-                  <RomanUnderline
-                    aria-hidden="true"
-                    viewBox="0 0 30 4"
-                    preserveAspectRatio="none"
-                  >
-                    <motion.path
-                      d="M 0 2 L 30 2"
-                      stroke="#0A0A0A"
-                      strokeWidth="1.5"
-                      fill="none"
-                      variants={reduce ? undefined : underlineVariants}
-                      initial={reduce ? false : { pathLength: 0 }}
-                    />
-                  </RomanUnderline>
-                </Roman>
-              </RomanWrap>
-              <PName>{item.h}</PName>
-              <Body>{item.b}</Body>
-            </Card>
+            <CardWrap key={i} variants={reduce ? undefined : cardVariants}>
+              <TiltCard reduce={reduce}>
+                <RomanWrap>
+                  <Roman>
+                    {romans[i]}.
+                    <RomanUnderline aria-hidden="true" viewBox="0 0 30 4" preserveAspectRatio="none">
+                      <motion.path
+                        d="M 0 2 L 30 2"
+                        stroke="#C8FF1A"
+                        strokeWidth="1.5"
+                        fill="none"
+                        variants={reduce ? undefined : underlineVariants}
+                        initial={reduce ? false : { pathLength: 0 }}
+                      />
+                    </RomanUnderline>
+                  </Roman>
+                </RomanWrap>
+                <PName>{item.h}</PName>
+                <Body>{item.b}</Body>
+              </TiltCard>
+            </CardWrap>
           ))}
         </Grid>
       </motion.div>

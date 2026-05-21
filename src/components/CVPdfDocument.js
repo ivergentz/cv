@@ -1,17 +1,12 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Image, Link, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
 /**
- * CVPdfDocument — A4 PDF that mirrors the on-screen CV in the Lime world.
+ * CVPdfDocument — A4 PDF, stays light for print/email compatibility.
  *
- * Design constraints:
- *   - @react-pdf/renderer uses its own layout engine (not the browser),
- *     so styles are inline only, no media queries, no clamp(), no shorthand.
- *   - We register web fonts but fall back to built-in Helvetica for safety
- *     since some PDF viewers don't ship serif fonts.
- *   - The accent system: lime-tinted section labels, dark ink for everything
- *     else. Hairlines for separation. No coloured backgrounds — keeps the
- *     PDF print-friendly and email-safe.
+ * Even though the web CV is dark, the downloadable PDF uses a light
+ * cream base — a dark PDF would waste printer toner and look hostile
+ * in a recruiter's inbox. The lime accent reads in both contexts.
  */
 
 const LIME = '#C8FF1A';
@@ -32,8 +27,6 @@ const styles = StyleSheet.create({
     color: FG,
     lineHeight: 1.5,
   },
-
-  /* Header */
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -42,9 +35,7 @@ const styles = StyleSheet.create({
     borderBottomColor: HAIRLINE,
     marginBottom: 18,
   },
-  headerLeft: {
-    flex: 1,
-  },
+  headerLeft: { flex: 1 },
   name: {
     fontFamily: 'Times-Roman',
     fontSize: 38,
@@ -69,26 +60,8 @@ const styles = StyleSheet.create({
     color: MUTED,
     fontFamily: 'Courier',
   },
-  metaItem: {
-    marginRight: 10,
-  },
-  metaSep: {
-    color: INK,
-    marginRight: 10,
-  },
-  photoBox: {
-    width: 80,
-    height: 100,
-    borderWidth: 0.5,
-    borderColor: HAIRLINE,
-  },
-  photo: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
-
-  /* Tagline */
+  metaItem: { marginRight: 10 },
+  metaSep: { color: INK, marginRight: 10 },
   tagline: {
     fontFamily: 'Times-Italic',
     fontSize: 12,
@@ -97,15 +70,8 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
     maxWidth: 460,
   },
-
-  /* Section */
-  section: {
-    marginBottom: 20,
-  },
-  sectionLabelWrap: {
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
+  section: { marginBottom: 20 },
+  sectionLabelWrap: { flexDirection: 'row', marginBottom: 10 },
   sectionLabel: {
     fontFamily: 'Courier-Bold',
     fontSize: 8,
@@ -117,12 +83,7 @@ const styles = StyleSheet.create({
     paddingRight: 6,
     letterSpacing: 1.5,
   },
-
-  /* Row */
-  row: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
+  row: { flexDirection: 'row', marginBottom: 12 },
   period: {
     width: 100,
     fontFamily: 'Courier',
@@ -136,9 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     marginTop: 1,
   },
-  body: {
-    flex: 1,
-  },
+  body: { flex: 1 },
   title: {
     fontFamily: 'Times-Roman',
     fontSize: 13,
@@ -151,10 +110,7 @@ const styles = StyleSheet.create({
     color: INK,
     marginBottom: 2,
   },
-  productUrlWrap: {
-    flexDirection: 'row',
-    marginBottom: 5,
-  },
+  productUrlWrap: { flexDirection: 'row', marginBottom: 5 },
   productUrl: {
     fontFamily: 'Courier',
     fontSize: 8,
@@ -170,50 +126,24 @@ const styles = StyleSheet.create({
     color: MUTED,
     marginBottom: 5,
   },
-  bulletList: {
-    marginTop: 2,
-  },
-  bullet: {
-    flexDirection: 'row',
-    marginBottom: 2,
-  },
-  bulletMark: {
-    width: 10,
-    color: INK,
-    fontSize: 9.5,
-  },
-  bulletText: {
-    flex: 1,
-    fontSize: 9.5,
-    lineHeight: 1.4,
-    color: FG,
-  },
+  bulletList: { marginTop: 2 },
+  bullet: { flexDirection: 'row', marginBottom: 2 },
+  bulletMark: { width: 10, color: INK, fontSize: 9.5 },
+  bulletText: { flex: 1, fontSize: 9.5, lineHeight: 1.4, color: FG },
   stack: {
     fontFamily: 'Courier',
     fontSize: 7.5,
     color: MUTED,
     marginTop: 4,
   },
-
-  /* Education shows smaller title */
   eduTitle: {
     fontFamily: 'Times-Roman',
     fontSize: 11,
     color: FG,
   },
-  eduSchool: {
-    fontSize: 8.5,
-    color: MUTED,
-  },
-
-  /* Skills grid (use absolute three-column layout) */
-  skillsGrid: {
-    flexDirection: 'row',
-    gap: 14,
-  },
-  skillCol: {
-    flex: 1,
-  },
+  eduSchool: { fontSize: 8.5, color: MUTED },
+  skillsGrid: { flexDirection: 'row', gap: 14 },
+  skillCol: { flex: 1 },
   skillLabel: {
     fontFamily: 'Courier',
     fontSize: 7,
@@ -221,30 +151,11 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     letterSpacing: 1,
   },
-  skillItems: {
-    fontSize: 9,
-    color: FG,
-    lineHeight: 1.4,
-  },
-
-  /* Languages */
-  langGrid: {
-    flexDirection: 'row',
-    gap: 14,
-  },
-  langItem: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  langName: {
-    fontSize: 10,
-    color: FG,
-    marginRight: 6,
-  },
-  langLevel: {
-    fontSize: 9.5,
-    color: MUTED,
-  },
+  skillItems: { fontSize: 9, color: FG, lineHeight: 1.4 },
+  langGrid: { flexDirection: 'row', gap: 14 },
+  langItem: { flex: 1, flexDirection: 'row' },
+  langName: { fontSize: 10, color: FG, marginRight: 6 },
+  langLevel: { fontSize: 9.5, color: MUTED },
 });
 
 export default function CVPdfDocument({ cv, lang }) {
@@ -254,7 +165,6 @@ export default function CVPdfDocument({ cv, lang }) {
       author="Iver Gentz"
     >
       <Page size="A4" style={styles.page} wrap>
-        {/* Header */}
         <View style={styles.header} fixed>
           <View style={styles.headerLeft}>
             <Text style={styles.name}>Iver Gentz</Text>
@@ -275,7 +185,6 @@ export default function CVPdfDocument({ cv, lang }) {
 
         <Text style={styles.tagline}>{cv.tagline}</Text>
 
-        {/* Products */}
         <View style={styles.section}>
           <View style={styles.sectionLabelWrap}>
             <Text style={styles.sectionLabel}>{cv.labels.products.toUpperCase()}</Text>
@@ -305,7 +214,6 @@ export default function CVPdfDocument({ cv, lang }) {
           ))}
         </View>
 
-        {/* Experience */}
         <View style={styles.section} break>
           <View style={styles.sectionLabelWrap}>
             <Text style={styles.sectionLabel}>{cv.labels.experience.toUpperCase()}</Text>
@@ -331,7 +239,6 @@ export default function CVPdfDocument({ cv, lang }) {
           ))}
         </View>
 
-        {/* Education */}
         <View style={styles.section}>
           <View style={styles.sectionLabelWrap}>
             <Text style={styles.sectionLabel}>{cv.labels.education.toUpperCase()}</Text>
@@ -349,7 +256,6 @@ export default function CVPdfDocument({ cv, lang }) {
           ))}
         </View>
 
-        {/* Skills */}
         <View style={styles.section}>
           <View style={styles.sectionLabelWrap}>
             <Text style={styles.sectionLabel}>{cv.labels.skills.toUpperCase()}</Text>
@@ -364,7 +270,6 @@ export default function CVPdfDocument({ cv, lang }) {
           </View>
         </View>
 
-        {/* Languages */}
         <View style={styles.section}>
           <View style={styles.sectionLabelWrap}>
             <Text style={styles.sectionLabel}>{cv.labels.languages.toUpperCase()}</Text>

@@ -5,8 +5,9 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { AnimatedLink } from './Link';
 
 const Band = styled.footer`
-  background: ${({ theme }) => theme.colors.bgLime};
-  color: ${({ theme }) => theme.colors.highlightInk};
+  background: ${({ theme }) => theme.colors.bg};
+  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
+  color: ${({ theme }) => theme.colors.fgMuted};
 
   @media print {
     display: none;
@@ -16,14 +17,16 @@ const Band = styled.footer`
 const Inner = styled.div`
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  padding: 40px ${({ theme }) => theme.gutter} 60px;
-  border-top: 1px solid rgba(10, 10, 10, 0.16);
+  padding: 28px ${({ theme }) => theme.gutter};
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-  font-size: 13px;
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 `;
 
 const Links = styled.div`
@@ -36,7 +39,7 @@ export default function Footer() {
   return (
     <Band>
       <Inner>
-        <span>© 2026 Iver Gentz</span>
+        <span>© 2026 IVER GENTZ · BUILT IN HAMBURG</span>
         <Links>
           <AnimatedLink as={RouterLink} to="/impressum">
             {t.footer.imprint}

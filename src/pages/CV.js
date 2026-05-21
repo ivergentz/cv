@@ -5,12 +5,10 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { cvContent } from '../i18n/cv';
 import { AnimatedLink } from '../components/Link';
 
-/* @react-pdf/renderer is imported dynamically to keep initial bundle small.
-   See handleDownload below. */
-
 const Page = styled.main`
-  background: ${({ theme }) => theme.colors.bgCream};
+  background: ${({ theme }) => theme.colors.bg};
   min-height: 100vh;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Wrap = styled.div`
@@ -21,6 +19,8 @@ const Wrap = styled.div`
   @media print {
     padding: 0;
     max-width: 100%;
+    color: #141414;
+    background: #F1ECE0;
   }
 `;
 
@@ -30,7 +30,7 @@ const Toolbar = styled.div`
   align-items: center;
   margin-bottom: 40px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(10,10,10,0.10);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
   flex-wrap: wrap;
   gap: 12px;
 
@@ -43,7 +43,7 @@ const ToolbarLeft = styled(AnimatedLink)`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgMuted};
 `;
 
 const ToolbarRight = styled.div`
@@ -55,18 +55,19 @@ const ToolbarRight = styled.div`
 const ToolbarButton = styled.button`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 12px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   background: transparent;
   color: ${({ theme }) => theme.colors.fg};
-  border: 1px solid rgba(10,10,10,0.20);
+  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
   border-radius: 2px;
   padding: 8px 14px;
   cursor: pointer;
   transition: border-color 200ms, background 200ms, color 200ms;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.highlightInk};
-    background: ${({ theme }) => theme.colors.lime};
+    border-color: ${({ theme }) => theme.colors.lime};
+    color: ${({ theme }) => theme.colors.lime};
   }
 
   &:disabled {
@@ -76,20 +77,19 @@ const ToolbarButton = styled.button`
 `;
 
 const DownloadButton = styled(ToolbarButton)`
-  background: ${({ theme }) => theme.colors.highlightInk};
-  color: ${({ theme }) => theme.colors.lime};
-  border-color: ${({ theme }) => theme.colors.highlightInk};
+  background: ${({ theme }) => theme.colors.lime};
+  color: ${({ theme }) => theme.colors.limeShadow};
+  border-color: ${({ theme }) => theme.colors.lime};
 
   &:hover {
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.highlightInk};
+    background: transparent;
+    color: ${({ theme }) => theme.colors.lime};
+    border-color: ${({ theme }) => theme.colors.lime};
   }
 `;
 
-/* ---------- DOC ---------- */
-
 const Doc = styled.article`
-  background: ${({ theme }) => theme.colors.bgCream};
+  background: transparent;
 
   @media print {
     background: #F1ECE0 !important;
@@ -105,7 +105,7 @@ const Header = styled.header`
   gap: 32px;
   align-items: start;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(10,10,10,0.10);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
   margin-bottom: 28px;
 
   @media (max-width: 620px) {
@@ -122,6 +122,7 @@ const Name = styled.h1`
   letter-spacing: -0.025em;
   font-weight: 400;
   margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Role = styled.p`
@@ -130,14 +131,7 @@ const Role = styled.p`
   font-size: clamp(18px, 2.4vw, 24px);
   letter-spacing: -0.005em;
   margin-bottom: 20px;
-
-  span.hl {
-    background: ${({ theme }) => theme.colors.lime};
-    color: ${({ theme }) => theme.colors.highlightInk};
-    padding: 0 0.18em;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
+  color: ${({ theme }) => theme.colors.lime};
 `;
 
 const Meta = styled.div`
@@ -148,16 +142,16 @@ const Meta = styled.div`
   font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgMuted};
 
-  .sep { color: ${({ theme }) => theme.colors.highlightInk}; }
+  .sep { color: ${({ theme }) => theme.colors.lime}; }
 `;
 
 const Photo = styled.div`
   width: 120px;
   height: 150px;
-  background: ${({ theme }) => theme.colors.shotBg};
-  border: 1px solid rgba(10,10,10,0.16);
+  background: ${({ theme }) => theme.colors.bgElevated};
+  border: 1px solid ${({ theme }) => theme.colors.hairline};
   overflow: hidden;
   justify-self: end;
 
@@ -166,6 +160,7 @@ const Photo = styled.div`
     height: 100%;
     object-fit: cover;
     object-position: center 20%;
+    filter: grayscale(0.2) contrast(0.95);
   }
 
   @media (max-width: 620px) {
@@ -182,6 +177,7 @@ const Tagline = styled.p`
   line-height: 1.45;
   max-width: 62ch;
   margin-bottom: 36px;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Section = styled.section`
@@ -194,11 +190,10 @@ const SectionLabel = styled.div`
   font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  background: ${({ theme }) => theme.colors.lime};
-  color: ${({ theme }) => theme.colors.highlightInk};
+  color: ${({ theme }) => theme.colors.lime};
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 2px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.lime};
   margin-bottom: 18px;
 `;
 
@@ -219,13 +214,13 @@ const Period = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10.5px;
   letter-spacing: 0.04em;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgMuted};
   padding-top: 4px;
   line-height: 1.4;
 
   .status {
     display: block;
-    color: ${({ theme }) => theme.colors.shotLabel};
+    color: ${({ theme }) => theme.colors.fgDim};
     margin-top: 2px;
   }
 `;
@@ -239,11 +234,12 @@ const Title = styled.h2`
   line-height: 1.15;
   letter-spacing: -0.015em;
   margin-bottom: 2px;
+  color: ${({ theme }) => theme.colors.fg};
 `;
 
 const Company = styled.div`
   font-size: 13px;
-  color: ${({ theme }) => theme.colors.muted};
+  color: ${({ theme }) => theme.colors.fgMuted};
   margin-bottom: 8px;
 `;
 
@@ -259,12 +255,13 @@ const Bullet = styled.li`
   margin-bottom: 4px;
   font-size: 13px;
   line-height: 1.5;
+  color: ${({ theme }) => theme.colors.fgMuted};
 
   &::before {
     content: '—';
     position: absolute;
     left: 0;
-    color: ${({ theme }) => theme.colors.highlightInk};
+    color: ${({ theme }) => theme.colors.lime};
   }
 `;
 
@@ -272,7 +269,7 @@ const Stack = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.shotLabel};
+  color: ${({ theme }) => theme.colors.fgDim};
   margin-top: 6px;
 `;
 
@@ -284,11 +281,7 @@ const ProductUrl = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10px;
   letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.highlightInk};
-  background: ${({ theme }) => theme.colors.lime};
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 2px;
+  color: ${({ theme }) => theme.colors.lime};
   margin-bottom: 8px;
 `;
 
@@ -318,12 +311,13 @@ const SkillCol = styled.div`
     font-size: 9.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.muted};
+    color: ${({ theme }) => theme.colors.lime};
     margin-bottom: 4px;
   }
   .items {
     font-size: 12.5px;
     line-height: 1.5;
+    color: ${({ theme }) => theme.colors.fgMuted};
   }
 `;
 
@@ -339,9 +333,10 @@ const LangGrid = styled.div`
   div strong {
     font-weight: 500;
     margin-right: 8px;
+    color: ${({ theme }) => theme.colors.fg};
   }
   div span {
-    color: ${({ theme }) => theme.colors.muted};
+    color: ${({ theme }) => theme.colors.fgMuted};
     font-size: 13px;
   }
 `;
@@ -365,14 +360,8 @@ export default function CV() {
       lang === 'de' ? 'Lebenslauf — Iver Gentz' : 'CV — Iver Gentz';
   }, [lang]);
 
-  const handlePrint = () => {
-    window.print();
-  };
+  const handlePrint = () => window.print();
 
-  /**
-   * Generate PDF on demand using @react-pdf/renderer.
-   * Code-split via dynamic import so the heavy renderer only loads when used.
-   */
   const handleDownload = async () => {
     try {
       setDownloading(true);
@@ -423,9 +412,7 @@ export default function CV() {
           <Header>
             <HeaderLeft>
               <Name>Iver Gentz</Name>
-              <Role>
-                <span className="hl">{cv.role}</span>
-              </Role>
+              <Role>{cv.role}</Role>
               <Meta>
                 <span>Hamburg, Deutschland</span>
                 <span className="sep">·</span>
