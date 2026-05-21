@@ -1,21 +1,48 @@
-import React, { useRef } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import styled from 'styled-components';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import SectionFrame from '../SectionFrame';
 import Reveal from '../Reveal';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
 
+gsap.registerPlugin(ScrollTrigger);
+
 /**
- * Products — Pinned Scroll Story in the dark Blueprint design.
+ * Products — Horizontal force-scroll story driven by GSAP ScrollTrigger.
  *
- * Three products crossfade through a sticky viewport. Left side shows
- * product metadata + hard metrics in mono-styled boxes. Right side shows
- * a mock-browser-chrome wrapper around each product screenshot.
+ * Behaviour on desktop (≥ tablet breakpoint):
+ *   - Section pins for the duration of a vertical scroll equivalent to
+ *     N × viewport height (one per slide). Vertical scroll input is
+ *     translated into horizontal track movement via `translateX`.
+ *   - Three full-bleed slides (RankBrief, S&I. Wedding, WERKRUF) scroll
+ *     left as the user scrolls down. Pin releases automatically.
  *
- * Background subtly cycles between dark and elevated tones to suggest
- * phase change without leaving the dark mode.
+ * Behaviour on mobile (< tablet breakpoint):
+ *   - Pinning is disabled. Slides stack vertically with normal scroll.
+ *
+ * Reduced motion:
+ *   - Disable pinning + horizontal translation. Slides stack vertically.
+ *
+ * Performance:
+ *   - Animates only `translateX` on the track (GPU)
+ *   - Container uses `will-change: transform`
+ *   - Strict-mode-safe cleanup via gsap.context().revert()
  */
+
+/* === Layout containers === */
+
+const Outer = styled.section`
+  position: relative;
+  background: ${({ theme }) => theme.colors.bg};
+`;
+
+const Heading = styled.div`
+  max-width: ${({ theme }) => theme.sizes.maxWidth};
+  margin: 0 auto;
+  padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter} clamp(40px, 6vw, 80px);
+`;
 
 const Num = styled.div`
   font-family: ${({ theme }) => theme.fonts.mono};
@@ -23,7 +50,7 @@ const Num = styled.div`
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.lime};
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 `;
 
 const Head = styled.div`
@@ -31,12 +58,10 @@ const Head = styled.div`
   grid-template-columns: 2fr 1fr;
   gap: 40px;
   align-items: end;
-  margin-bottom: 80px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
     gap: 20px;
-    margin-bottom: 60px;
   }
 `;
 
@@ -61,67 +86,69 @@ const Intro = styled.p`
   line-height: 1.6;
 `;
 
-const StoryOuter = styled(motion.div)`
+/* === Horizontal scroll mechanics === */
+
+const Pinner = styled.div`
   position: relative;
-  margin: 0 calc(-1 * ${({ theme }) => theme.gutter});
-  padding: 0 ${({ theme }) => theme.gutter};
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    min-height: 320vh;
+  /* On mobile, drop the pin: container collapses to auto and slides stack */
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    height: auto;
+    overflow: visible;
   }
 `;
 
-const Sticky = styled.div`
+const Track = styled.div`
+  display: flex;
+  height: 100%;
+  will-change: transform;
+
+  /* Mobile: vertical stack */
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+  }
+`;
+
+const Slide = styled.div`
+  flex: 0 0 100vw;
+  height: 100vh;
+  padding: 60px ${({ theme }) => theme.gutter};
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;
-  padding: 60px 0;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    position: sticky;
-    top: 0;
-    min-height: 100vh;
-    grid-template-columns: 5fr 6fr;
-    gap: 60px;
-    align-items: center;
-    padding: 80px 0;
-  }
-`;
-
-const LeftCol = styled.div`
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    display: grid;
-    grid-template-rows: 1fr;
-    position: relative;
-    height: calc(100vh - 160px);
-  }
-`;
-
-const RightCol = styled.div`
-  position: relative;
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    height: calc(100vh - 160px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-`;
-
-const TextCard = styled(motion.article)`
-  display: grid;
-  gap: 14px;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-row: 1;
-    grid-column: 1;
-    align-self: center;
-  }
+  grid-template-columns: 5fr 6fr;
+  gap: 60px;
+  align-items: center;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    padding: 48px 0;
+    flex: none;
+    width: 100%;
+    height: auto;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 80px ${({ theme }) => theme.gutter};
     border-top: 1px solid ${({ theme }) => theme.colors.hairlineDim};
-    &:first-of-type { border-top: 0; }
+
+    &:first-child { border-top: 0; }
   }
+`;
+
+const SlideMax = styled.div`
+  max-width: ${({ theme }) => theme.sizes.maxWidth};
+  margin: 0 auto;
+  width: 100%;
+  display: contents;
+`;
+
+/* === Slide content — left text column === */
+
+const TextCol = styled.div`
+  display: grid;
+  gap: 14px;
+  align-content: center;
 `;
 
 const SlotMeta = styled.div`
@@ -129,12 +156,11 @@ const SlotMeta = styled.div`
   font-size: 10px;
   letter-spacing: 0.22em;
   color: ${({ theme }) => theme.colors.lime};
-  margin-bottom: 2px;
 `;
 
 const ProductName = styled.h3`
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(36px, 4.4vw, 56px);
+  font-size: clamp(36px, 4.4vw, 64px);
   line-height: 1;
   letter-spacing: -0.02em;
   font-weight: 400;
@@ -165,13 +191,13 @@ const URL = styled(AnimatedLink)`
 `;
 
 const OneLiner = styled.p`
-  font-size: 15.5px;
+  font-size: 16px;
   line-height: 1.55;
   color: ${({ theme }) => theme.colors.fgMuted};
   margin: 6px 0 0;
+  max-width: 42ch;
 `;
 
-/* === Hard metrics row === */
 const Metrics = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -205,17 +231,15 @@ const MetricValue = styled.div`
   }
 `;
 
-const Detail = styled.div`
-  display: grid;
-  gap: 8px;
-`;
-
 const DetailLabel = styled.span`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.fgDim};
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 4px;
 `;
 
 const DetailText = styled.p`
@@ -225,19 +249,19 @@ const DetailText = styled.p`
   margin: 0;
 `;
 
-const Stack = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11.5px;
-  line-height: 1.7;
-  color: ${({ theme }) => theme.colors.fgMuted};
-  white-space: pre-line;
-  margin-top: 6px;
+/* === Slide content — right mockup column === */
+
+const MockupCol = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 `;
 
-/* === Mock browser frame around screenshot === */
 const BrowserFrame = styled.div`
   position: relative;
   width: 100%;
+  max-width: 700px;
   aspect-ratio: 16 / 10;
   background: ${({ theme }) => theme.colors.bgElevated};
   border: 1px solid ${({ theme }) => theme.colors.hairline};
@@ -270,16 +294,10 @@ const Chrome = styled.div`
   }
 `;
 
-const ShotStack = styled.div`
+const Shot = styled.div`
   position: relative;
   width: 100%;
   height: calc(100% - 28px);
-`;
-
-const ShotLayer = styled(motion.div)`
-  position: absolute;
-  inset: 0;
-  will-change: opacity, transform;
 
   img {
     width: 100%;
@@ -290,49 +308,118 @@ const ShotLayer = styled(motion.div)`
   }
 `;
 
-const Caption = styled(motion.div)`
+/* Slide-counter pinned to right side of viewport during scroll */
+const Counter = styled.div`
   position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 14px;
+  bottom: 40px;
+  right: ${({ theme }) => theme.gutter};
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.lime};
+  z-index: 5;
+  pointer-events: none;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: none;
   }
 `;
 
-const ease = [0.2, 0.7, 0.2, 1];
+const ProgressTrack = styled.div`
+  position: absolute;
+  bottom: 30px;
+  left: ${({ theme }) => theme.gutter};
+  right: ${({ theme }) => theme.gutter};
+  height: 2px;
+  background: ${({ theme }) => theme.colors.hairlineDim};
+  z-index: 5;
+  pointer-events: none;
+
+  .fill {
+    position: absolute;
+    inset: 0;
+    background: ${({ theme }) => theme.colors.lime};
+    transform-origin: left center;
+    will-change: transform;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: none;
+  }
+`;
 
 export default function Products() {
   const { t } = useLanguage();
   const L = t.products.labels;
-  const reduce = useReducedMotion();
-  const ref = useRef(null);
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end end'],
-  });
+  const pinnerRef = useRef(null);
+  const trackRef = useRef(null);
+  const counterRef = useRef(null);
+  const progressRef = useRef(null);
 
-  /* Subtle bg variation within dark mode */
-  const bg = useTransform(
-    scrollYProgress,
-    [0, 0.30, 0.38, 0.63, 0.71, 1],
-    ['#0A0A0A', '#0A0A0A', '#121212', '#121212', '#0A0A0A', '#0A0A0A']
-  );
+  useLayoutEffect(() => {
+    /* Respect reduced motion: no pinning, no horizontal motion */
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.matches) return undefined;
 
-  const opacity1 = useTransform(scrollYProgress, [0.0, 0.05, 0.30, 0.38], [1, 1, 1, 0]);
-  const opacity2 = useTransform(scrollYProgress, [0.30, 0.38, 0.63, 0.71], [0, 1, 1, 0]);
-  const opacity3 = useTransform(scrollYProgress, [0.63, 0.71, 1.0, 1.0], [0, 1, 1, 1]);
+    /* Mobile guard: skip on narrow screens */
+    const tabletMq = window.matchMedia('(max-width: 820px)');
+    if (tabletMq.matches) return undefined;
 
-  const scale1 = useTransform(scrollYProgress, [0.0, 0.30], [1.02, 1]);
-  const scale2 = useTransform(scrollYProgress, [0.30, 0.63], [1.02, 1]);
-  const scale3 = useTransform(scrollYProgress, [0.63, 1.0], [1.02, 1]);
+    const pinner = pinnerRef.current;
+    const track = trackRef.current;
+    if (!pinner || !track) return undefined;
+
+    /**
+     * gsap.context() automatically tracks all ScrollTriggers and tweens
+     * created inside it. When we call ctx.revert() in cleanup, everything
+     * is removed cleanly — including the pin spacer ScrollTrigger creates.
+     * This is the key to surviving React Strict Mode's double mount.
+     */
+    const ctx = gsap.context(() => {
+      const slides = track.querySelectorAll('[data-slide]');
+      const slideCount = slides.length;
+
+      /* Travel distance = (N - 1) viewport widths */
+      const distance = () => -(track.scrollWidth - window.innerWidth);
+
+      const tween = gsap.to(track, {
+        x: distance,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: pinner,
+          start: 'top top',
+          end: () => `+=${track.scrollWidth - window.innerWidth}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            /* Update counter */
+            const idx = Math.min(
+              slideCount - 1,
+              Math.floor(self.progress * slideCount + 0.0001)
+            );
+            if (counterRef.current) {
+              counterRef.current.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(slideCount).padStart(2, '0')}`;
+            }
+            /* Update progress bar via transform (GPU) */
+            if (progressRef.current) {
+              progressRef.current.style.transform = `scaleX(${self.progress})`;
+            }
+          },
+        },
+      });
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
+    }, pinner);
+
+    return () => ctx.revert();
+  }, []);
 
   const products = [
     {
@@ -344,10 +431,7 @@ export default function Products() {
       domain: 'rankbrief.com/dashboard',
       img: 'rankbrief.png',
       alt: t.shot.rb,
-      stack: 'React · Supabase · Stripe\nGoogle Search Console API\nClaude API',
       data: t.products.rb,
-      opacity: opacity1,
-      scale: scale1,
     },
     {
       key: 'si',
@@ -358,10 +442,7 @@ export default function Products() {
       domain: 'sarahiver.com',
       img: 'sarahiver.png',
       alt: t.shot.si,
-      stack: 'React · Supabase\nCloudinary · Brevo',
       data: t.products.si,
-      opacity: opacity2,
-      scale: scale2,
     },
     {
       key: 'wr',
@@ -372,137 +453,88 @@ export default function Products() {
       domain: 'werkruf.com',
       img: 'werkruf.png',
       alt: t.shot.wr,
-      stack: 'React · Supabase · Stripe\nGoogle Places API\nGoogle Business Profile API\nCloudinary · Claude API',
       data: t.products.wr,
-      opacity: opacity3,
-      scale: scale3,
       badge: t.products.wr.badge,
     },
   ];
 
   return (
-    <SectionFrame bg="dark" id="arbeit" aria-labelledby="products-heading">
-      <Reveal>
-        <Num>{t.sectionNum.products}</Num>
-      </Reveal>
-      <Head>
+    <Outer id="arbeit" aria-labelledby="products-heading">
+      <Heading>
         <Reveal>
-          <H2 id="products-heading">
-            {t.products.title1} <span className="ital">{t.products.title2}</span>
-          </H2>
+          <Num>{t.sectionNum.products}</Num>
         </Reveal>
-        <Reveal>
-          <Intro>{t.products.intro}</Intro>
-        </Reveal>
-      </Head>
+        <Head>
+          <Reveal>
+            <H2 id="products-heading">
+              {t.products.title1} <span className="ital">{t.products.title2}</span>
+            </H2>
+          </Reveal>
+          <Reveal>
+            <Intro>{t.products.intro}</Intro>
+          </Reveal>
+        </Head>
+      </Heading>
 
-      <StoryOuter
-        ref={ref}
-        style={reduce ? undefined : { background: bg }}
-      >
-        <Sticky>
-          <LeftCol>
-            {products.map((p) => (
-              <TextCard
-                key={p.key}
-                style={reduce ? undefined : { opacity: p.opacity }}
-                transition={{ duration: 0.4, ease }}
-              >
-                <SlotMeta>/ {p.slot}</SlotMeta>
-                <ProductName>{p.name}</ProductName>
-                {p.badge && <Badge>{p.badge}</Badge>}
-                <URL href={p.url} target="_blank" rel="noopener noreferrer">
-                  {p.urlLabel}
-                </URL>
-                <OneLiner>{p.data.one}</OneLiner>
+      <Pinner ref={pinnerRef}>
+        <Track ref={trackRef}>
+          {products.map((p) => (
+            <Slide key={p.key} data-slide>
+              <SlideMax>
+                <TextCol>
+                  <SlotMeta>/ {p.slot}</SlotMeta>
+                  <ProductName>{p.name}</ProductName>
+                  {p.badge && <Badge>{p.badge}</Badge>}
+                  <URL href={p.url} target="_blank" rel="noopener noreferrer">
+                    {p.urlLabel}
+                  </URL>
+                  <OneLiner>{p.data.one}</OneLiner>
 
-                {p.data.metrics && p.data.metrics.length > 0 && (
-                  <Metrics>
-                    {p.data.metrics.map((m, i) => (
-                      <div key={i}>
-                        <MetricLabel>{m.label}</MetricLabel>
-                        <MetricValue>
-                          {m.value}
-                          {m.unit && <span className="unit">{m.unit}</span>}
-                        </MetricValue>
-                      </div>
-                    ))}
-                  </Metrics>
-                )}
+                  {p.data.metrics && p.data.metrics.length > 0 && (
+                    <Metrics>
+                      {p.data.metrics.map((m, i) => (
+                        <div key={i}>
+                          <MetricLabel>{m.label}</MetricLabel>
+                          <MetricValue>
+                            {m.value}
+                            {m.unit && <span className="unit">{m.unit}</span>}
+                          </MetricValue>
+                        </div>
+                      ))}
+                    </Metrics>
+                  )}
 
-                <Detail>
-                  <div>
-                    <DetailLabel>{L.problem}</DetailLabel>
-                    <DetailText>{p.data.problem}</DetailText>
-                  </div>
                   <div>
                     <DetailLabel>{L.scope}</DetailLabel>
                     <DetailText>{p.data.scope}</DetailText>
                   </div>
-                </Detail>
+                </TextCol>
 
-                <DetailLabel style={{ marginTop: 8 }}>{L.stack}</DetailLabel>
-                <Stack>{p.stack}</Stack>
-              </TextCard>
-            ))}
-          </LeftCol>
+                <MockupCol>
+                  <BrowserFrame>
+                    <Chrome>
+                      <span className="dot" /><span className="dot" /><span className="dot" />
+                      <span className="url">{p.domain}</span>
+                    </Chrome>
+                    <Shot>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/images/${p.img}`}
+                        alt={p.alt}
+                        loading="lazy"
+                      />
+                    </Shot>
+                  </BrowserFrame>
+                </MockupCol>
+              </SlideMax>
+            </Slide>
+          ))}
+        </Track>
 
-          <RightCol>
-            <BrowserFrame>
-              <Chrome>
-                <span className="dot" /><span className="dot" /><span className="dot" />
-                {products.map((p) => (
-                  <motion.span
-                    key={p.key}
-                    className="url"
-                    style={reduce ? undefined : { opacity: p.opacity, position: 'absolute', left: 56 }}
-                  >
-                    {p.domain}
-                  </motion.span>
-                ))}
-              </Chrome>
-              <ShotStack>
-                {products.map((p) => (
-                  <ShotLayer
-                    key={p.key}
-                    style={reduce ? undefined : { opacity: p.opacity, scale: p.scale }}
-                  >
-                    <img
-                      src={`${process.env.PUBLIC_URL}/images/${p.img}`}
-                      alt={p.alt}
-                      loading="lazy"
-                    />
-                  </ShotLayer>
-                ))}
-              </ShotStack>
-              {!reduce && (
-                <Caption aria-hidden="true">
-                  <ScrollIndicator scrollYProgress={scrollYProgress} />
-                </Caption>
-              )}
-            </BrowserFrame>
-          </RightCol>
-        </Sticky>
-      </StoryOuter>
-    </SectionFrame>
-  );
-}
-
-function ScrollIndicator({ scrollYProgress }) {
-  const [n, setN] = React.useState(1);
-
-  React.useEffect(() => {
-    const unsub = scrollYProgress.on('change', (v) => {
-      if (v < 0.33) setN(1);
-      else if (v < 0.66) setN(2);
-      else setN(3);
-    });
-    return unsub;
-  }, [scrollYProgress]);
-
-  return (
-    <span>
-      {String(n).padStart(2, '0')} <span style={{ opacity: 0.4 }}>/ 03</span>
-    </span>
+        <Counter ref={counterRef} aria-hidden="true">01 / 03</Counter>
+        <ProgressTrack aria-hidden="true">
+          <div className="fill" ref={progressRef} style={{ transform: 'scaleX(0)' }} />
+        </ProgressTrack>
+      </Pinner>
+    </Outer>
   );
 }

@@ -2,33 +2,18 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import SectionFrame from '../SectionFrame';
+import BlueprintGrid from '../BlueprintGrid';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
  * Hero — Blueprint dark hero.
  *
- * Subtle lime grid in the background (SVG pattern, 18% opacity) gives a
- * blueprint/architectural feel without competing with the typography.
- * Coordinate markers in the corners (53.55°N 9.99°E and version stamp)
- * reinforce the "Architecture" theme.
+ * Backdrop: <BlueprintGrid /> draws a fine architectural grid from the
+ * centre outward on mount. Coordinate markers in the corners reinforce
+ * the architecture theme. H1 stays large serif with italic phrase in lime.
  *
- * H1 stays large serif. The italic phrase is rendered in lime — no more
- * highlight block, that was too loud. Subtitle dimmed, status badge in
- * a dark pill with lime dot.
+ * All animations use transform + opacity only (no width/height/margin).
  */
-
-const Wrap = styled.div`
-  position: relative;
-`;
-
-const GridBg = styled.svg`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0.16;
-`;
 
 const Corner = styled.div`
   position: absolute;
@@ -64,22 +49,43 @@ const Status = styled(motion.div)`
   color: ${({ theme }) => theme.colors.lime};
   margin-bottom: 28px;
 
+  .dot-wrap {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    margin: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: ${({ theme }) => theme.colors.lime};
-    margin: 0 12px;
-    animation: pulse 2s ease-in-out infinite;
+    will-change: transform;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(200,255,26,0.6); }
-    50%      { opacity: 0.5; box-shadow: 0 0 0 6px rgba(200,255,26,0); }
+  /* Ring uses scale (GPU) and opacity, not box-shadow */
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.lime};
+    opacity: 0.4;
+    will-change: transform, opacity;
+    animation: ringPulse 2s ease-out infinite;
+    transform-origin: center;
+  }
+
+  @keyframes ringPulse {
+    0%   { transform: scale(0.3); opacity: 0.6; }
+    100% { transform: scale(1.6); opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .dot { animation: none; }
+    .ring { animation: none; opacity: 0; }
   }
 `;
 
@@ -93,7 +99,10 @@ const H1 = styled(motion.h1)`
   margin: 0;
   color: ${({ theme }) => theme.colors.fg};
 
-  .line { display: inline-block; will-change: transform, opacity; }
+  .line {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
   .em {
     font-style: italic;
     color: ${({ theme }) => theme.colors.lime};
@@ -132,6 +141,7 @@ const CTA = styled.a`
   padding: 14px 22px;
   border-radius: 2px;
   cursor: pointer;
+  will-change: transform;
   transition: transform 200ms ease, background 200ms ease, color 200ms ease;
 
   &.primary {
@@ -178,7 +188,7 @@ export default function Hero() {
 
   const container = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+    visible: { transition: { staggerChildren: 0.12, delayChildren: 0.4 } },
   };
   const item = {
     hidden: { opacity: 0, y: 14 },
@@ -189,15 +199,9 @@ export default function Hero() {
 
   return (
     <SectionFrame bg="dark" hero hideHairline aria-labelledby="hero-heading">
-      <Wrap ref={ref}>
-        <GridBg aria-hidden="true">
-          <defs>
-            <pattern id="hero-grid" width="48" height="48" patternUnits="userSpaceOnUse">
-              <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#C8FF1A" strokeWidth="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#hero-grid)" />
-        </GridBg>
+      <div ref={ref} style={{ position: 'relative' }}>
+        {/* Blueprint backdrop — draws from centre on mount */}
+        <BlueprintGrid />
 
         <Corner className="tl">[ 53.55°N · 9.99°E ]</Corner>
         <Corner className="tr">{dateStamp}</Corner>
@@ -207,7 +211,10 @@ export default function Hero() {
             <>
               <Status>
                 <span>{t.hero.loc}</span>
-                <span className="dot" aria-hidden="true" />
+                <span className="dot-wrap" aria-hidden="true">
+                  <span className="ring" />
+                  <span className="dot" />
+                </span>
                 <span>{t.hero.avail}</span>
               </Status>
               <H1 id="hero-heading">
@@ -228,7 +235,10 @@ export default function Hero() {
             <motion.div initial="hidden" animate="visible" variants={container}>
               <Status variants={item}>
                 <span>{t.hero.loc}</span>
-                <span className="dot" aria-hidden="true" />
+                <span className="dot-wrap" aria-hidden="true">
+                  <span className="ring" />
+                  <span className="dot" />
+                </span>
                 <span>{t.hero.avail}</span>
               </Status>
               <H1 id="hero-heading">
@@ -251,7 +261,7 @@ export default function Hero() {
             </motion.div>
           )}
         </Content>
-      </Wrap>
+      </div>
     </SectionFrame>
   );
 }

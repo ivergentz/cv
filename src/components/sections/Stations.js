@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
@@ -7,12 +7,20 @@ import Reveal from '../Reveal';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * Stations — dark timeline.
+ * Stations — career timeline with mouse-glow rows.
  *
- * Vertical lime line draws itself in. Each station enters with a slide
- * from left and a thin lime underline that fills from 0% to 100% width
- * as the entry comes into view — the "fills with colour left-to-right"
- * effect from the Blueprint concept.
+ * Each row tracks the mouse position via CSS variables (--mx, --my) and
+ * uses a `radial-gradient` to render a soft lime spotlight that follows
+ * the cursor. The bottom separator of the row animates as a left-to-right
+ * lime sweep on hover.
+ *
+ * Performance:
+ *   - Mouse spotlight uses background-position offset (compositor-friendly)
+ *   - Separator sweep is a 200%-wide gradient shifted via background-position
+ *   - No layout properties animated
+ *   - Mouse handler throttled via rAF
+ *
+ * Vertical timeline line stays from v1.3 — draws itself in on scroll.
  */
 
 const Num = styled.div`
@@ -64,29 +72,45 @@ const TimelineSVG = styled.svg`
   }
 `;
 
-const ItemWrap = styled(motion.div)`
+/* === Glowing row === */
+
+const Row = styled(motion.div)`
   position: relative;
-  padding: 28px 0 14px;
-`;
+  padding: 28px 0 28px;
+  --mx: 50%;
+  --my: 50%;
 
-const Node = styled.span`
-  position: absolute;
-  left: -55px;
-  top: 36px;
-  width: 12px;
-  height: 12px;
-  background: ${({ theme }) => theme.colors.lime};
-  border-radius: 1px;
+  /* The spotlight layer — radial gradient that follows the mouse.
+     Uses transform: translateZ(0) to force GPU compositing without
+     animating layout properties. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle 260px at var(--mx) var(--my),
+      rgba(200, 255, 26, 0.10) 0%,
+      rgba(200, 255, 26, 0.04) 30%,
+      transparent 70%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 280ms ease;
+    transform: translateZ(0);
+    will-change: opacity;
+    z-index: 0;
+  }
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    left: -23px;
-    top: 32px;
-    width: 8px;
-    height: 8px;
+  &:hover::before { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::before { display: none; }
   }
 `;
 
-const Row = styled.div`
+const RowInner = styled.div`
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: 140px 1fr 1fr;
   gap: 32px;
@@ -95,6 +119,24 @@ const Row = styled.div`
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
     gap: 4px;
+  }
+`;
+
+const Node = styled.span`
+  position: absolute;
+  left: -55px;
+  top: 38px;
+  width: 12px;
+  height: 12px;
+  background: ${({ theme }) => theme.colors.lime};
+  border-radius: 1px;
+  z-index: 2;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    left: -23px;
+    top: 32px;
+    width: 8px;
+    height: 8px;
   }
 `;
 
@@ -121,17 +163,31 @@ const Company = styled.span`
   }
 `;
 
-const Underfill = styled.div`
+/* The separator below each row — sweeps left to right on hover.
+   200%-wide gradient + background-position-x shift = sweep, no width animation. */
+const Separator = styled.div`
   position: relative;
-  margin-top: 14px;
   height: 1px;
-  background: ${({ theme }) => theme.colors.hairlineDim};
+  margin-top: 18px;
+  background: linear-gradient(
+    90deg,
+    ${({ theme }) => theme.colors.lime} 0%,
+    ${({ theme }) => theme.colors.lime} 50%,
+    ${({ theme }) => theme.colors.hairlineDim} 50%,
+    ${({ theme }) => theme.colors.hairlineDim} 100%
+  );
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  transition: background-position 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: background-position;
 
-  .fill {
-    position: absolute;
-    inset: 0;
-    background: ${({ theme }) => theme.colors.lime};
-    transform-origin: left center;
+  ${Row}:hover & {
+    background-position: 0 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    background: ${({ theme }) => theme.colors.hairlineDim};
   }
 `;
 
@@ -151,6 +207,7 @@ const CVLink = styled(RouterLink)`
   color: ${({ theme }) => theme.colors.limeShadow};
   padding: 14px 22px;
   border-radius: 2px;
+  will-change: transform;
   transition: transform 200ms ease;
 
   &:hover { transform: translateY(-2px); }
@@ -165,10 +222,47 @@ const CVLink = styled(RouterLink)`
 
 const ease = [0.2, 0.7, 0.2, 1];
 
+/**
+ * Custom hook: track the mouse inside an element and write its position
+ * to CSS variables on a target ref, throttled to one update per animation
+ * frame. CSS variables are GPU-cheap and don't trigger layout.
+ */
+function useMouseTracking(reduce) {
+  const rafRef = useRef(0);
+  const pendingRef = useRef(null);
+
+  const flush = useCallback(() => {
+    rafRef.current = 0;
+    const job = pendingRef.current;
+    if (!job) return;
+    const { el, x, y } = job;
+    el.style.setProperty('--mx', `${x}px`);
+    el.style.setProperty('--my', `${y}px`);
+    pendingRef.current = null;
+  }, []);
+
+  const onMove = useCallback((e) => {
+    if (reduce) return;
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    pendingRef.current = {
+      el,
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    };
+    if (!rafRef.current) {
+      rafRef.current = window.requestAnimationFrame(flush);
+    }
+  }, [reduce, flush]);
+
+  return onMove;
+}
+
 export default function Stations() {
   const { t } = useLanguage();
   const reduce = useReducedMotion();
   const ref = useRef(null);
+  const onMove = useMouseTracking(reduce);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -201,29 +295,22 @@ export default function Stations() {
         </TimelineSVG>
 
         {t.stations.items.map((item, i) => (
-          <ItemWrap
+          <Row
             key={i}
+            onMouseMove={onMove}
             initial={reduce ? false : { opacity: 0, x: -32 }}
             whileInView={reduce ? undefined : { opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '0px 0px -80px 0px' }}
             transition={{ duration: 0.6, ease }}
           >
             <Node aria-hidden="true" />
-            <Row>
+            <RowInner>
               <Year>{item.year}</Year>
               <Role>{item.role}</Role>
               <Company>{item.company}</Company>
-            </Row>
-            <Underfill aria-hidden="true">
-              <motion.div
-                className="fill"
-                initial={reduce ? false : { scaleX: 0 }}
-                whileInView={reduce ? undefined : { scaleX: 1 }}
-                viewport={{ once: true, margin: '0px 0px -80px 0px' }}
-                transition={{ duration: 0.9, ease, delay: 0.2 }}
-              />
-            </Underfill>
-          </ItemWrap>
+            </RowInner>
+            <Separator aria-hidden="true" />
+          </Row>
         ))}
       </TimelineWrap>
 
