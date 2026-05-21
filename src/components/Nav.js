@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useLanguage } from '../i18n/LanguageContext';
 
 const NavBar = styled.header`
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 40;
@@ -13,10 +14,10 @@ const NavBar = styled.header`
     props.$scrolled ? 'rgba(255,255,255,0.82)' : 'transparent'};
   border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(10,10,10,0.10)' : 'transparent')};
   transition: background 300ms ease, border-color 300ms ease;
+  /* Ensure nav stays a known height so sticky offsets work correctly */
+  width: 100%;
 
-  @media print {
-    display: none;
-  }
+  @media print { display: none; }
 `;
 
 const Inner = styled.div`
@@ -54,12 +55,8 @@ const NavLinks = styled.ul`
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.fgMuted};
 
-  a {
-    transition: color 200ms ease;
-  }
-  a:hover {
-    color: ${({ theme }) => theme.colors.crimson};
-  }
+  a { transition: color 200ms ease; }
+  a:hover { color: ${({ theme }) => theme.colors.crimson}; }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: none;
@@ -89,7 +86,6 @@ const LangToggle = styled.button`
   }
   span.active { opacity: 1; }
   .sep { opacity: 0.3; margin: 0 4px; }
-
   &:hover span { opacity: 1; }
 `;
 

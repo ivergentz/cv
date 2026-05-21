@@ -9,14 +9,12 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     background: ${({ theme }) => theme.colors.bg};
-    /* Global safety net against any horizontal overflow from descendant
-       sections during scroll or viewport resize. Has full cross-browser
-       support and is sufficient for this use case. */
-    overflow-x: hidden;
   }
 
   html {
     scroll-behavior: smooth;
+    /* No overflow-x here — it would break position: sticky on Nav.
+       Horizontal overflow is contained in Products.js via its own Outer. */
   }
 
   @media (prefers-reduced-motion: reduce) {
