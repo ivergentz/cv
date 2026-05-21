@@ -8,9 +8,13 @@ import { useLanguage } from '../../i18n/LanguageContext';
 /**
  * Hero — Tri-Color (White / Crimson / Black).
  *
- * v1.3.3: Corner markers (coordinates + version stamp) removed.
- * They were overlapping with the status badge and adding visual noise
- * for no informational gain.
+ * v1.3.7 fixes:
+ *   - Blueprint grid lines down to 5% opacity (subtler against the
+ *     crimson highlight block, reduces additive colour mixing)
+ *   - H1 word-break + hyphens enable long German compounds to wrap
+ *     inside max-width container (fixes Architekturverstaendnis cutoff)
+ *   - Initial opacity on scroll-drift raised from 0.4 to 0.7 so the
+ *     crimson block looks rich on first paint, not pale pink
  */
 
 const Content = styled.div`
@@ -79,10 +83,16 @@ const H1 = styled(motion.h1)`
   font-weight: 400;
   margin: 0;
   color: ${({ theme }) => theme.colors.fg};
+  /* Allow long German compounds to wrap inside the highlight block */
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: break-word;
+  word-break: break-word;
 
   .line {
     display: inline-block;
     will-change: transform, opacity;
+    max-width: 100%;
   }
 
   .em {
@@ -93,6 +103,7 @@ const H1 = styled(motion.h1)`
     margin: 0 -0.05em;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
+    /* Inherit hyphenation from parent H1 */
   }
 
   transition: letter-spacing 400ms ease;
@@ -171,7 +182,9 @@ export default function Hero() {
 
   const xA = useTransform(scrollYProgress, [0, 0.25], [-24, 0]);
   const xB = useTransform(scrollYProgress, [0, 0.35], [48, 0]);
-  const opacity = useTransform(scrollYProgress, [0, 0.15], [0.4, 1]);
+  /* Raised from 0.4 to 0.7 — crimson block reads as rich red even
+     in the initial scroll state, no more pale-pink appearance */
+  const opacity = useTransform(scrollYProgress, [0, 0.15], [0.7, 1]);
 
   const container = {
     hidden: {},
@@ -185,7 +198,9 @@ export default function Hero() {
   return (
     <SectionFrame bg="dark" hero hideHairline aria-labelledby="hero-heading">
       <div ref={ref} style={{ position: 'relative' }}>
-        <BlueprintGrid />
+        {/* Grid lines at 5% opacity (was 10% default) — subtler so the
+            crimson highlight block reads cleanly without additive mixing */}
+        <BlueprintGrid lineColor="rgba(220, 20, 60, 0.05)" />
 
         <Content>
           {reduce ? (
