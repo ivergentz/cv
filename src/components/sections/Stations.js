@@ -2,14 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
 import Reveal from '../Reveal';
+import Hairline from '../Hairline';
 import { AnimatedLink } from '../Link';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 const Section = styled.section`
+  position: relative;
   padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
 `;
 
 const Num = styled.div`
@@ -94,6 +95,7 @@ export default function Stations() {
   const { t } = useLanguage();
   return (
     <Section id="stationen" aria-labelledby="stations-heading">
+      <Hairline />
       <Reveal>
         <Num>{t.sectionNum.stations}</Num>
       </Reveal>

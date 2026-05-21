@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import Reveal from '../Reveal';
+import Hairline from '../Hairline';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 const Section = styled.section`
+  position: relative;
   padding: clamp(80px, 11vw, 160px) ${({ theme }) => theme.gutter};
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  border-top: 1px solid ${({ theme }) => theme.colors.hairline};
 `;
 
 const Num = styled.div`
@@ -79,6 +80,7 @@ export default function Principles() {
   const { t } = useLanguage();
   return (
     <Section id="prinzipien" aria-labelledby="principles-heading">
+      <Hairline />
       <Reveal>
         <Num>{t.sectionNum.principles}</Num>
       </Reveal>
