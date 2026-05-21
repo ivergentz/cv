@@ -8,14 +8,24 @@ import { useLanguage } from '../../i18n/LanguageContext';
 /**
  * Hero — Tri-Color (White / Crimson / Black).
  *
- * v1.3.7 fixes:
- *   - Blueprint grid lines down to 5% opacity (subtler against the
- *     crimson highlight block, reduces additive colour mixing)
- *   - H1 word-break + hyphens enable long German compounds to wrap
- *     inside max-width container (fixes Architekturverstaendnis cutoff)
- *   - Initial opacity on scroll-drift raised from 0.4 to 0.7 so the
- *     crimson block looks rich on first paint, not pale pink
+ * v1.3.10 fixes:
+ *   - Wrapper div around BlueprintGrid + Content now has overflow: hidden.
+ *     Without it, the scroll-driven translateX(48px) on the .em span and
+ *     the negative margins on the highlight block could push content past
+ *     the right edge, causing horizontal page scroll.
+ *   - xB translate distance reduced from 48px to 24px (symmetric with xA),
+ *     halving the worst-case overflow.
+ *   - Negative margin on .em removed — was -0.05em on both sides which
+ *     pushed the crimson block 6.6px past the container edge at peak
+ *     font-size. Block now sits cleanly within the line.
  */
+
+const Wrap = styled.div`
+  position: relative;
+  /* Overflow guard: contains all scroll-driven transforms and the .em
+     highlight block within the hero. Prevents horizontal page scroll. */
+  overflow: hidden;
+`;
 
 const Content = styled.div`
   position: relative;
@@ -83,7 +93,6 @@ const H1 = styled(motion.h1)`
   font-weight: 400;
   margin: 0;
   color: ${({ theme }) => theme.colors.fg};
-  /* Allow long German compounds to wrap inside the highlight block */
   hyphens: auto;
   -webkit-hyphens: auto;
   overflow-wrap: break-word;
@@ -100,10 +109,9 @@ const H1 = styled(motion.h1)`
     background: ${({ theme }) => theme.colors.crimson};
     color: #FFFFFF;
     padding: 0 0.16em 0.04em;
-    margin: 0 -0.05em;
+    /* No negative margin — was -0.05em which pushed block past container edge. */
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
-    /* Inherit hyphenation from parent H1 */
   }
 
   transition: letter-spacing 400ms ease;
@@ -180,10 +188,10 @@ export default function Hero() {
     offset: ['start start', 'end start'],
   });
 
+  /* Symmetric translate distances — xA goes -24→0, xB goes +24→0.
+     Previously xB was +48 which could push wider lines past right edge. */
   const xA = useTransform(scrollYProgress, [0, 0.25], [-24, 0]);
-  const xB = useTransform(scrollYProgress, [0, 0.35], [48, 0]);
-  /* Raised from 0.4 to 0.7 — crimson block reads as rich red even
-     in the initial scroll state, no more pale-pink appearance */
+  const xB = useTransform(scrollYProgress, [0, 0.35], [24, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.15], [0.7, 1]);
 
   const container = {
@@ -197,9 +205,7 @@ export default function Hero() {
 
   return (
     <SectionFrame bg="dark" hero hideHairline aria-labelledby="hero-heading">
-      <div ref={ref} style={{ position: 'relative' }}>
-        {/* Grid lines at 5% opacity (was 10% default) — subtler so the
-            crimson highlight block reads cleanly without additive mixing */}
+      <Wrap ref={ref}>
         <BlueprintGrid lineColor="rgba(220, 20, 60, 0.05)" />
 
         <Content>
@@ -257,7 +263,7 @@ export default function Hero() {
             </motion.div>
           )}
         </Content>
-      </div>
+      </Wrap>
     </SectionFrame>
   );
 }
