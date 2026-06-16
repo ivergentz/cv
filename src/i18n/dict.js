@@ -8,7 +8,7 @@ export const dict = {
     },
     hero: {
       h1a: 'Product Builder',
-      h1b: 'mit Architekturverständnis.',
+      h1b: 'mit Tech-Tiefe.',
       sub: '10 Jahre Produktmanagement und Marketing — vom Robert Bosch Konzern bis zum eigenen SaaS-Portfolio. Ich verbinde strategisches Produktdenken mit technischer Umsetzung.',
       loc: 'Hamburg',
       avail: 'Offen für Gespräche',
@@ -147,7 +147,7 @@ export const dict = {
     },
     hero: {
       h1a: 'Product builder',
-      h1b: "with an architect's eye.",
+      h1b: 'with technical depth.',
       sub: 'Ten years across product management and marketing — from the Robert Bosch group to my own SaaS portfolio. I bridge strategic product thinking with technical execution.',
       loc: 'Hamburg',
       avail: 'Open to conversations',

@@ -8,16 +8,21 @@ import { useLanguage } from '../../i18n/LanguageContext';
 /**
  * Hero — Tri-Color (White / Crimson / Black).
  *
- * v1.3.10 fixes:
- *   - Wrapper div around BlueprintGrid + Content now has overflow: hidden.
- *     Without it, the scroll-driven translateX(48px) on the .em span and
- *     the negative margins on the highlight block could push content past
- *     the right edge, causing horizontal page scroll.
- *   - xB translate distance reduced from 48px to 24px (symmetric with xA),
- *     halving the worst-case overflow.
- *   - Negative margin on .em removed — was -0.05em on both sides which
- *     pushed the crimson block 6.6px past the container edge at peak
- *     font-size. Block now sits cleanly within the line.
+ * v1.4.0 fixes:
+ *   - Resting state is now offset 0. Previously the scroll-driven xA started
+ *     at -24px at scrollYProgress=0 (i.e. the top of the page, where the hero
+ *     is first seen), so the first line was shifted left and clipped by the
+ *     Wrap's overflow:hidden — the "P" of "Product" was cut off. The lines now
+ *     sit at 0 on first view and only drift apart as the hero scrolls out,
+ *     keeping the parallax feel without ever clipping the headline.
+ *   - Removed `word-break: break-word`, which hard-broke long words mid-word
+ *     ("Architekturverstä|ndnis"). overflow-wrap + hyphens:auto remain as a
+ *     soft fallback; combined with shorter wording the line no longer breaks.
+ *   - Mobile: dedicated font-size clamp + max-width release so the headline
+ *     always fits the viewport on small screens.
+ *
+ * Earlier (v1.3.10): Wrap overflow:hidden contains all transforms to prevent
+ * horizontal page scroll; .em negative margin removed.
  */
 
 const Wrap = styled.div`
@@ -96,7 +101,14 @@ const H1 = styled(motion.h1)`
   hyphens: auto;
   -webkit-hyphens: auto;
   overflow-wrap: break-word;
-  word-break: break-word;
+
+  /* Mobile: shrink and use full width so the headline always fits the
+     viewport. 12vw scales between ~38px (320px) and 56px (480px). */
+  @media (max-width: 480px) {
+    font-size: clamp(38px, 12vw, 56px);
+    max-width: none;
+    letter-spacing: -0.02em;
+  }
 
   .line {
     display: inline-block;
@@ -188,11 +200,12 @@ export default function Hero() {
     offset: ['start start', 'end start'],
   });
 
-  /* Symmetric translate distances — xA goes -24→0, xB goes +24→0.
-     Previously xB was +48 which could push wider lines past right edge. */
-  const xA = useTransform(scrollYProgress, [0, 0.25], [-24, 0]);
-  const xB = useTransform(scrollYProgress, [0, 0.35], [24, 0]);
-  const opacity = useTransform(scrollYProgress, [0, 0.15], [0.7, 1]);
+  /* Resting state (scrollYProgress=0, top of page) must be offset 0 so the
+     headline is never clipped by Wrap's overflow:hidden on first view.
+     The lines drift apart only as the hero scrolls out of frame. */
+  const xA = useTransform(scrollYProgress, [0, 0.4], [0, -20]);
+  const xB = useTransform(scrollYProgress, [0, 0.4], [0, 20]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0.85]);
 
   const container = {
     hidden: {},
