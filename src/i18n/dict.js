@@ -26,12 +26,12 @@ export const dict = {
       contact: '06 — Kontakt',
     },
     positioning: {
-      body: 'Ich bin Iver Bohnes, Produktmensch mit Wurzeln in Marketing und Vertrieb, heute mit Fokus auf digitale SaaS-Produkte. Meine Stationen führten vom Salzburg Airport über das Startup Emmora zu Robert Bosch, wo ich globale SaaS-Portfolios betreut und fünf neue Märkte erschlossen habe. Parallel baue ich als Solo Founder eigene Produkte: RankBrief automatisiert monatliche SEO-Reports für Agenturen, S&I. Wedding ist eine Premium-Plattform für Hochzeitswebsites. Beide sind live und laufen vollständig self-serve. Ich arbeite KI-nativ mit Claude Code als Umsetzungs-Multiplikator — das reduziert die Zeit von der Idee zum funktionierenden Prototyp auf Tage.',
+      body: 'Ich bin Iver Bohnes, Produktmensch mit Wurzeln in Marketing und Vertrieb, heute mit Fokus auf digitale SaaS-Produkte. Meine Stationen führten vom Salzburg Airport über das Startup Emmora zu Robert Bosch, wo ich globale SaaS-Portfolios betreut und fünf neue Märkte erschlossen habe. Parallel baue ich als Solo Founder eigene Produkte: RankBrief automatisiert monatliche SEO-Reports für Agenturen, S&I. Wedding ist eine Premium-Plattform für Hochzeitswebsites, WERKRUF bringt lokales SEO zu Handwerk und Gastronomie. Alle laufen vollständig self-serve. Eine Anmerkung zur Adresse: Diese Seite liegt noch unter ivergentz.de — das ist mein früherer Name, inzwischen heiße ich Iver Bohnes. Die Domain zieht nach. Ich arbeite KI-nativ mit Claude Code als Umsetzungs-Multiplikator — das reduziert die Zeit von der Idee zum funktionierenden Prototyp auf Tage.',
     },
     products: {
       title1: 'Eigene',
       title2: 'Produkte.',
-      intro: 'Drei Produkte, vollständig self-serve. Architektur, Produktstrategie und Umsetzung aus einer Hand.',
+      intro: 'Drei Produkte live, weitere in Umsetzung. Architektur, Produktstrategie und Umsetzung aus einer Hand.',
       labels: {
         stack: 'Stack',
         problem: 'Problem',
@@ -85,7 +85,7 @@ export const dict = {
       intro: 'Zehn Jahre zwischen Marketing, Produkt und Umsetzung — in Konzern, Startup und als Solo Founder.',
       cv: 'Lebenslauf ansehen →',
       items: [
-        { year: '2025 — heute', role: 'Fachreferent Kommunikation', company: 'VBG Hamburg' },
+        { year: '2025 — heute', role: 'Produktverantwortung interne Systeme', company: 'VBG Hamburg' },
         { year: '2024', role: 'Produktmanager', company: 'SEMA Systems' },
         { year: '2023 — 2024', role: 'Produktmanager Global (IT)', company: 'Robert Bosch GmbH' },
         { year: '2022 — 2023', role: 'Product Owner & Projektmanager', company: 'Emmora GmbH' },
@@ -165,12 +165,12 @@ export const dict = {
       contact: '06 — Contact',
     },
     positioning: {
-      body: "I'm Iver Bohnes — a product person rooted in marketing and sales, today focused on digital SaaS products. My path led from Salzburg Airport through the startup Emmora to Robert Bosch, where I owned global SaaS portfolios and opened five new markets. In parallel I build my own products as a solo founder: RankBrief automates monthly SEO reports for agencies, S&I. Wedding is a premium platform for wedding websites. Both are live and fully self-serve. I work AI-natively, using Claude Code as an execution multiplier — shrinking idea-to-working-prototype from weeks to days.",
+      body: "I'm Iver Bohnes — a product person rooted in marketing and sales, today focused on digital SaaS products. My path led from Salzburg Airport through the startup Emmora to Robert Bosch, where I owned global SaaS portfolios and opened five new markets. In parallel I build my own products as a solo founder: RankBrief automates monthly SEO reports for agencies, S&I. Wedding is a premium platform for wedding websites, and WERKRUF brings local SEO to trades and hospitality. All of them run fully self-serve. One note on the address: this site still lives at ivergentz.de — that is my former name; I now go by Iver Bohnes, and the domain will follow. I work AI-natively, using Claude Code as an execution multiplier — shrinking idea-to-working-prototype from weeks to days.",
     },
     products: {
       title1: 'Own',
       title2: 'products.',
-      intro: 'Three products, fully self-serve. Architecture, strategy and execution from a single hand.',
+      intro: 'Three products live, more in progress. Architecture, strategy and execution from a single hand.',
       labels: {
         stack: 'Stack',
         problem: 'Problem',
@@ -224,7 +224,7 @@ export const dict = {
       intro: 'Ten years across marketing, product and execution — in corporate, startup and as a solo founder.',
       cv: 'View CV →',
       items: [
-        { year: '2025 — today', role: 'Communications Specialist', company: 'VBG Hamburg' },
+        { year: '2025 — today', role: 'Product Owner, Internal Systems', company: 'VBG Hamburg' },
         { year: '2024', role: 'Product Manager', company: 'SEMA Systems' },
         { year: '2023 — 2024', role: 'Product Manager Global (IT)', company: 'Robert Bosch GmbH' },
         { year: '2022 — 2023', role: 'Product Owner & Project Manager', company: 'Emmora GmbH' },

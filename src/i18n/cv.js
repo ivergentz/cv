@@ -56,8 +56,8 @@ export const cvContent = {
         status: 'In Umsetzung',
         url: 'sarahiver.de',
         bullets: [
-          'Self-Service-Variante der Hochzeitswebseiten — gleiche Themes, ohne Done-for-you-Betreuung, für den preissensiblen Teil des Marktes.',
-          'Zweite Preisstufe auf derselben mandantenfähigen Plattform; kein zweiter Betrieb, kein zweiter Code-Pfad.',
+          'Eigenständiges Self-Service-Produkt für den preissensiblen Teil des Hochzeitsmarktes — bewusst mit eigenen Themes, um das Premium-Produkt nicht zu kannibalisieren.',
+          'Zweite Marke statt zweiter Preisstufe: getrennte Positionierung, getrenntes Design, gemeinsamer technischer Unterbau.',
         ],
         stack: 'React · Supabase · Stripe',
       },
@@ -219,8 +219,8 @@ export const cvContent = {
         status: 'In progress',
         url: 'sarahiver.de',
         bullets: [
-          'Self-service tier of the wedding site platform — same themes, without the done-for-you service, for the price-sensitive part of the market.',
-          'A second price point on the same multi-tenant platform; no second deployment, no second code path.',
+          'A standalone self-service product for the price-sensitive end of the wedding market — deliberately built with its own themes so it does not cannibalise the premium offering.',
+          'A second brand rather than a second price point: separate positioning, separate design, shared technical foundation.',
         ],
         stack: 'React · Supabase · Stripe',
       },
