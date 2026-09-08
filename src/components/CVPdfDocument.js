@@ -167,8 +167,9 @@ const styles = StyleSheet.create({
   skillItems: { fontSize: 9, color: FG, lineHeight: 1.4 },
 
   /* Languages */
-  langGrid: { flexDirection: 'row', gap: 14 },
-  langItem: { flex: 1, flexDirection: 'row' },
+  /* Vier Sprachen passen nicht mehr nebeneinander — zweispaltig umbrechen. */
+  langGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 14 },
+  langItem: { flexBasis: '45%', flexDirection: 'row', marginBottom: 3 },
   langName: { fontSize: 10, color: FG, marginRight: 6 },
   langLevel: { fontSize: 9.5, color: MUTED },
 });
@@ -176,16 +177,16 @@ const styles = StyleSheet.create({
 export default function CVPdfDocument({ cv, lang }) {
   return (
     <Document
-      title={lang === 'de' ? 'Lebenslauf — Iver Gentz' : 'CV — Iver Gentz'}
-      author="Iver Gentz"
+      title={lang === 'de' ? 'Lebenslauf — Iver Bohnes' : 'CV — Iver Bohnes'}
+      author="Iver Bohnes"
     >
       <Page size="A4" style={styles.page} wrap>
         {/* === Compact header (top of page 1, no longer fixed) === */}
         <View style={styles.header}>
-          <Text style={styles.name}>Iver Gentz</Text>
+          <Text style={styles.name}>Iver Bohnes</Text>
           <Text style={styles.role}>{cv.role}</Text>
           <Text style={styles.meta}>
-            Hamburg, Deutschland  ·  hallo@ivergentz.de  ·  +49 176 66631237  ·  ivergentz.de
+            Hamburg, Deutschland  ·  iverbohnes@gmail.com  ·  +49 176 66631237  ·  ivergentz.de
           </Text>
         </View>
 

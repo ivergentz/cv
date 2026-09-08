@@ -1,4 +1,4 @@
-# Iver Gentz — Portfolio
+# Iver Bohnes — Portfolio
 
 Personal portfolio site. Built with Create React App, styled-components, and React Router.
 
@@ -20,7 +20,7 @@ public/
 ├── manifest.json
 ├── images/                RankBrief, S&I. Wedding, WERKRUF, Portrait
 └── documents/
-    └── cv-iver-gentz.pdf
+    └── cv-iver-bohnes.pdf
 
 src/
 ├── App.js                 Routen + ThemeProvider + LanguageProvider
@@ -111,7 +111,7 @@ localStorage, da Cookies/Storage bewusst nicht genutzt werden).
 
 ## Anpassungen
 
-- **CV austauschen:** `public/documents/cv-iver-gentz.pdf` ersetzen
+- **CV austauschen:** `public/documents/cv-iver-bohnes.pdf` ersetzen
 - **Screenshots austauschen:** `public/images/rankbrief.png`, `sarahiver.png`,
   `werkruf.png` — gleiche Dateinamen, 16:10 optimal
 - **Portrait austauschen:** `public/images/portrait.png` (wird nur als OG-Image genutzt)

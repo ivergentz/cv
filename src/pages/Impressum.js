@@ -51,7 +51,7 @@ export default function Impressum() {
 
   useEffect(() => {
     document.title =
-      lang === 'de' ? 'Impressum — Iver Gentz' : 'Imprint — Iver Gentz';
+      lang === 'de' ? 'Impressum — Iver Bohnes' : 'Imprint — Iver Bohnes';
   }, [lang]);
 
   return (
@@ -68,7 +68,7 @@ export default function Impressum() {
             : 'Information according to § 5 DDG'}
         </h2>
         <p>
-          Iver Gentz
+          Iver Bohnes
           <br />
           Große Freiheit 82
           <br />
@@ -84,8 +84,8 @@ export default function Impressum() {
           {lang === 'de' ? 'Telefon' : 'Phone'}: +49 176 66631237
           <br />
           E-Mail:{' '}
-          <AnimatedLink href="mailto:hallo@ivergentz.de">
-            hallo@ivergentz.de
+          <AnimatedLink href="mailto:iverbohnes@gmail.com">
+            iverbohnes@gmail.com
           </AnimatedLink>
         </p>
       </Block>
@@ -110,7 +110,7 @@ export default function Impressum() {
             : 'Responsible for content according to § 18 (2) MStV'}
         </h2>
         <p>
-          Iver Gentz
+          Iver Bohnes
           <br />
           Große Freiheit 82, 22767 Hamburg
         </p>

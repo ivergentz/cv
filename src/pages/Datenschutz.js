@@ -52,7 +52,7 @@ export default function Datenschutz() {
 
   useEffect(() => {
     document.title =
-      lang === 'de' ? 'Datenschutz — Iver Gentz' : 'Privacy — Iver Gentz';
+      lang === 'de' ? 'Datenschutz — Iver Bohnes' : 'Privacy — Iver Bohnes';
   }, [lang]);
 
   if (lang === 'en') return <EN t={t} />;
@@ -70,13 +70,13 @@ function DE({ t }) {
       <Block>
         <h2>1. Verantwortlicher</h2>
         <p>
-          Iver Gentz
+          Iver Bohnes
           <br />
           Große Freiheit 82, 22767 Hamburg
           <br />
           E-Mail:{' '}
-          <AnimatedLink href="mailto:hallo@ivergentz.de">
-            hallo@ivergentz.de
+          <AnimatedLink href="mailto:iverbohnes@gmail.com">
+            iverbohnes@gmail.com
           </AnimatedLink>
         </p>
       </Block>
@@ -199,13 +199,13 @@ function EN({ t }) {
       <Block>
         <h2>1. Data controller</h2>
         <p>
-          Iver Gentz
+          Iver Bohnes
           <br />
           Große Freiheit 82, 22767 Hamburg, Germany
           <br />
           Email:{' '}
-          <AnimatedLink href="mailto:hallo@ivergentz.de">
-            hallo@ivergentz.de
+          <AnimatedLink href="mailto:iverbohnes@gmail.com">
+            iverbohnes@gmail.com
           </AnimatedLink>
         </p>
       </Block>

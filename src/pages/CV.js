@@ -353,7 +353,7 @@ export default function CV() {
 
   useEffect(() => {
     document.title =
-      lang === 'de' ? 'Lebenslauf — Iver Gentz' : 'CV — Iver Gentz';
+      lang === 'de' ? 'Lebenslauf — Iver Bohnes' : 'CV — Iver Bohnes';
   }, [lang]);
 
   const handlePrint = () => window.print();
@@ -369,7 +369,7 @@ export default function CV() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `cv-iver-gentz-${lang}.pdf`;
+      a.download = `cv-iver-bohnes-${lang}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -407,12 +407,12 @@ export default function CV() {
         <Doc>
           <Header>
             <HeaderLeft>
-              <Name>Iver Gentz</Name>
+              <Name>Iver Bohnes</Name>
               <Role>{cv.role}</Role>
               <Meta>
                 <span>Hamburg, Deutschland</span>
                 <span className="sep">·</span>
-                <span>hallo@ivergentz.de</span>
+                <span>iverbohnes@gmail.com</span>
                 <span className="sep">·</span>
                 <span>+49 176 66631237</span>
                 <span className="sep">·</span>
@@ -420,7 +420,7 @@ export default function CV() {
               </Meta>
             </HeaderLeft>
             <Photo>
-              <img src={`${process.env.PUBLIC_URL}/images/portrait.png`} alt="Iver Gentz" />
+              <img src={`${process.env.PUBLIC_URL}/images/portrait.png`} alt="Iver Bohnes" />
             </Photo>
           </Header>
 

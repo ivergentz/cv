@@ -112,7 +112,7 @@ export default function Nav() {
   return (
     <NavBar $scrolled={scrolled}>
       <Inner>
-        <Brand to="/" aria-label="Iver Gentz — Startseite" onClick={handleBrandClick}>
+        <Brand to="/" aria-label="Iver Bohnes — Startseite" onClick={handleBrandClick}>
           <span className="bracket">[</span>IG<span className="bracket">]</span>&nbsp;&nbsp;IVER GENTZ
         </Brand>
 

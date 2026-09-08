@@ -209,7 +209,7 @@ export default function Hero() {
         <Eyebrow>Lebenslauf — Projekt · Produkt · Marketing</Eyebrow>
         <Name>
           <NameLight>Iver</NameLight>
-          <NameBold>Gentz</NameBold>
+          <NameBold>Bohnes</NameBold>
         </Name>
         <Summary>
           10 Jahre Erfahrung in Produktentwicklung, Projektmanagement und Growth —
@@ -230,7 +230,7 @@ export default function Hero() {
           </MetaItem>
         </MetaBar>
         <CTARow>
-          <BtnPrimary href="/cv_gentz.pdf" download="CV_Iver_Gentz.pdf">
+          <BtnPrimary href="/cv_gentz.pdf" download="CV_Iver_Bohnes.pdf">
             CV herunterladen
           </BtnPrimary>
           <BtnOutline onClick={scrollToContact}>
@@ -240,7 +240,7 @@ export default function Hero() {
       </TextBlock>
 
       <PhotoWrap>
-        <Photo src="/portrait.jpg" alt="Iver Gentz" />
+        <Photo src="/portrait.jpg" alt="Iver Bohnes" />
       </PhotoWrap>
     </Section>
   );

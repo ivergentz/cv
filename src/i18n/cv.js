@@ -123,6 +123,8 @@ export const cvContent = {
     languages: [
       { name: 'Deutsch', level: 'Muttersprache' },
       { name: 'Englisch', level: 'Fließend / Business-tauglich' },
+      { name: 'Norwegisch', level: 'Im Aufbau' },
+      { name: 'Schwedisch', level: 'Im Aufbau' },
     ],
   },
 
@@ -247,6 +249,8 @@ export const cvContent = {
     languages: [
       { name: 'German', level: 'Native' },
       { name: 'English', level: 'Fluent / Business proficient' },
+      { name: 'Norwegian', level: 'Learning' },
+      { name: 'Swedish', level: 'Learning' },
     ],
   },
 };

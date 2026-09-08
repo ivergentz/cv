@@ -95,8 +95,8 @@ export default function Contact() {
         </H2>
       </Reveal>
       <Reveal>
-        <Mail href="mailto:hallo@ivergentz.de" $always>
-          hallo@ivergentz.de
+        <Mail href="mailto:iverbohnes@gmail.com" $always>
+          iverbohnes@gmail.com
         </Mail>
       </Reveal>
       <Meta>

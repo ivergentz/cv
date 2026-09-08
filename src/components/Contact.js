@@ -213,7 +213,7 @@ export default function Contact() {
         body: JSON.stringify({
           sender: { name: form.name, email: 'noreply@ivergentz.de' },
           replyTo: { email: form.email, name: form.name },
-          to: [{ email: 'ivergentz@gmail.com', name: 'Iver Gentz' }],
+          to: [{ email: 'iverbohnes@gmail.com', name: 'Iver Bohnes' }],
           subject: form.subject || `Portfolio-Kontakt von ${form.name}`,
           textContent: `Name: ${form.name}\nE-Mail: ${form.email}\n\n${form.message}`,
           htmlContent: `<p><strong>Name:</strong> ${form.name}</p><p><strong>E-Mail:</strong> ${form.email}</p><hr><p>${form.message.replace(/\n/g, '<br>')}</p>`,
@@ -242,15 +242,15 @@ export default function Contact() {
             ich freue mich über Nachrichten.
           </SubText>
           <DirectLinks>
-            <DirectLink href="mailto:ivergentz@gmail.com">
+            <DirectLink href="mailto:iverbohnes@gmail.com">
               <span>E-Mail</span>
-              ivergentz@gmail.com
+              iverbohnes@gmail.com
             </DirectLink>
             <DirectLink href="tel:+4917666631237">
               <span>Telefon</span>
               +49 176 66631237
             </DirectLink>
-            <DirectLink href="/cv_gentz.pdf" download="CV_Iver_Gentz.pdf">
+            <DirectLink href="/cv_gentz.pdf" download="CV_Iver_Bohnes.pdf">
               <span>CV</span>
               Lebenslauf herunterladen ↓
             </DirectLink>

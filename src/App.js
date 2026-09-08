@@ -45,8 +45,8 @@ function TitleSync() {
     if (pathname === '/') {
       document.title =
         lang === 'de'
-          ? 'Iver Gentz — Product Builder mit Architekturverständnis'
-          : "Iver Gentz — Product Builder with an Architect's Eye";
+          ? 'Iver Bohnes — Product Builder mit Architekturverständnis'
+          : "Iver Bohnes — Product Builder with an Architect's Eye";
     }
   }, [lang, pathname]);
 
