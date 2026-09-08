@@ -37,7 +37,7 @@ export default function Footer() {
   return (
     <Band>
       <Inner>
-        <span>© 2026 IVER GENTZ · BUILT IN HAMBURG</span>
+        <span>© 2026 IVER BOHNES · BUILT IN HAMBURG</span>
         <Links>
           <AnimatedLink as={RouterLink} to="/impressum">
             {t.footer.imprint}

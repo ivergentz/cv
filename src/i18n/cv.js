@@ -50,15 +50,49 @@ export const cvContent = {
         stack:
           'React · Supabase · Stripe · Google Places API · Google Business Profile API · Cloudinary · Claude API',
       },
+          {
+        name: 'sarahiver.de',
+        period: 'Launch Q4 2026',
+        status: 'In Umsetzung',
+        url: 'sarahiver.de',
+        bullets: [
+          'Self-Service-Variante der Hochzeitswebseiten — gleiche Themes, ohne Done-for-you-Betreuung, für den preissensiblen Teil des Marktes.',
+          'Zweite Preisstufe auf derselben mandantenfähigen Plattform; kein zweiter Betrieb, kein zweiter Code-Pfad.',
+        ],
+        stack: 'React · Supabase · Stripe',
+      },
+      {
+        name: 'Career Inbox',
+        period: 'seit Q3 2026',
+        status: 'In Umsetzung',
+        url: 'intern',
+        bullets: [
+          'Jobsuche als Produkt gedacht: Importer für die offenen Stellenfeeds von NAV (NO) und Arbetsförmedlingen (SE), Regelfilter, LLM-Bewertung mit erklärbarem Urteil.',
+          'Gegen 131 selbst gelabelte Stellen kalibriert — 91 % Übereinstimmung; Sprachanforderung wird getrennt vom fachlichen Fit bewertet.',
+        ],
+        stack: 'Next.js · Supabase · Claude API · Vercel Cron',
+      },
+      {
+        name: 'JoStoMo',
+        period: '2026',
+        status: 'Live',
+        url: 'jostomo',
+        bullets: [
+          'Stop-Motion-Web-App, gebaut für meinen Sohn — Aufnahme Bild für Bild, Onion-Skin, Export als Video.',
+          'Nebenprojekt mit klarem Nutzer: ein Kind, das es ohne Erklärung bedienen können muss.',
+        ],
+        stack: 'React · MediaRecorder API',
+      },
     ],
     experience: [
       {
         period: '01/2025 — heute',
-        title: 'Fachreferent & Kommunikationsmanager',
+        title: 'Produktverantwortung interne Systeme',
         company: 'VBG Hamburg — Ressortmanagement RMB',
         bullets: [
-          'Steuerung aller Posteingangskanäle; Konzeption und Einführung einer KI-gestützten Verschlagwortung — Auslesequote +13 %, Warteschlangen-Aufleger −20 %.',
-          'Teilprojektleitung SharePoint & Teams-Migration (Pilot ABRMG, Rollout Q1 2027).',
+          'Produktverantwortung für die unternehmensweite Telefonieplattform und die automatisierte Belegerfassung.',
+          'Konzeption und Einführung einer KI-gestützten Verschlagwortung im Posteingang — Auslesequote +13 %, Warteschlangen-Aufleger −20 %.',
+          'Teilprojektleitung SharePoint- und Teams-Einführung (Pilot ABRMG, Rollout Q1 2027).',
         ],
       },
       {
@@ -179,15 +213,49 @@ export const cvContent = {
         stack:
           'React · Supabase · Stripe · Google Places API · Google Business Profile API · Cloudinary · Claude API',
       },
+          {
+        name: 'sarahiver.de',
+        period: 'Launch Q4 2026',
+        status: 'In progress',
+        url: 'sarahiver.de',
+        bullets: [
+          'Self-service tier of the wedding site platform — same themes, without the done-for-you service, for the price-sensitive part of the market.',
+          'A second price point on the same multi-tenant platform; no second deployment, no second code path.',
+        ],
+        stack: 'React · Supabase · Stripe',
+      },
+      {
+        name: 'Career Inbox',
+        period: 'since Q3 2026',
+        status: 'In progress',
+        url: 'internal',
+        bullets: [
+          'Job search treated as a product: importers for the open job feeds of NAV (NO) and Arbetsförmedlingen (SE), rule-based filtering, LLM scoring with an explainable verdict.',
+          'Calibrated against 131 self-labelled roles — 91 % agreement; language requirement scored separately from role fit.',
+        ],
+        stack: 'Next.js · Supabase · Claude API · Vercel Cron',
+      },
+      {
+        name: 'JoStoMo',
+        period: '2026',
+        status: 'Live',
+        url: 'jostomo',
+        bullets: [
+          'Stop-motion web app built for my son — frame-by-frame capture, onion skinning, video export.',
+          'A side project with one very clear user: a child who has to be able to use it without instructions.',
+        ],
+        stack: 'React · MediaRecorder API',
+      },
     ],
     experience: [
       {
         period: '01/2025 — today',
-        title: 'Communications Specialist',
+        title: 'Product Owner, Internal Systems',
         company: 'VBG Hamburg — RMB division',
         bullets: [
-          'Leading all incoming communication channels; conceived and rolled out AI-assisted tagging — read-rate +13 %, queue drop-offs −20 %.',
-          'Sub-project lead for SharePoint & Teams migration (ABRMG pilot, rollout Q1 2027).',
+          'Product ownership for the organisation-wide telephony platform and automated document capture.',
+          'Designed and rolled out AI-assisted tagging for the inbound queue — read-rate +13 %, queue drop-offs −20 %.',
+          'Sub-project lead for the SharePoint and Teams rollout (ABRMG pilot, rollout Q1 2027).',
         ],
       },
       {
