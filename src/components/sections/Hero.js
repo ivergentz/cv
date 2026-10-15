@@ -60,12 +60,13 @@ const Bg = styled(motion.div)`
     aspect-ratio: 4 / 4.2;
     max-height: 72vh;
     width: 100%;
+    overflow: hidden;
 
     img {
       object-position: 50% 20%;
     }
     &::after {
-      background: linear-gradient(0deg, rgba(17, 17, 17, 1) 0%, rgba(17, 17, 17, 0) 30%);
+      background: linear-gradient(0deg, rgba(17, 17, 17, 1) 0%, rgba(17, 17, 17, 0.55) 16%, rgba(17, 17, 17, 0) 38%);
     }
   }
 `;
