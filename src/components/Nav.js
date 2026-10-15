@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { motion, useScroll, useSpring, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../i18n/LanguageContext';
 
-const NavBar = styled.header`
-  position: -webkit-sticky;
+const Bar = styled.header`
   position: sticky;
   top: 0;
   z-index: 40;
-  backdrop-filter: saturate(160%) blur(12px);
-  -webkit-backdrop-filter: saturate(160%) blur(12px);
-  background: ${(props) =>
-    props.$scrolled ? 'rgba(255,255,255,0.82)' : 'transparent'};
-  border-bottom: 1px solid ${(props) => (props.$scrolled ? 'rgba(10,10,10,0.10)' : 'transparent')};
-  transition: background 300ms ease, border-color 300ms ease;
-  /* Ensure nav stays a known height so sticky offsets work correctly */
-  width: 100%;
+  background: ${({ $scrolled, theme }) => ($scrolled ? 'rgba(244,241,234,0.86)' : theme.colors.paper)};
+  backdrop-filter: ${({ $scrolled }) => ($scrolled ? 'saturate(140%) blur(14px)' : 'none')};
+  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? 'saturate(140%) blur(14px)' : 'none')};
+  transition: background 300ms ease;
 
-  @media print { display: none; }
+  @media print {
+    display: none;
+  }
 `;
 
 const Inner = styled.div`
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  padding: 16px ${({ theme }) => theme.gutter};
+  height: 64px;
+  padding: 0 ${({ theme }) => theme.gutter};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -31,112 +30,182 @@ const Inner = styled.div`
 `;
 
 const Brand = styled(RouterLink)`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  color: ${({ theme }) => theme.colors.crimson};
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  color: ${({ theme }) => theme.colors.ink};
+  white-space: nowrap;
 
-  .bracket { opacity: 0.55; color: ${({ theme }) => theme.colors.fg}; }
+  .role {
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    color: ${({ theme }) => theme.colors.inkMute};
+    @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
+      display: none;
+    }
+  }
 `;
 
-const NavRight = styled.nav`
+const Right = styled.nav`
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: clamp(16px, 2.4vw, 32px);
 `;
 
-const NavLinks = styled.ul`
+const Links = styled.ul`
   display: flex;
-  gap: 22px;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10.5px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.fgMuted};
-
-  a { transition: color 200ms ease; }
-  a:hover { color: ${({ theme }) => theme.colors.crimson}; }
+  gap: clamp(16px, 2.2vw, 28px);
+  font-size: 14px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: none;
   }
 `;
 
-const LangToggle = styled.button`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11px;
-  color: ${({ theme }) => theme.colors.crimson};
-  background: transparent;
-  border: 1px solid rgba(220,20,60,0.45);
-  border-radius: 2px;
-  padding: 5px 9px;
-  cursor: pointer;
-  transition: color 200ms, border-color 200ms, background 200ms;
-  letter-spacing: 0.08em;
+const NavLink = styled.a`
+  position: relative;
+  color: ${({ theme }) => theme.colors.inkSoft};
+  transition: color 200ms ease;
+  padding: 6px 0;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.crimson};
-    color: #FFFFFF;
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 380ms ${({ theme }) => theme.ease};
   }
+  &:hover {
+    color: ${({ theme }) => theme.colors.ink};
+  }
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+`;
+
+const CvLink = styled(RouterLink)`
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.paper};
+  background: ${({ theme }) => theme.colors.ink};
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: background 220ms ease;
+  &:hover {
+    background: ${({ theme }) => theme.colors.accent};
+  }
+`;
+
+const Lang = styled.button`
+  display: inline-flex;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  background: none;
+  border: 0;
+  padding: 6px 2px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.colors.inkMute};
 
   span {
-    opacity: 0.4;
-    transition: opacity 300ms ease;
+    transition: color 200ms ease;
   }
-  span.active { opacity: 1; }
-  .sep { opacity: 0.3; margin: 0 4px; }
-  &:hover span { opacity: 1; }
+  span.on {
+    color: ${({ theme }) => theme.colors.ink};
+  }
+  &:hover span {
+    color: ${({ theme }) => theme.colors.ink};
+  }
+`;
+
+const Progress = styled(motion.div)`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: ${({ theme }) => theme.colors.ink};
+  transform-origin: left center;
+`;
+
+const Base = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: ${({ theme }) => theme.colors.line};
+  opacity: ${({ $show }) => ($show ? 1 : 0)};
+  transition: opacity 300ms ease;
 `;
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const { lang, toggleLang, t } = useLanguage();
-  const location = useLocation();
-  const isHome = location.pathname === '/';
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 8);
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleBrandClick = (e) => {
+  const onBrand = (e) => {
     if (isHome) {
       e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
     }
   };
 
+  const href = (hash) => (isHome ? `#${hash}` : `/#${hash}`);
+
   return (
-    <NavBar $scrolled={scrolled}>
+    <Bar $scrolled={scrolled}>
       <Inner>
-        <Brand to="/" aria-label="Iver Bohnes — Startseite" onClick={handleBrandClick}>
-          <span className="bracket">[</span>IB<span className="bracket">]</span>&nbsp;&nbsp;IVER BOHNES
+        <Brand to="/" onClick={onBrand} aria-label="Iver Bohnes — Start">
+          Iver Bohnes <span className="role">AI Product Manager</span>
         </Brand>
-
-        <NavRight aria-label="Hauptnavigation">
-          {isHome && (
-            <NavLinks>
-              <li><a href="#arbeit">01 / {t.nav.work}</a></li>
-              <li><a href="#stationen">02 / {t.nav.experience}</a></li>
-              <li><a href="#prinzipien">03 / {t.nav.principles}</a></li>
-              <li><a href="#kontakt">04 / {t.nav.contact}</a></li>
-            </NavLinks>
-          )}
-
-          <LangToggle
-            onClick={toggleLang}
-            type="button"
-            aria-label={`Sprache wechseln, aktuell ${lang === 'de' ? 'Deutsch' : 'Englisch'}`}
-          >
-            <span className={lang === 'de' ? 'active' : ''}>DE</span>
-            <span className="sep">/</span>
-            <span className={lang === 'en' ? 'active' : ''}>EN</span>
-          </LangToggle>
-        </NavRight>
+        <Right aria-label={lang === 'de' ? 'Hauptnavigation' : 'Main navigation'}>
+          <Links>
+            <li>
+              <NavLink href={href('projekt')}>{t.nav.work}</NavLink>
+            </li>
+            <li>
+              <NavLink href={href('produkte')}>{t.nav.products}</NavLink>
+            </li>
+            <li>
+              <NavLink href={href('stationen')}>{t.nav.experience}</NavLink>
+            </li>
+            <li>
+              <NavLink href={href('kontakt')}>{t.nav.contact}</NavLink>
+            </li>
+          </Links>
+          <Lang type="button" onClick={toggleLang} aria-label={t.nav.lang}>
+            <span className={lang === 'de' ? 'on' : ''}>DE</span>
+            <span aria-hidden="true">/</span>
+            <span className={lang === 'en' ? 'on' : ''}>EN</span>
+          </Lang>
+          {pathname !== '/cv' && <CvLink to="/cv">{t.nav.cv}</CvLink>}
+        </Right>
       </Inner>
-    </NavBar>
+      <Base $show={scrolled} />
+      {isHome && !reduce && <Progress style={{ scaleX: progress }} aria-hidden="true" />}
+    </Bar>
   );
 }

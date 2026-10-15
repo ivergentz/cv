@@ -38,17 +38,14 @@ function ScrollToTop() {
 }
 
 function TitleSync() {
-  const { lang } = useLanguage();
+  const { t } = useLanguage();
   const { pathname } = useLocation();
 
   useEffect(() => {
     if (pathname === '/') {
-      document.title =
-        lang === 'de'
-          ? 'Iver Bohnes — Product Builder mit Architekturverständnis'
-          : "Iver Bohnes — Product Builder with an Architect's Eye";
+      document.title = t.meta.title;
     }
-  }, [lang, pathname]);
+  }, [t, pathname]);
 
   return null;
 }

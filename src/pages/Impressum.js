@@ -7,13 +7,12 @@ import { AnimatedLink } from '../components/Link';
 const Wrap = styled.main`
   max-width: 720px;
   margin: 0 auto;
-  padding: 80px ${({ theme }) => theme.gutter} 120px;
+  padding: clamp(48px, 8vw, 96px) ${({ theme }) => theme.gutter} 120px;
 `;
 
 const Back = styled(AnimatedLink)`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 14px;
   color: ${({ theme }) => theme.colors.muted};
   margin-bottom: 48px;
   display: inline-block;
@@ -31,9 +30,9 @@ const Block = styled.section`
   margin-bottom: 40px;
 
   h2 {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 11.5px;
-    letter-spacing: 0.22em;
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 13px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: ${({ theme }) => theme.colors.muted};
     margin-bottom: 12px;

@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../i18n/LanguageContext';
 import { cvContent } from '../i18n/cv';
-import { AnimatedLink } from '../components/Link';
+
+/**
+ * CV — rendered as a paper sheet on the warm background.
+ * Same grid as the PDF export (CVPdfDocument): label column + content.
+ * Print: the sheet becomes the page (A4), toolbar and chrome disappear.
+ */
+
+const ease = [0.22, 1, 0.36, 1];
 
 const Page = styled.main`
-  background: ${({ theme }) => theme.colors.bg};
+  background: ${({ theme }) => theme.colors.paperAlt};
   min-height: 100vh;
-  color: ${({ theme }) => theme.colors.fg};
+  padding: clamp(20px, 4vw, 48px) 0 clamp(56px, 8vw, 112px);
+
+  @media print {
+    background: #fff;
+    padding: 0;
+  }
 `;
 
 const Wrap = styled.div`
   max-width: 960px;
   margin: 0 auto;
-  padding: 32px ${({ theme }) => theme.gutter} 80px;
+  padding: 0 ${({ theme }) => theme.gutter};
 
   @media print {
+    max-width: none;
     padding: 0;
-    max-width: 100%;
   }
 `;
 
@@ -26,314 +39,292 @@ const Toolbar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
   flex-wrap: wrap;
   gap: 12px;
+  margin-bottom: 20px;
 
-  @media print { display: none; }
+  @media print {
+    display: none;
+  }
 `;
 
-const ToolbarLeft = styled(AnimatedLink)`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.fgMuted};
-`;
-
-const ToolbarRight = styled.div`
-  display: flex;
-  gap: 12px;
+const Back = styled(RouterLink)`
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.inkSoft};
+  transition: color 200ms ease;
+
+  svg {
+    transition: transform 300ms ${({ theme }) => theme.ease};
+  }
+  &:hover {
+    color: ${({ theme }) => theme.colors.ink};
+  }
+  &:hover svg {
+    transform: translateX(-3px);
+  }
 `;
 
-const ToolbarButton = styled.button`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  background: transparent;
-  color: ${({ theme }) => theme.colors.fg};
-  border: 1px solid ${({ theme }) => theme.colors.hairlineStrong};
-  border-radius: 2px;
-  padding: 8px 14px;
+const Buttons = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const Btn = styled.button`
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: border-color 200ms, background 200ms, color 200ms;
+  border: 1px solid ${({ theme }) => theme.colors.lineStrong};
+  background: transparent;
+  color: ${({ theme }) => theme.colors.ink};
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.crimson};
-    color: ${({ theme }) => theme.colors.crimson};
+    border-color: ${({ theme }) => theme.colors.ink};
   }
-
+  &.solid {
+    background: ${({ theme }) => theme.colors.ink};
+    border-color: ${({ theme }) => theme.colors.ink};
+    color: ${({ theme }) => theme.colors.paper};
+  }
+  &.solid:hover {
+    background: ${({ theme }) => theme.colors.accent};
+    border-color: ${({ theme }) => theme.colors.accent};
+  }
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: progress;
   }
 `;
 
-const DownloadButton = styled(ToolbarButton)`
-  background: ${({ theme }) => theme.colors.fg};
-  color: #FFFFFF;
-  border-color: ${({ theme }) => theme.colors.fg};
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.crimson};
-    color: #FFFFFF;
-    border-color: ${({ theme }) => theme.colors.crimson};
-  }
-`;
-
-const Doc = styled.article`
-  background: transparent;
+const Sheet = styled(motion.article)`
+  background: ${({ theme }) => theme.colors.card};
+  border-radius: 4px;
+  box-shadow: 0 1px 0 rgba(26, 24, 20, 0.04), 0 24px 60px -32px rgba(26, 24, 20, 0.28);
+  padding: clamp(28px, 6vw, 72px) clamp(20px, 6vw, 80px);
 
   @media print {
-    background: #FFFFFF !important;
-    color: #0A0A0A !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+    background: #fff;
   }
 `;
 
 const Header = styled.header`
   display: grid;
-  grid-template-columns: 1fr 120px;
+  grid-template-columns: minmax(0, 1fr) 128px;
   gap: 32px;
-  align-items: start;
-  padding-bottom: 24px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.hairline};
-  margin-bottom: 28px;
+  align-items: end;
+  padding-bottom: 28px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.ink};
 
-  @media (max-width: 620px) {
-    grid-template-columns: 1fr;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 16px;
+    align-items: start;
   }
 `;
 
-const HeaderLeft = styled.div``;
-
 const Name = styled.h1`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(44px, 6vw, 64px);
+  font-size: clamp(40px, 6vw, 64px);
   line-height: 1;
-  letter-spacing: -0.025em;
-  font-weight: 400;
-  margin-bottom: 8px;
-  color: ${({ theme }) => theme.colors.fg};
+  letter-spacing: -0.028em;
+  color: ${({ theme }) => theme.colors.ink};
 `;
 
 const Role = styled.p`
+  margin-top: 10px;
   font-family: ${({ theme }) => theme.fonts.display};
   font-style: italic;
-  font-size: clamp(18px, 2.4vw, 24px);
-  letter-spacing: -0.005em;
-  margin-bottom: 20px;
-  color: ${({ theme }) => theme.colors.crimson};
+  font-size: clamp(19px, 2.2vw, 24px);
+  color: ${({ theme }) => theme.colors.accent};
 `;
 
-const Meta = styled.div`
+const Contact = styled.ul`
+  margin-top: 18px;
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.fgMuted};
+  gap: 4px 20px;
+  font-size: 13.5px;
+  color: ${({ theme }) => theme.colors.inkSoft};
 
-  .sep { color: ${({ theme }) => theme.colors.crimson}; }
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex-direction: column;
+    gap: 2px;
+  }
+  a:hover {
+    color: ${({ theme }) => theme.colors.ink};
+  }
 `;
 
 const Photo = styled.div`
-  width: 120px;
-  height: 150px;
-  background: ${({ theme }) => theme.colors.bgElevated};
-  border: 1px solid ${({ theme }) => theme.colors.hairline};
+  aspect-ratio: 4 / 5;
   overflow: hidden;
-  justify-self: end;
+  border-radius: 2px;
+  background: ${({ theme }) => theme.colors.paperAlt};
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 20%;
-  }
-
-  @media (max-width: 620px) {
-    justify-self: start;
-    width: 110px;
-    height: 140px;
+    object-position: 50% 22%;
   }
 `;
 
-const Tagline = styled.p`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-style: italic;
-  font-size: clamp(16px, 1.9vw, 20px);
-  line-height: 1.45;
-  max-width: 62ch;
-  margin-bottom: 36px;
-  color: ${({ theme }) => theme.colors.fg};
-`;
-
-const Section = styled.section`
-  margin-bottom: 36px;
-  page-break-inside: avoid;
-`;
-
-const SectionLabel = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  background: ${({ theme }) => theme.colors.crimson};
-  color: #FFFFFF;
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 2px;
-  margin-bottom: 18px;
-`;
-
-const Row = styled.div`
+const Section = styled(motion.section)`
   display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 20px;
-  margin-bottom: 18px;
-  page-break-inside: avoid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.line};
+  break-inside: avoid-page;
 
-  @media (max-width: 620px) {
+  &:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     grid-template-columns: 1fr;
-    gap: 4px;
+    gap: 14px;
   }
 `;
 
-const Period = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10.5px;
-  letter-spacing: 0.04em;
-  color: ${({ theme }) => theme.colors.fgMuted};
-  padding-top: 4px;
-  line-height: 1.4;
+const Label = styled.h2`
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.ink};
+  padding-top: 3px;
+
+  small {
+    display: block;
+    margin-top: 6px;
+    font-size: 12.5px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: ${({ theme }) => theme.colors.inkMute};
+    line-height: 1.45;
+  }
+`;
+
+const Lead = styled.p`
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-size: clamp(18px, 1.9vw, 21px);
+  line-height: 1.45;
+  color: ${({ theme }) => theme.colors.ink};
+  max-width: 60ch;
+`;
+
+const Comp = styled.dl`
+  margin: 0;
+  display: grid;
+  gap: 14px;
+
+  dt {
+    font-size: 14px;
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.ink};
+    margin-bottom: 2px;
+  }
+  dd {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: ${({ theme }) => theme.colors.inkSoft};
+  }
+`;
+
+const Entry = styled.div`
+  & + & {
+    margin-top: 22px;
+  }
+  break-inside: avoid;
+`;
+
+const EntryHead = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  h3 {
+    font-size: 20px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: ${({ theme }) => theme.colors.ink};
+  }
+  .period {
+    flex-shrink: 0;
+    font-family: ${({ theme }) => theme.fonts.mono};
+    font-size: 12.5px;
+    color: ${({ theme }) => theme.colors.inkMute};
+    @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+      order: -1;
+    }
+  }
+`;
+
+const Sub = styled.p`
+  margin-top: 2px;
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.inkSoft};
 
   .status {
-    display: block;
-    color: ${({ theme }) => theme.colors.fgDim};
-    margin-top: 2px;
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.accent};
   }
 `;
 
-const Body = styled.div``;
+const Bullets = styled.ul`
+  margin-top: 8px;
+  display: grid;
+  gap: 5px;
 
-const Title = styled.h2`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: -0.015em;
-  margin-bottom: 2px;
-  color: ${({ theme }) => theme.colors.fg};
-`;
-
-const Company = styled.div`
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.fgMuted};
-  margin-bottom: 8px;
-`;
-
-const BulletList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-`;
-
-const Bullet = styled.li`
-  position: relative;
-  padding-left: 14px;
-  margin-bottom: 4px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: ${({ theme }) => theme.colors.fgMuted};
-
-  &::before {
-    content: '—';
+  li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: ${({ theme }) => theme.colors.inkSoft};
+  }
+  li::before {
+    content: '';
     position: absolute;
     left: 0;
-    color: ${({ theme }) => theme.colors.crimson};
+    top: 0.72em;
+    width: 6px;
+    height: 1px;
+    background: ${({ theme }) => theme.colors.accent};
   }
 `;
 
-const Stack = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.fgDim};
-  margin-top: 6px;
-`;
-
-const ProductName = styled(Title)`
-  font-size: 22px;
-`;
-
-const ProductUrl = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.crimson};
-  margin-bottom: 8px;
-`;
-
-const EduTitle = styled(Title)`
-  font-size: 16px;
-`;
-
-const EduSchool = styled(Company)`
-  font-size: 12px;
-  margin-bottom: 0;
-`;
-
-const SkillsGrid = styled.div`
+const Langs = styled.ul`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 24px;
+  font-size: 14.5px;
 
-  @media (max-width: 620px) {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-`;
-
-const SkillCol = styled.div`
-  .label {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 9.5px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.crimson};
-    margin-bottom: 4px;
-  }
-  .items {
-    font-size: 12.5px;
-    line-height: 1.5;
-    color: ${({ theme }) => theme.colors.fgMuted};
-  }
-`;
-
-const LangGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-
-  @media (max-width: 620px) {
-    grid-template-columns: 1fr;
-  }
-
-  div strong {
-    font-weight: 500;
-    margin-right: 8px;
-    color: ${({ theme }) => theme.colors.fg};
-  }
-  div span {
-    color: ${({ theme }) => theme.colors.fgMuted};
-    font-size: 13px;
+  span {
+    color: ${({ theme }) => theme.colors.inkMute};
+    margin-left: 8px;
   }
 `;
 
@@ -341,7 +332,7 @@ const PrintStyles = styled.div`
   @media print {
     @page {
       size: A4;
-      margin: 14mm 16mm;
+      margin: 14mm 15mm;
     }
   }
 `;
@@ -349,18 +340,16 @@ const PrintStyles = styled.div`
 export default function CV() {
   const { lang } = useLanguage();
   const cv = cvContent[lang];
-  const [downloading, setDownloading] = useState(false);
+  const reduce = useReducedMotion();
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    document.title =
-      lang === 'de' ? 'Lebenslauf — Iver Bohnes' : 'CV — Iver Bohnes';
+    document.title = lang === 'de' ? 'Lebenslauf — Iver Bohnes' : 'CV — Iver Bohnes';
   }, [lang]);
 
-  const handlePrint = () => window.print();
-
-  const handleDownload = async () => {
+  const onDownload = async () => {
     try {
-      setDownloading(true);
+      setBusy(true);
       const [{ pdf }, { default: CVPdfDocument }] = await Promise.all([
         import('@react-pdf/renderer'),
         import('../components/CVPdfDocument'),
@@ -369,140 +358,166 @@ export default function CV() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `cv-iver-bohnes-${lang}.pdf`;
+      a.download = lang === 'de' ? 'Lebenslauf-Iver-Bohnes.pdf' : 'CV-Iver-Bohnes.pdf';
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('PDF generation failed:', err);
-      alert(lang === 'de'
-        ? 'PDF-Generierung fehlgeschlagen. Bitte versuche die Drucken-Funktion.'
-        : 'PDF generation failed. Please try the Print function.');
+      alert(cv.labels.error);
     } finally {
-      setDownloading(false);
+      setBusy(false);
     }
   };
 
+  const sec = (i) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 14 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.8, ease, delay: 0.25 + i * 0.08 },
+        };
+
   return (
     <Page>
+      <PrintStyles />
       <Wrap>
         <Toolbar>
-          <ToolbarLeft as={RouterLink} to="/#stationen">
-            ← {cv.labels.back}
-          </ToolbarLeft>
-          <ToolbarRight>
-            <ToolbarButton type="button" onClick={handlePrint}>
+          <Back to="/">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M13 7H1M1 7l5-5M1 7l5 5" stroke="currentColor" strokeWidth="1.4" />
+            </svg>
+            {cv.labels.back}
+          </Back>
+          <Buttons>
+            <Btn type="button" onClick={() => window.print()}>
               {cv.labels.print}
-            </ToolbarButton>
-            <DownloadButton type="button" onClick={handleDownload} disabled={downloading}>
-              {downloading
-                ? (lang === 'de' ? 'Generiere...' : 'Generating...')
-                : `${cv.labels.download} ↓`}
-            </DownloadButton>
-          </ToolbarRight>
+            </Btn>
+            <Btn type="button" className="solid" onClick={onDownload} disabled={busy}>
+              {busy ? cv.labels.generating : cv.labels.download}
+            </Btn>
+          </Buttons>
         </Toolbar>
 
-        <PrintStyles />
-        <Doc>
+        <Sheet
+          initial={reduce ? false : { opacity: 0, y: 24 }}
+          animate={reduce ? undefined : { opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease }}
+        >
           <Header>
-            <HeaderLeft>
+            <div>
               <Name>Iver Bohnes</Name>
               <Role>{cv.role}</Role>
-              <Meta>
-                <span>Hamburg, Deutschland</span>
-                <span className="sep">·</span>
-                <span>iverbohnes@gmail.com</span>
-                <span className="sep">·</span>
-                <span>+49 176 66631237</span>
-                <span className="sep">·</span>
-                <span>ivergentz.de</span>
-              </Meta>
-            </HeaderLeft>
+              <Contact>
+                <li>{cv.contact.location}</li>
+                <li>
+                  <a href={`mailto:${cv.contact.email}`}>{cv.contact.email}</a>
+                </li>
+                <li>
+                  <a href={`tel:${cv.contact.phone.replace(/\s/g, '')}`}>{cv.contact.phone}</a>
+                </li>
+                <li>
+                  <a href={`https://${cv.contact.web}`}>{cv.contact.web}</a>
+                </li>
+              </Contact>
+            </div>
             <Photo>
-              <img src={`${process.env.PUBLIC_URL}/images/portrait.png`} alt="Iver Bohnes" />
+              <img src={`${process.env.PUBLIC_URL}/images/portrait-cv.jpg`} alt="Iver Bohnes" />
             </Photo>
           </Header>
 
-          <Tagline>{cv.tagline}</Tagline>
-
-          <Section>
-            <SectionLabel>{cv.labels.products}</SectionLabel>
-            {cv.products.map((p, i) => (
-              <Row key={i}>
-                <Period>
-                  {p.period}
-                  <span className="status">{p.status}</span>
-                </Period>
-                <Body>
-                  <ProductName>{p.name}</ProductName>
-                  <ProductUrl>{p.url}</ProductUrl>
-                  <BulletList>
-                    {p.bullets.map((b, j) => (
-                      <Bullet key={j}>{b}</Bullet>
-                    ))}
-                  </BulletList>
-                  <Stack>{p.stack}</Stack>
-                </Body>
-              </Row>
-            ))}
+          <Section {...sec(0)}>
+            <Label>{cv.labels.profile}</Label>
+            <Lead>{cv.tagline}</Lead>
           </Section>
 
-          <Section>
-            <SectionLabel>{cv.labels.experience}</SectionLabel>
-            {cv.experience.map((e, i) => (
-              <Row key={i}>
-                <Period>{e.period}</Period>
-                <Body>
-                  <Title>{e.title}</Title>
-                  <Company>{e.company}</Company>
-                  <BulletList>
-                    {e.bullets.map((b, j) => (
-                      <Bullet key={j}>{b}</Bullet>
-                    ))}
-                  </BulletList>
-                </Body>
-              </Row>
-            ))}
-          </Section>
-
-          <Section>
-            <SectionLabel>{cv.labels.education}</SectionLabel>
-            {cv.education.map((e, i) => (
-              <Row key={i}>
-                <Period>{e.period}</Period>
-                <Body>
-                  <EduTitle>{e.title}</EduTitle>
-                  <EduSchool>{e.school}</EduSchool>
-                </Body>
-              </Row>
-            ))}
-          </Section>
-
-          <Section>
-            <SectionLabel>{cv.labels.skills}</SectionLabel>
-            <SkillsGrid>
-              {cv.skills.map((s, i) => (
-                <SkillCol key={i}>
-                  <div className="label">{s.label}</div>
-                  <div className="items">{s.items}</div>
-                </SkillCol>
-              ))}
-            </SkillsGrid>
-          </Section>
-
-          <Section>
-            <SectionLabel>{cv.labels.languages}</SectionLabel>
-            <LangGrid>
-              {cv.languages.map((l, i) => (
-                <div key={i}>
-                  <strong>{l.name}</strong>
-                  <span>— {l.level}</span>
+          <Section {...sec(1)}>
+            <Label>{cv.labels.competencies}</Label>
+            <Comp>
+              {cv.competencies.map((c) => (
+                <div key={c.label}>
+                  <dt>{c.label}</dt>
+                  <dd>{c.items}</dd>
                 </div>
               ))}
-            </LangGrid>
+            </Comp>
           </Section>
-        </Doc>
+
+          <Section {...sec(2)}>
+            <Label>{cv.labels.experience}</Label>
+            <div>
+              {cv.experience.map((e) => (
+                <Entry key={e.period}>
+                  <EntryHead>
+                    <h3>{e.title}</h3>
+                    <span className="period">{e.period}</span>
+                  </EntryHead>
+                  <Sub>{e.company}</Sub>
+                  <Bullets>
+                    {e.bullets.map((b, j) => (
+                      <li key={j}>{b}</li>
+                    ))}
+                  </Bullets>
+                </Entry>
+              ))}
+            </div>
+          </Section>
+
+          <Section {...sec(3)}>
+            <Label>
+              {cv.labels.products}
+              <small>{cv.labels.productsNote}</small>
+            </Label>
+            <div>
+              {cv.products.map((p) => (
+                <Entry key={p.name}>
+                  <EntryHead>
+                    <h3>{p.name}</h3>
+                  </EntryHead>
+                  <Sub>
+                    {p.url}
+                    <span className="status">{p.status}</span>
+                  </Sub>
+                  <Bullets>
+                    {p.bullets.map((b, j) => (
+                      <li key={j}>{b}</li>
+                    ))}
+                  </Bullets>
+                </Entry>
+              ))}
+            </div>
+          </Section>
+
+          <Section {...sec(4)}>
+            <Label>{cv.labels.education}</Label>
+            <div>
+              {cv.education.map((e) => (
+                <Entry key={e.title}>
+                  <EntryHead>
+                    <h3 style={{ fontSize: 18 }}>{e.title}</h3>
+                    <span className="period">{e.period}</span>
+                  </EntryHead>
+                  <Sub>{e.school}</Sub>
+                </Entry>
+              ))}
+            </div>
+          </Section>
+
+          <Section {...sec(5)}>
+            <Label>{cv.labels.languages}</Label>
+            <Langs>
+              {cv.languages.map((l) => (
+                <li key={l.name}>
+                  {l.name}
+                  <span>{l.level}</span>
+                </li>
+              ))}
+            </Langs>
+          </Section>
+        </Sheet>
       </Wrap>
     </Page>
   );

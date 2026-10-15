@@ -1,302 +1,186 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import SectionFrame from '../SectionFrame';
-import Reveal from '../Reveal';
+import SectionHead from '../SectionHead';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-/**
- * Stations — Tri-Color (white bg, crimson timeline, mouse-glow in crimson).
- */
+const ease = [0.22, 1, 0.36, 1];
 
-const Num = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.crimson};
-  margin-bottom: 28px;
-`;
-
-const H2 = styled.h2`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-weight: 400;
-  font-size: clamp(44px, 5.6vw, 84px);
-  line-height: 1;
-  letter-spacing: -0.028em;
-  margin-bottom: 24px;
-  color: ${({ theme }) => theme.colors.fg};
-`;
-
-const Intro = styled.p`
-  max-width: 60ch;
-  color: ${({ theme }) => theme.colors.fgMuted};
-  font-size: 16px;
-  line-height: 1.6;
-  margin-bottom: 80px;
-`;
-
-const TimelineWrap = styled.div`
+const Timeline = styled.div`
   position: relative;
-  padding-left: 60px;
+  margin-top: clamp(48px, 6vw, 88px);
+  padding-left: 32px;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    padding-left: 28px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding-left: 22px;
   }
 `;
 
-const TimelineSVG = styled.svg`
+const Track = styled.div`
   position: absolute;
-  top: 0;
-  left: 12px;
-  width: 12px;
-  height: 100%;
-  overflow: visible;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    left: 4px;
-  }
+  left: 3px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: ${({ theme }) => theme.colors.line};
 `;
 
-const Row = styled(motion.div)`
+const Fill = styled(motion.div)`
+  position: absolute;
+  inset: 0;
+  background: ${({ theme }) => theme.colors.accent};
+  transform-origin: top center;
+`;
+
+const Row = styled(motion.li)`
   position: relative;
-  padding: 28px 0 28px;
-  --mx: 50%;
-  --my: 50%;
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) minmax(0, 220px);
+  gap: 24px;
+  align-items: baseline;
+  padding: 26px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.line};
+
+  &:first-child {
+    padding-top: 0;
+  }
 
   &::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      circle 260px at var(--mx) var(--my),
-      rgba(220, 20, 60, 0.10) 0%,
-      rgba(220, 20, 60, 0.04) 30%,
-      transparent 70%
-    );
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 280ms ease;
-    transform: translateZ(0);
-    will-change: opacity;
-    z-index: 0;
+    left: -32px;
+    top: 36px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.colors.paperAlt};
+    border: 1px solid ${({ theme }) => theme.colors.inkMute};
+    transition: background 300ms ease, border-color 300ms ease;
   }
-
-  &:hover::before { opacity: 1; }
-
-  @media (prefers-reduced-motion: reduce) {
-    &::before { display: none; }
+  &:first-child::before {
+    top: 10px;
+    background: ${({ theme }) => theme.colors.accent};
+    border-color: ${({ theme }) => theme.colors.accent};
   }
-`;
-
-const RowInner = styled.div`
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 140px 1fr 1fr;
-  gap: 32px;
-  align-items: baseline;
+  &:hover::before {
+    background: ${({ theme }) => theme.colors.ink};
+    border-color: ${({ theme }) => theme.colors.ink};
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
-    gap: 4px;
+    gap: 6px;
   }
-`;
-
-const Node = styled.span`
-  position: absolute;
-  left: -55px;
-  top: 38px;
-  width: 12px;
-  height: 12px;
-  background: ${({ theme }) => theme.colors.crimson};
-  border-radius: 1px;
-  z-index: 2;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    left: -23px;
-    top: 32px;
-    width: 8px;
-    height: 8px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    &::before {
+      left: -22px;
+      top: 31px;
+    }
   }
 `;
 
 const Year = styled.span`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  color: ${({ theme }) => theme.colors.crimson};
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.inkMute};
 `;
 
-const Role = styled.span`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(20px, 2.4vw, 28px);
-  letter-spacing: -0.01em;
-  color: ${({ theme }) => theme.colors.fg};
+const Role = styled.div`
+  h3 {
+    font-size: clamp(22px, 2.3vw, 30px);
+    line-height: 1.18;
+    letter-spacing: -0.012em;
+    color: ${({ theme }) => theme.colors.ink};
+  }
+  p {
+    margin-top: 6px;
+    font-size: 15px;
+    color: ${({ theme }) => theme.colors.inkSoft};
+  }
 `;
 
 const Company = styled.span`
-  font-size: 14.5px;
-  color: ${({ theme }) => theme.colors.fgMuted};
+  font-size: 15px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.ink};
+  text-align: right;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    text-align: right;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    text-align: left;
+    order: -1;
+    font-weight: 400;
+    color: ${({ theme }) => theme.colors.inkSoft};
   }
 `;
 
-const Separator = styled.div`
-  position: relative;
-  height: 1px;
-  margin-top: 18px;
-  background: linear-gradient(
-    90deg,
-    ${({ theme }) => theme.colors.crimson} 0%,
-    ${({ theme }) => theme.colors.crimson} 50%,
-    ${({ theme }) => theme.colors.hairline} 50%,
-    ${({ theme }) => theme.colors.hairline} 100%
-  );
-  background-size: 200% 100%;
-  background-position: 100% 0;
-  transition: background-position 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
-  will-change: background-position;
-
-  ${Row}:hover & {
-    background-position: 0 0;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-    background: ${({ theme }) => theme.colors.hairline};
-  }
-`;
-
-const CVLinkWrap = styled.div`
-  margin-top: 64px;
-`;
-
-const CVLink = styled(RouterLink)`
+const CvLink = styled(RouterLink)`
+  margin-top: clamp(40px, 5vw, 56px);
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  background: ${({ theme }) => theme.colors.fg};
-  color: #FFFFFF;
-  padding: 14px 22px;
-  border-radius: 2px;
-  will-change: transform;
-  transition: transform 200ms ease, background 200ms ease;
+  gap: 12px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid ${({ theme }) => theme.colors.ink};
+  font-size: 15px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.ink};
+  transition: background 240ms ease, color 240ms ease;
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.crimson};
-    transform: translateY(-2px);
+  svg {
+    transition: transform 400ms ${({ theme }) => theme.ease};
   }
-  .arrow { transition: transform 200ms ease; }
-  &:hover .arrow { transform: translateX(3px); }
-
-  @media (prefers-reduced-motion: reduce) {
-    &:hover { transform: none; }
-    &:hover .arrow { transform: none; }
+  &:hover {
+    background: ${({ theme }) => theme.colors.ink};
+    color: ${({ theme }) => theme.colors.paper};
+  }
+  &:hover svg {
+    transform: translateX(4px);
   }
 `;
-
-const ease = [0.2, 0.7, 0.2, 1];
-
-function useMouseTracking(reduce) {
-  const rafRef = useRef(0);
-  const pendingRef = useRef(null);
-
-  const flush = useCallback(() => {
-    rafRef.current = 0;
-    const job = pendingRef.current;
-    if (!job) return;
-    const { el, x, y } = job;
-    el.style.setProperty('--mx', `${x}px`);
-    el.style.setProperty('--my', `${y}px`);
-    pendingRef.current = null;
-  }, []);
-
-  const onMove = useCallback((e) => {
-    if (reduce) return;
-    const el = e.currentTarget;
-    const rect = el.getBoundingClientRect();
-    pendingRef.current = {
-      el,
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-    if (!rafRef.current) {
-      rafRef.current = window.requestAnimationFrame(flush);
-    }
-  }, [reduce, flush]);
-
-  return onMove;
-}
 
 export default function Stations() {
   const { t } = useLanguage();
+  const s = t.stations;
   const reduce = useReducedMotion();
   const ref = useRef(null);
-  const onMove = useMouseTracking(reduce);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-
-  const lineLength = useTransform(scrollYProgress, [0.1, 0.85], [0, 1]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 75%', 'end 60%'] });
+  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <SectionFrame bg="dark" id="stationen" aria-labelledby="stations-heading">
-      <Reveal>
-        <Num>{t.sectionNum.stations}</Num>
-      </Reveal>
-      <Reveal>
-        <H2 id="stations-heading">{t.stations.title}</H2>
-      </Reveal>
-      <Reveal>
-        <Intro>{t.stations.intro}</Intro>
-      </Reveal>
+    <SectionFrame bg="alt" id="stationen" aria-labelledby="stations-heading">
+      <SectionHead index="04" label={s.label} title={s.title} intro={s.intro} id="stations-heading" />
 
-      <TimelineWrap ref={ref}>
-        <TimelineSVG aria-hidden="true" preserveAspectRatio="none">
-          <motion.line
-            x1="6" y1="0" x2="6" y2="100%"
-            stroke="#DC143C"
-            strokeWidth="1.5"
-            style={reduce ? undefined : { pathLength: lineLength }}
-            initial={reduce ? undefined : { pathLength: 0 }}
-          />
-        </TimelineSVG>
-
-        {t.stations.items.map((item, i) => (
-          <Row
-            key={i}
-            onMouseMove={onMove}
-            initial={reduce ? false : { opacity: 0, x: -32 }}
-            whileInView={reduce ? undefined : { opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '0px 0px -80px 0px' }}
-            transition={{ duration: 0.6, ease }}
-          >
-            <Node aria-hidden="true" />
-            <RowInner>
+      <Timeline ref={ref}>
+        <Track aria-hidden="true">{!reduce && <Fill style={{ scaleY }} />}</Track>
+        <ol>
+          {s.items.map((item, i) => (
+            <Row
+              key={i}
+              initial={reduce ? false : { opacity: 0, y: 16 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '0px 0px -10% 0px' }}
+              transition={{ duration: 0.8, ease }}
+            >
               <Year>{item.year}</Year>
-              <Role>{item.role}</Role>
+              <Role>
+                <h3>{item.role}</h3>
+                <p>{item.note}</p>
+              </Role>
               <Company>{item.company}</Company>
-            </RowInner>
-            <Separator aria-hidden="true" />
-          </Row>
-        ))}
-      </TimelineWrap>
+            </Row>
+          ))}
+        </ol>
+      </Timeline>
 
-      <CVLinkWrap>
-        <CVLink to="/cv">
-          {t.stations.cv} <span className="arrow">→</span>
-        </CVLink>
-      </CVLinkWrap>
+      <CvLink to="/cv">
+        {s.cv}
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 7h12M13 7L8 2M13 7l-5 5" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+      </CvLink>
     </SectionFrame>
   );
 }

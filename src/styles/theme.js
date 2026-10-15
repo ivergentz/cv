@@ -1,97 +1,97 @@
 /**
- * Tri-Color palette: White / Crimson / Black.
+ * Design tokens — v2 "Editorial"
  *
- * Background: pure white. Accent: crimson (#DC143C) — used for italic
- * highlights, status badges, section markers, CTA buttons. Black: used
- * structurally for the H1, body text, nav hairlines under scroll, and
- * for the "highlight block" treatment on the italic phrase.
+ * Warm paper, near-black ink, one restrained accent (vermilion).
+ * Typography: Newsreader (display, self-hosted) + IBM Plex Sans (text).
+ * IBM Plex Mono is reserved for numbers that should align (years, times).
  *
- * Legacy keys (lime, bg, fg, etc.) are kept as aliases so any section
- * that still imports the old token names continues to render correctly.
- * The semantic role of each key has been remapped — `accent` is now
- * crimson, `lime` is also crimson (for backwards-compat in old files).
+ * All text colours meet WCAG AA on `paper`:
+ *   ink 15.7:1 · inkSoft 7.8:1 · inkMute 4.8:1 · accent 5.3:1
+ *
+ * Legacy keys (bg, fg, fgMuted, crimson, …) are kept as aliases so that
+ * Impressum/Datenschutz and any older component keep rendering.
  */
+
+const paper = '#F4F1EA';
+const paperAlt = '#ECE7DD';
+const card = '#FBFAF7';
+const ink = '#1A1814';
+const inkSoft = '#4F4A42';
+const inkMute = '#6F695E';
+const accent = '#B5361F';
+const accentOnInk = '#E8775F';
 
 export const theme = {
   colors: {
-    /* === Base palette === */
-    bg: '#FFFFFF',                 // primary white base
-    bgElevated: '#F8F6F1',         // slight warmth for elevated surfaces
-    bgFade: '#FAF8F3',             // soft transition tone
-    fg: '#0A0A0A',                 // primary body text
-    fgMuted: 'rgba(10,10,10,0.62)',
-    fgDim: 'rgba(10,10,10,0.42)',
+    paper,
+    paperAlt,
+    card,
+    ink,
+    inkSoft,
+    inkMute,
+    accent,
+    accentOnInk,
+    line: 'rgba(26,24,20,0.12)',
+    lineStrong: 'rgba(26,24,20,0.28)',
+    lineOnInk: 'rgba(244,241,234,0.16)',
+    inkMuteOnInk: '#A9A398',
 
-    /* === Hairlines on light === */
-    hairline: 'rgba(10,10,10,0.10)',
-    hairlineDim: 'rgba(10,10,10,0.06)',
-    hairlineStrong: 'rgba(10,10,10,0.22)',
-
-    /* === Crimson accent === */
-    crimson: '#DC143C',
-    crimsonDeep: '#B5102F',
-    crimsonShadow: '#FFFFFF',      // text on crimson
-
-    /* === Highlight block === */
-    highlightInk: '#0A0A0A',       // for the black highlight pill (used on italic phrase)
-    highlightFg: '#FFFFFF',        // white text on black pill
-
-    /* === Legacy aliases — remapped to crimson === */
-    /* These keep older sections functional without rewriting their imports. */
-    muted: 'rgba(10,10,10,0.62)',
-    accent: '#DC143C',
-    lime: '#DC143C',               // alias → crimson
-    limeDim: 'rgba(220,20,60,0.5)',
-    limeDeep: '#B5102F',
-    limeShadow: '#FFFFFF',
-    shotBg: '#F8F6F1',
-    shotLabel: 'rgba(10,10,10,0.42)',
-    bgCream: '#F8F6F1',
-    bgWhite: '#FFFFFF',
-    bgLime: '#DC143C',
+    /* Legacy aliases */
+    bg: paper,
+    bgElevated: paperAlt,
+    bgFade: paperAlt,
+    fg: ink,
+    fgMuted: inkSoft,
+    fgDim: inkMute,
+    muted: inkSoft,
+    hairline: 'rgba(26,24,20,0.12)',
+    hairlineDim: 'rgba(26,24,20,0.07)',
+    hairlineStrong: 'rgba(26,24,20,0.28)',
+    crimson: accent,
+    crimsonDeep: '#962C18',
+    accentLegacy: accent,
+    lime: accent,
   },
   fonts: {
-    display: "'Instrument Serif', 'Cormorant Garamond', Georgia, serif",
-    sans: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    mono: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace",
+    display: "'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif",
+    sans: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    mono: "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace",
   },
   sizes: {
-    maxWidth: '1200px',
-    narrowWidth: '780px',
+    maxWidth: '1240px',
+    narrowWidth: '760px',
   },
-  gutter: 'clamp(24px, 5vw, 80px)',
+  gutter: 'clamp(20px, 5vw, 72px)',
+  ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
   breakpoints: {
     mobile: '620px',
-    tablet: '820px',
-    desktop: '1024px',
+    tablet: '860px',
+    desktop: '1100px',
   },
 };
 
-/**
- * Per-section background palette.
- *   dark     → pure white (#FFFFFF) — primary background
- *   elevated → soft off-white (#F8F6F1) — slight variation for clients
- *   fade     → near-white transition tone
- *   lime     → crimson (legacy alias, finale sections that wanted accent bg)
- */
+/* Section background helpers (used by SectionFrame) */
 export function bgFor(key) {
   switch (key) {
-    case 'lime': return '#DC143C';
-    case 'elevated': return '#F8F6F1';
-    case 'fade': return '#FAF8F3';
-    default: return '#FFFFFF';
+    case 'ink':
+      return ink;
+    case 'alt':
+    case 'elevated':
+    case 'fade':
+      return paperAlt;
+    default:
+      return paper;
   }
 }
 
-export function fgFor(bgKey) {
-  return bgKey === 'lime' ? '#FFFFFF' : '#0A0A0A';
+export function fgFor(key) {
+  return key === 'ink' ? paper : ink;
 }
 
-export function mutedFor(bgKey) {
-  return bgKey === 'lime' ? 'rgba(255,255,255,0.75)' : 'rgba(10,10,10,0.62)';
+export function mutedFor(key) {
+  return key === 'ink' ? '#A9A398' : inkSoft;
 }
 
-export function hairlineFor(bgKey) {
-  if (bgKey === 'lime') return 'rgba(255,255,255,0.25)';
-  return 'rgba(10,10,10,0.10)';
+export function hairlineFor(key) {
+  return key === 'ink' ? 'rgba(244,241,234,0.16)' : 'rgba(26,24,20,0.12)';
 }

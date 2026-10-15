@@ -1,60 +1,94 @@
 import React from 'react';
 import styled from 'styled-components';
-import Reveal from '../Reveal';
 import SectionFrame from '../SectionFrame';
+import Reveal from '../Reveal';
+import MaskText from '../MaskText';
 import { useLanguage } from '../../i18n/LanguageContext';
 
-const Inner = styled.div`
-  max-width: 62ch;
+/** Profil — one strong sentence, two short paragraphs. */
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: clamp(24px, 5vw, 80px);
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 `;
 
-const Num = styled.div`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 11px;
-  letter-spacing: 0.22em;
+const Label = styled.p`
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.crimson};
-  margin-bottom: 40px;
-`;
+  color: var(--muted);
+  padding-top: 14px;
 
-const Body = styled.p`
-  font-size: clamp(18px, 1.6vw, 22px);
-  line-height: 1.55;
-  color: ${({ theme }) => theme.colors.fg};
-
-  em {
+  .idx {
     font-family: ${({ theme }) => theme.fonts.display};
     font-style: italic;
-    color: ${({ theme }) => theme.colors.crimson};
+    font-size: 17px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: ${({ theme }) => theme.colors.accent};
+    margin-right: 12px;
+  }
+`;
+
+const Lead = styled.h2`
+  font-size: clamp(32px, 4.2vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  max-width: 20ch;
+  text-wrap: balance;
+  color: var(--ink);
+`;
+
+const Cols = styled.div`
+  margin-top: clamp(32px, 4vw, 56px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(20px, 3.5vw, 56px);
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+  }
+
+  p {
+    font-size: 17px;
+    line-height: 1.68;
+    color: var(--muted);
+    max-width: 50ch;
   }
 `;
 
 export default function Positioning() {
   const { t } = useLanguage();
+  const p = t.profile;
   return (
-    <SectionFrame bg="fade" id="positionierung" aria-labelledby="pos-heading">
-      <Inner>
-        <Reveal>
-          <Num id="pos-heading">{t.sectionNum.positioning}</Num>
-        </Reveal>
-        <Reveal>
-          <Body>{renderPositioning(t.positioning.body)}</Body>
-        </Reveal>
-      </Inner>
+    <SectionFrame bg="alt" id="profil" aria-labelledby="profile-heading">
+      <Grid>
+        <Label>
+          <span className="idx" aria-hidden="true">
+            (01)
+          </span>
+          {p.label}
+        </Label>
+        <div>
+          <Lead id="profile-heading">
+            <MaskText text={p.lead} />
+          </Lead>
+          <Cols>
+            {p.body.map((para, i) => (
+              <Reveal key={i} delay={0.15 + i * 0.12}>
+                <p>{para}</p>
+              </Reveal>
+            ))}
+          </Cols>
+        </div>
+      </Grid>
     </SectionFrame>
   );
-}
-
-function renderPositioning(text) {
-  const parts = text
-    .replace(/RankBrief/g, '§§RankBrief§§')
-    .replace(/S&I\. Wedding/g, '§§S&I. Wedding§§')
-    .split(/(§§.*?§§)/);
-
-  return parts.map((part, i) => {
-    if (part.startsWith('§§') && part.endsWith('§§')) {
-      return <em key={i}>{part.slice(2, -2)}</em>;
-    }
-    return <React.Fragment key={i}>{part}</React.Fragment>;
-  });
 }

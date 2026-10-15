@@ -7,13 +7,12 @@ import { AnimatedLink } from '../components/Link';
 const Wrap = styled.main`
   max-width: 720px;
   margin: 0 auto;
-  padding: 80px ${({ theme }) => theme.gutter} 120px;
+  padding: clamp(48px, 8vw, 96px) ${({ theme }) => theme.gutter} 120px;
 `;
 
 const Back = styled(AnimatedLink)`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 12px;
-  letter-spacing: 0.05em;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 14px;
   color: ${({ theme }) => theme.colors.muted};
   margin-bottom: 48px;
   display: inline-block;
@@ -31,9 +30,9 @@ const Block = styled.section`
   margin-bottom: 40px;
 
   h2 {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 11.5px;
-    letter-spacing: 0.22em;
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 13px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: ${({ theme }) => theme.colors.muted};
     margin-bottom: 12px;
@@ -110,22 +109,12 @@ function DE({ t }) {
       </Block>
 
       <Block>
-        <h2>4. Schriftarten (Google Fonts)</h2>
+        <h2>4. Schriftarten</h2>
         <p>
-          Diese Website bindet Schriftarten von Google Fonts (Google Ireland
-          Limited, Dublin) ein. Beim Aufruf einer Seite lädt Ihr Browser diese
-          Schriftarten, wobei Ihre IP-Adresse an Google übermittelt wird. Die
-          Verwendung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO
-          (berechtigtes Interesse an einer einheitlichen und ansprechenden
-          Darstellung). Weitere Informationen:{' '}
-          <AnimatedLink
-            href="https://policies.google.com/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            policies.google.com/privacy
-          </AnimatedLink>
-          .
+          Die verwendeten Schriftarten (Newsreader, IBM Plex) werden lokal von
+          diesem Server ausgeliefert. Es findet keine Verbindung zu Servern
+          Dritter wie Google Fonts statt; Ihre IP-Adresse wird dabei nicht an
+          Dritte übermittelt.
         </p>
       </Block>
 
@@ -237,20 +226,11 @@ function EN({ t }) {
       </Block>
 
       <Block>
-        <h2>4. Google Fonts</h2>
+        <h2>4. Fonts</h2>
         <p>
-          This website uses Google Fonts (Google Ireland Limited, Dublin). When
-          you open a page, your browser loads the fonts, transmitting your IP
-          address to Google. Legal basis is Art. 6 (1) lit. f GDPR (legitimate
-          interest in consistent presentation). More info:{' '}
-          <AnimatedLink
-            href="https://policies.google.com/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            policies.google.com/privacy
-          </AnimatedLink>
-          .
+          The fonts used on this site (Newsreader, IBM Plex) are served locally
+          from this server. No connection is made to third-party servers such
+          as Google Fonts, and your IP address is not passed on to third parties.
         </p>
       </Block>
 
