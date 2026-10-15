@@ -22,27 +22,30 @@ const Dark = styled.section`
 `;
 
 const Grid = styled.div`
+  max-width: ${({ theme }) => theme.sizes.maxWidth};
+  margin: 0 auto;
+  padding: clamp(40px, 5vw, 72px) ${({ theme }) => theme.gutter} clamp(48px, 6vw, 88px);
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  min-height: min(calc(100vh - 60px), 920px);
-  min-height: min(calc(100svh - 60px), 920px);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: end;
+  min-height: min(calc(100vh - 60px), 960px);
+  min-height: min(calc(100svh - 60px), 960px);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
     min-height: 0;
+    padding-top: 24px;
+    gap: 32px;
   }
 `;
 
 const TextCol = styled.div`
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: clamp(40px, 6vw, 88px) clamp(20px, 4vw, 64px) clamp(40px, 6vw, 80px)
-    max(${({ theme }) => theme.gutter}, calc((100vw - ${({ theme }) => theme.sizes.maxWidth}) / 2 + 56px));
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    padding: 32px ${({ theme }) => theme.gutter} 48px;
-  }
+  min-width: 0;
 `;
 
 const Kicker = styled(motion.p)`
@@ -67,8 +70,12 @@ const Kicker = styled(motion.p)`
 
 const H1 = styled.h1`
   --accent: ${({ theme }) => theme.colors.accentOnInk};
-  font-size: clamp(54px, 7vw, 124px);
+  font-size: clamp(48px, 6.4vw, 120px);
   line-height: 0.92;
+
+  @supports (font-size: 1cqi) {
+    font-size: clamp(44px, 14cqi, 132px);
+  }
   font-weight: 600;
   color: ${({ theme }) => theme.colors.paper};
 
@@ -166,15 +173,28 @@ const Name = styled(motion.p)`
   }
 `;
 
+const Figure = styled.figure`
+  margin: 0;
+  width: 100%;
+  /* keep the 4:5 photo inside the first screen */
+  max-width: min(100%, calc((100svh - 60px - 200px) * 0.8));
+  justify-self: end;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    order: -1;
+    max-width: none;
+    justify-self: stretch;
+  }
+`;
+
 const PhotoCol = styled(motion.div)`
   position: relative;
   overflow: hidden;
   background: #1c1c1c;
+  aspect-ratio: 4 / 5;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    order: -1;
-    aspect-ratio: 1 / 1;
-    max-height: 70vh;
+    aspect-ratio: 5 / 4;
   }
 `;
 
@@ -191,20 +211,14 @@ const Photo = styled(motion.img)`
 const Shade = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(17, 17, 17, 0.55) 0%, rgba(17, 17, 17, 0) 28%),
-    linear-gradient(0deg, rgba(17, 17, 17, 0.55) 0%, rgba(17, 17, 17, 0) 30%);
+  background: linear-gradient(0deg, rgba(17, 17, 17, 0.35) 0%, rgba(17, 17, 17, 0) 35%);
   pointer-events: none;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    background: linear-gradient(0deg, rgba(17, 17, 17, 0.85) 0%, rgba(17, 17, 17, 0) 40%);
-  }
 `;
 
-const PhotoMeta = styled(motion.div)`
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 18px;
+const PhotoMeta = styled(motion.figcaption)`
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid ${({ theme }) => theme.colors.lineOnInk};
   display: flex;
   justify-content: space-between;
   font-family: ${({ theme }) => theme.fonts.sans};
@@ -347,22 +361,24 @@ export default function Hero() {
             </Name>
           </TextCol>
 
-          <PhotoCol
-            initial={reduce ? false : { clipPath: 'inset(0% 0% 0% 100%)' }}
-            animate={reduce ? undefined : { clipPath: 'inset(0% 0% 0% 0%)' }}
-            transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1], delay: 0.15 }}
-          >
-            <Photo
-              src={`${process.env.PUBLIC_URL}/images/portrait-web.jpg`}
-              alt={h.portraitAlt}
-              width="900"
-              height="1199"
-              style={reduce ? undefined : { y: imgY }}
-              initial={reduce ? false : { scale: 1.18 }}
-              animate={reduce ? undefined : { scale: 1 }}
-              transition={{ duration: 2, ease, delay: 0.15 }}
-            />
-            <Shade />
+          <Figure>
+            <PhotoCol
+              initial={reduce ? false : { clipPath: 'inset(0% 0% 0% 100%)' }}
+              animate={reduce ? undefined : { clipPath: 'inset(0% 0% 0% 0%)' }}
+              transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1], delay: 0.15 }}
+            >
+              <Photo
+                src={`${process.env.PUBLIC_URL}/images/portrait-web.jpg`}
+                alt={h.portraitAlt}
+                width="900"
+                height="1199"
+                style={reduce ? undefined : { y: imgY }}
+                initial={reduce ? false : { scale: 1.18 }}
+                animate={reduce ? undefined : { scale: 1 }}
+                transition={{ duration: 2, ease, delay: 0.15 }}
+              />
+              <Shade />
+            </PhotoCol>
             <PhotoMeta {...fade(1.3)}>
               <span>{h.place}</span>
               <span>
@@ -370,7 +386,7 @@ export default function Hero() {
                 <span className="time">{time}</span>
               </span>
             </PhotoMeta>
-          </PhotoCol>
+          </Figure>
         </Grid>
       </Dark>
 

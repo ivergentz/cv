@@ -1,7 +1,6 @@
 import React from 'react';
 import IntroModal from '../components/IntroModal';
 import Hero from '../components/sections/Hero';
-import Marquee from '../components/sections/Marquee';
 import Positioning from '../components/sections/Positioning';
 import CaseStudy from '../components/sections/CaseStudy';
 import Products from '../components/sections/Products';
@@ -14,7 +13,6 @@ export default function Home() {
     <main>
       <IntroModal />
       <Hero />
-      <Marquee />
       <Positioning />
       <CaseStudy />
       <Products />

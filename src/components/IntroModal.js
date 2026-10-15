@@ -118,6 +118,10 @@ const Letters = styled.span`
 
 const Letter = styled(motion.span)`
   display: inline-block;
+
+  &.new {
+    color: ${({ theme }) => theme.colors.accentOnInk};
+  }
 `;
 
 const Strike = styled(motion.span)`
@@ -126,7 +130,7 @@ const Strike = styled(motion.span)`
   right: -2%;
   top: 52%;
   height: 0.07em;
-  background: ${({ theme }) => theme.colors.accent};
+  background: ${({ theme }) => theme.colors.accentOnInk};
   transform-origin: left center;
 `;
 
@@ -312,7 +316,6 @@ export default function IntroModal() {
                       {from.map((ch, i) => (
                         <Letter
                           key={`f${i}`}
-                          style={{ color: '#F0485F' }}
                           initial={{ y: '100%' }}
                           animate={
                             phase >= 2
@@ -340,6 +343,7 @@ export default function IntroModal() {
                     <Letters>
                       {to.map((ch, i) => (
                         <Letter
+                          className="new"
                           key={`t${i}`}
                           initial={reduce ? false : { y: '110%' }}
                           animate={{ y: '0%' }}
