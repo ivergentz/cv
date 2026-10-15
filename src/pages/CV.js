@@ -6,9 +6,9 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { cvContent } from '../i18n/cv';
 
 /**
- * CV — rendered as a paper sheet on the warm background.
- * Same grid as the PDF export (CVPdfDocument): label column + content.
- * Print: the sheet becomes the page (A4), toolbar and chrome disappear.
+ * CV — a printed sheet on the paper background, set like the website:
+ * Bodoni headlines, Newsreader text, Plex Sans labels, ultramarine accent.
+ * Same structure as the PDF export (CVPdfDocument).
  */
 
 const ease = [0.22, 1, 0.36, 1];
@@ -25,7 +25,7 @@ const Page = styled.main`
 `;
 
 const Wrap = styled.div`
-  max-width: 960px;
+  max-width: 980px;
   margin: 0 auto;
   padding: 0 ${({ theme }) => theme.gutter};
 
@@ -42,6 +42,7 @@ const Toolbar = styled.div`
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 20px;
+  font-family: ${({ theme }) => theme.fonts.sans};
 
   @media print {
     display: none;
@@ -52,15 +53,14 @@ const Back = styled(RouterLink)`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.inkSoft};
-  transition: color 200ms ease;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.ink};
 
   svg {
     transition: transform 300ms ${({ theme }) => theme.ease};
-  }
-  &:hover {
-    color: ${({ theme }) => theme.colors.ink};
   }
   &:hover svg {
     transform: translateX(-3px);
@@ -74,22 +74,23 @@ const Buttons = styled.div`
 
 const Btn = styled.button`
   height: 42px;
-  padding: 0 18px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 0 16px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   cursor: pointer;
-  border: 1px solid ${({ theme }) => theme.colors.lineStrong};
+  border: 1.5px solid ${({ theme }) => theme.colors.ink};
   background: transparent;
   color: ${({ theme }) => theme.colors.ink};
   transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.ink};
+    background: ${({ theme }) => theme.colors.ink};
+    color: ${({ theme }) => theme.colors.paper};
   }
   &.solid {
     background: ${({ theme }) => theme.colors.ink};
-    border-color: ${({ theme }) => theme.colors.ink};
     color: ${({ theme }) => theme.colors.paper};
   }
   &.solid:hover {
@@ -104,69 +105,80 @@ const Btn = styled.button`
 
 const Sheet = styled(motion.article)`
   background: ${({ theme }) => theme.colors.card};
-  border-radius: 4px;
-  box-shadow: 0 1px 0 rgba(26, 24, 20, 0.04), 0 24px 60px -32px rgba(26, 24, 20, 0.28);
-  padding: clamp(28px, 6vw, 72px) clamp(20px, 6vw, 80px);
+  border: 1px solid ${({ theme }) => theme.colors.line};
+  box-shadow: 10px 10px 0 ${({ theme }) => theme.colors.ink};
+  padding: clamp(28px, 6vw, 72px) clamp(20px, 6vw, 72px);
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    box-shadow: 6px 6px 0 ${({ theme }) => theme.colors.ink};
+  }
 
   @media print {
     box-shadow: none;
-    border-radius: 0;
+    border: 0;
     padding: 0;
-    background: #fff;
   }
 `;
 
 const Header = styled.header`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 128px;
+  grid-template-columns: minmax(0, 1fr) 132px;
   gap: 32px;
   align-items: end;
-  padding-bottom: 28px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.ink};
+  padding-bottom: 24px;
+  border-bottom: 3px solid ${({ theme }) => theme.colors.ink};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    grid-template-columns: minmax(0, 1fr) 88px;
+    grid-template-columns: minmax(0, 1fr) 84px;
     gap: 16px;
     align-items: start;
   }
 `;
 
 const Name = styled.h1`
-  font-size: clamp(40px, 6vw, 64px);
-  line-height: 1;
-  letter-spacing: -0.028em;
+  font-size: clamp(44px, 7.4vw, 84px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
   color: ${({ theme }) => theme.colors.ink};
 `;
 
+const Former = styled.p`
+  margin-top: 8px;
+  font-style: italic;
+  font-size: 17px;
+  color: ${({ theme }) => theme.colors.inkMute};
+`;
+
 const Role = styled.p`
-  margin-top: 10px;
+  margin-top: 14px;
   font-family: ${({ theme }) => theme.fonts.display};
   font-style: italic;
-  font-size: clamp(19px, 2.2vw, 24px);
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.1;
   color: ${({ theme }) => theme.colors.accent};
 `;
 
 const Contact = styled.ul`
-  margin-top: 18px;
+  margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 4px 20px;
-  font-size: 13.5px;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 13px;
   color: ${({ theme }) => theme.colors.inkSoft};
 
+  a:hover {
+    color: ${({ theme }) => theme.colors.accent};
+  }
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     flex-direction: column;
     gap: 2px;
-  }
-  a:hover {
-    color: ${({ theme }) => theme.colors.ink};
   }
 `;
 
 const Photo = styled.div`
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border-radius: 2px;
   background: ${({ theme }) => theme.colors.paperAlt};
 
   img {
@@ -174,14 +186,15 @@ const Photo = styled.div`
     height: 100%;
     object-fit: cover;
     object-position: 50% 22%;
+    filter: grayscale(1) contrast(1.06);
   }
 `;
 
 const Section = styled(motion.section)`
   display: grid;
-  grid-template-columns: 168px minmax(0, 1fr);
+  grid-template-columns: 160px minmax(0, 1fr);
   gap: 24px;
-  padding: 28px 0;
+  padding: 26px 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors.line};
   break-inside: avoid-page;
 
@@ -198,31 +211,32 @@ const Section = styled(motion.section)`
 
 const Label = styled.h2`
   font-family: ${({ theme }) => theme.fonts.sans};
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.ink};
-  padding-top: 3px;
+  padding-top: 5px;
 
   small {
     display: block;
-    margin-top: 6px;
-    font-size: 12.5px;
+    margin-top: 8px;
+    font-family: ${({ theme }) => theme.fonts.serif};
+    font-style: italic;
+    font-size: 14.5px;
     font-weight: 400;
     letter-spacing: 0;
     text-transform: none;
     color: ${({ theme }) => theme.colors.inkMute};
-    line-height: 1.45;
+    line-height: 1.4;
   }
 `;
 
 const Lead = styled.p`
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(18px, 1.9vw, 21px);
-  line-height: 1.45;
+  font-size: clamp(19px, 2vw, 22px);
+  line-height: 1.42;
   color: ${({ theme }) => theme.colors.ink};
-  max-width: 60ch;
+  max-width: 58ch;
 `;
 
 const Comp = styled.dl`
@@ -231,15 +245,16 @@ const Comp = styled.dl`
   gap: 14px;
 
   dt {
-    font-size: 14px;
-    font-weight: 600;
+    font-family: ${({ theme }) => theme.fonts.display};
+    font-size: 20px;
+    line-height: 1.15;
     color: ${({ theme }) => theme.colors.ink};
-    margin-bottom: 2px;
+    margin-bottom: 3px;
   }
   dd {
     margin: 0;
-    font-size: 14.5px;
-    line-height: 1.55;
+    font-size: 16.5px;
+    line-height: 1.5;
     color: ${({ theme }) => theme.colors.inkSoft};
   }
 `;
@@ -263,9 +278,9 @@ const EntryHead = styled.div`
   }
 
   h3 {
-    font-size: 20px;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
+    font-size: 25px;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
     color: ${({ theme }) => theme.colors.ink};
   }
   .period {
@@ -280,15 +295,17 @@ const EntryHead = styled.div`
 `;
 
 const Sub = styled.p`
-  margin-top: 2px;
-  font-size: 14px;
+  margin-top: 4px;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.inkSoft};
 
   .status {
     display: inline-block;
-    margin-left: 10px;
-    font-size: 12px;
-    font-weight: 500;
+    margin-left: 12px;
     color: ${({ theme }) => theme.colors.accent};
   }
 `;
@@ -296,22 +313,22 @@ const Sub = styled.p`
 const Bullets = styled.ul`
   margin-top: 8px;
   display: grid;
-  gap: 5px;
+  gap: 4px;
 
   li {
     position: relative;
-    padding-left: 16px;
-    font-size: 14.5px;
-    line-height: 1.55;
+    padding-left: 18px;
+    font-size: 16.5px;
+    line-height: 1.48;
     color: ${({ theme }) => theme.colors.inkSoft};
   }
   li::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 0.72em;
-    width: 6px;
-    height: 1px;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
     background: ${({ theme }) => theme.colors.accent};
   }
 `;
@@ -320,9 +337,10 @@ const Langs = styled.ul`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px 24px;
-  font-size: 14.5px;
+  font-size: 17px;
 
   span {
+    font-style: italic;
     color: ${({ theme }) => theme.colors.inkMute};
     margin-left: 8px;
   }
@@ -410,6 +428,7 @@ export default function CV() {
           <Header>
             <div>
               <Name>Iver Bohnes</Name>
+              <Former>{cv.formerName}</Former>
               <Role>{cv.role}</Role>
               <Contact>
                 <li>{cv.contact.location}</li>
@@ -497,7 +516,7 @@ export default function CV() {
               {cv.education.map((e) => (
                 <Entry key={e.title}>
                   <EntryHead>
-                    <h3 style={{ fontSize: 18 }}>{e.title}</h3>
+                    <h3 style={{ fontSize: 21 }}>{e.title}</h3>
                     <span className="period">{e.period}</span>
                   </EntryHead>
                   <Sub>{e.school}</Sub>

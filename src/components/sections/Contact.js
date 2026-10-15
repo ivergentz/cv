@@ -11,9 +11,9 @@ const EMAIL = 'iverbohnes@gmail.com';
 
 const Body = styled.p`
   margin-top: clamp(24px, 3vw, 36px);
-  max-width: 52ch;
-  font-size: 18px;
-  line-height: 1.6;
+  max-width: 40ch;
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1.42;
   color: var(--muted);
 `;
 
@@ -28,9 +28,10 @@ const MailRow = styled.div`
 const Mail = styled.a`
   position: relative;
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(30px, 5.2vw, 72px);
-  line-height: 1.1;
-  letter-spacing: -0.025em;
+  font-style: italic;
+  font-size: clamp(30px, 6.4vw, 104px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   color: ${({ theme }) => theme.colors.paper};
   overflow-wrap: anywhere;
 
@@ -39,10 +40,10 @@ const Mail = styled.a`
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0.02em;
-    height: 2px;
+    bottom: 0;
+    height: 4px;
     background: ${({ theme }) => theme.colors.accentOnInk};
-    transform: scaleX(0.18);
+    transform: scaleX(0.14);
     transform-origin: left center;
     transition: transform 700ms ${({ theme }) => theme.ease};
   }
@@ -57,14 +58,16 @@ const Copy = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(244, 241, 234, 0.3);
+  height: 44px;
+  padding: 0 18px;
+  border: 1.5px solid ${({ theme }) => theme.colors.paper};
   background: transparent;
   color: ${({ theme }) => theme.colors.paper};
-  font-size: 14px;
-  font-weight: 500;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   cursor: pointer;
   overflow: hidden;
   min-width: 108px;
@@ -72,7 +75,8 @@ const Copy = styled.button`
   transition: border-color 200ms ease, background 200ms ease;
 
   &:hover {
-    border-color: ${({ theme }) => theme.colors.paper};
+    background: ${({ theme }) => theme.colors.paper};
+    color: ${({ theme }) => theme.colors.ink};
   }
 `;
 
@@ -90,19 +94,20 @@ const Meta = styled.dl`
   }
 
   dt {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 6px;
   }
   dd {
     margin: 0;
-    font-size: 16px;
+    font-size: 19px;
   }
   a {
-    border-bottom: 1px solid rgba(244, 241, 234, 0.3);
+    border-bottom: 1px solid rgba(247, 247, 244, 0.4);
     transition: border-color 200ms ease;
   }
   a:hover {
@@ -127,7 +132,7 @@ export default function Contact() {
 
   return (
     <SectionFrame bg="ink" id="kontakt" aria-labelledby="contact-heading">
-      <SectionHead index="06" label={c.label} title={c.title} id="contact-heading" onInk />
+      <SectionHead index="06" label={c.label} title={c.title} aside="Hamburg" id="contact-heading" />
       <Reveal delay={0.15}>
         <Body>{c.body}</Body>
       </Reveal>

@@ -8,54 +8,59 @@ import CountUp from '../CountUp';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * CaseStudy — the VBG inbound-AI project on an ink band.
- * The flow diagram draws itself on scroll; small packets travel along the
- * connectors to show the pipeline is running, the dashed loop shows how
- * manual corrections feed back.
+ * CaseStudy — the VBG inbound-AI project, set on an ultramarine field.
+ * The flow diagram draws itself on scroll; packets travel along the
+ * connectors; the dashed loop shows corrections feeding back.
  */
 
 const ease = [0.22, 1, 0.36, 1];
 
-const Meta = styled.p`
-  margin-top: 28px;
-  font-size: 14px;
-  color: var(--muted);
+const Standfirst = styled.div`
+  margin-top: clamp(36px, 5vw, 64px);
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: clamp(24px, 4vw, 64px);
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
 
-  strong {
-    color: var(--ink);
-    font-weight: 500;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
-`;
 
-const IntroText = styled.p`
-  margin-top: clamp(40px, 5vw, 64px);
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(22px, 2.2vw, 30px);
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  max-width: 34ch;
-  color: var(--ink);
+  .org {
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  p {
+    font-size: clamp(22px, 2.3vw, 32px);
+    line-height: 1.32;
+    color: var(--ink);
+    max-width: 36ch;
+  }
 `;
 
 /* ---------- Flow diagram ---------- */
 
 const travel = keyframes`
   0%   { left: 0%;   opacity: 0; }
-  12%  { opacity: 1; }
-  88%  { opacity: 1; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
   100% { left: 100%; opacity: 0; }
 `;
 
 const travelY = keyframes`
   0%   { top: 0%;   opacity: 0; }
-  12%  { opacity: 1; }
-  88%  { opacity: 1; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
   100% { top: 100%; opacity: 0; }
 `;
 
 const FlowWrap = styled.div`
-  position: relative;
-  margin-top: clamp(48px, 6vw, 80px);
+  margin-top: clamp(48px, 6vw, 88px);
 `;
 
 const Flow = styled.div`
@@ -72,63 +77,59 @@ const Flow = styled.div`
 const Node = styled(motion.div)`
   position: relative;
   z-index: 1;
-  border: 1px solid rgba(244, 241, 234, 0.34);
-  border-radius: 999px;
-  padding: 14px 18px;
-  text-align: center;
-  font-size: 15px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.paper};
-  background: ${({ theme }) => theme.colors.ink};
+  border: 1.5px solid #fff;
+  padding: 14px 20px 13px;
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-size: clamp(20px, 1.9vw, 26px);
+  line-height: 1;
+  color: #fff;
+  background: var(--field);
   white-space: nowrap;
 
   &.end {
-    background: ${({ theme }) => theme.colors.paper};
-    color: ${({ theme }) => theme.colors.ink};
-    border-color: ${({ theme }) => theme.colors.paper};
+    background: #fff;
+    color: ${({ theme }) => theme.colors.accent};
   }
 
   .n {
+    position: absolute;
+    top: -9px;
+    left: 10px;
+    padding: 0 6px;
+    background: inherit;
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 11.5px;
-    opacity: 0.6;
-    margin-right: 8px;
+    font-size: 11px;
+    line-height: 16px;
   }
 `;
 
 const Conn = styled.div`
   position: relative;
-  height: 1px;
-  margin: 0 6px;
+  height: 1.5px;
 
   .line {
     position: absolute;
     inset: 0;
-    background: rgba(244, 241, 234, 0.4);
-    transform-origin: left center;
+    background: rgba(255, 255, 255, 0.55);
   }
   .packet {
     position: absolute;
-    top: -2px;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.accentOnInk};
+    top: -2.5px;
+    width: 6px;
+    height: 6px;
+    background: #fff;
     animation: ${travel} 2.6s linear infinite;
     animation-delay: ${({ $d }) => $d}s;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    width: 1px;
-    height: 28px;
-    margin: 6px 0 6px 28px;
+    width: 1.5px;
+    height: 30px;
+    margin: 4px 0 4px 32px;
 
-    .line {
-      transform-origin: center top;
-    }
     .packet {
       top: 0;
-      left: -2px;
+      left: -2.5px;
       animation-name: ${travelY};
     }
   }
@@ -145,33 +146,34 @@ const Loop = styled(motion.div)`
   grid-row: 2;
   grid-column: 3 / 8;
   height: 44px;
-  margin: 10px 28px 0;
-  border: 1px dashed rgba(244, 241, 234, 0.35);
+  margin: 10px 32px 0;
+  border: 1.5px dashed rgba(255, 255, 255, 0.5);
   border-top: 0;
-  border-radius: 0 0 18px 18px;
   pointer-events: none;
 
   &::before {
     content: '';
     position: absolute;
-    left: -5px;
+    left: -6px;
     top: 0;
     width: 9px;
     height: 9px;
-    border-left: 1px solid rgba(244, 241, 234, 0.6);
-    border-top: 1px solid rgba(244, 241, 234, 0.6);
+    border-left: 1.5px solid #fff;
+    border-top: 1.5px solid #fff;
     transform: rotate(45deg);
   }
 
   span {
     position: absolute;
     left: 50%;
-    bottom: -10px;
+    bottom: -12px;
     transform: translateX(-50%);
     padding: 0 12px;
-    background: ${({ theme }) => theme.colors.ink};
-    font-size: 13px;
-    color: ${({ theme }) => theme.colors.inkMuteOnInk};
+    background: var(--field);
+    font-family: ${({ theme }) => theme.fonts.serif};
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
     white-space: nowrap;
   }
 
@@ -183,8 +185,9 @@ const Loop = styled(motion.div)`
 const LoopMobile = styled.p`
   display: none;
   margin-top: 16px;
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.inkMuteOnInk};
+  font-style: italic;
+  font-size: 16px;
+  color: var(--muted);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: block;
@@ -194,36 +197,53 @@ const LoopMobile = styled.p`
 /* ---------- Steps ---------- */
 
 const Steps = styled.ol`
-  margin-top: clamp(56px, 7vw, 96px);
+  margin-top: clamp(64px, 8vw, 112px);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(24px, 3.5vw, 56px);
+  border-top: 3px solid #fff;
+
+  > li + li > div {
+    border-left: 1px solid var(--line);
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
+    > li + li > div {
+      border-left: 0;
+      border-top: 1px solid var(--line);
+    }
   }
 `;
 
-const Step = styled.li`
-  border-top: 1px solid var(--line);
-  padding-top: 20px;
+const Step = styled.div`
+  height: 100%;
+  padding: 20px clamp(18px, 2.2vw, 32px) 8px;
+
+  li:first-child > & {
+    padding-left: 0;
+  }
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    padding: 20px 0 24px;
+  }
 
   .num {
     font-family: ${({ theme }) => theme.fonts.display};
     font-style: italic;
-    font-size: 17px;
-    color: ${({ theme }) => theme.colors.accentOnInk};
+    font-size: 44px;
+    line-height: 1;
+    color: #fff;
   }
   h3 {
-    margin: 10px 0 10px;
-    font-size: clamp(24px, 2.2vw, 30px);
-    line-height: 1.15;
-    color: var(--ink);
+    margin: 12px 0 10px;
+    font-size: clamp(26px, 2.4vw, 34px);
+    line-height: 1.05;
+    color: #fff;
   }
   p {
-    font-size: 16px;
-    line-height: 1.62;
+    font-size: 17.5px;
+    line-height: 1.5;
     color: var(--muted);
+    hyphens: auto;
   }
 `;
 
@@ -242,7 +262,7 @@ const Results = styled.dl`
 `;
 
 const Result = styled.div`
-  padding: 28px 24px 30px;
+  padding: 24px clamp(18px, 2.2vw, 32px) 26px;
   border-left: 1px solid var(--line);
 
   &:first-child {
@@ -260,23 +280,24 @@ const Result = styled.div`
 
   dt {
     font-family: ${({ theme }) => theme.fonts.display};
-    font-size: clamp(44px, 5vw, 72px);
-    line-height: 1;
-    letter-spacing: -0.025em;
-    color: var(--ink);
-    margin-bottom: 10px;
+    font-size: clamp(64px, 8vw, 128px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: #fff;
   }
   dd {
-    margin: 0;
-    font-size: 15px;
+    margin: 12px 0 0;
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 14px;
     color: var(--muted);
   }
 `;
 
 const Note = styled.p`
-  margin-top: 18px;
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.inkMuteOnInk};
+  margin-top: 16px;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--muted);
 `;
 
 export default function CaseStudy() {
@@ -291,10 +312,10 @@ export default function CaseStudy() {
         role="listitem"
         key={`n${i}`}
         className={i === c.flow.length - 1 ? 'end' : undefined}
-        initial={reduce ? false : { opacity: 0, scale: 0.92 }}
-        whileInView={reduce ? undefined : { opacity: 1, scale: 1 }}
+        initial={reduce ? false : { opacity: 0, y: 10 }}
+        whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '0px 0px -15% 0px' }}
-        transition={{ duration: 0.7, ease, delay: 0.25 + i * 0.35 }}
+        transition={{ duration: 0.7, ease, delay: 0.2 + i * 0.35 }}
       >
         <span className="n">{String(i + 1).padStart(2, '0')}</span>
         {label}
@@ -308,7 +329,7 @@ export default function CaseStudy() {
             initial={reduce ? false : { scale: 0 }}
             whileInView={reduce ? undefined : { scale: 1 }}
             viewport={{ once: true, margin: '0px 0px -15% 0px' }}
-            transition={{ duration: 0.6, ease, delay: 0.45 + i * 0.35 }}
+            transition={{ duration: 0.6, ease, delay: 0.4 + i * 0.35 }}
             style={{ originX: 0, originY: 0 }}
           />
           <span className="packet" />
@@ -318,28 +339,27 @@ export default function CaseStudy() {
   });
 
   return (
-    <SectionFrame bg="ink" id="projekt" aria-labelledby="case-heading">
-      <SectionHead index="02" label={c.label} title={c.title} id="case-heading" onInk />
+    <SectionFrame bg="accent" id="projekt" aria-labelledby="case-heading">
+      <SectionHead index="02" label={c.label} title={c.title} aside="VBG · 2025 —" id="case-heading" />
+
       <Reveal delay={0.1}>
-        <Meta>
-          <strong>{c.org}</strong>
-        </Meta>
-      </Reveal>
-      <Reveal delay={0.15}>
-        <IntroText>{c.intro}</IntroText>
+        <Standfirst>
+          <span className="org">{c.org}</span>
+          <p>{c.intro}</p>
+        </Standfirst>
       </Reveal>
 
       <FlowWrap>
         <Flow role="list" aria-label={c.flow.join(' → ')}>
           {flowItems}
           <Loop
-          initial={reduce ? false : { opacity: 0 }}
-          whileInView={reduce ? undefined : { opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 1.8 }}
-          aria-hidden="true"
-        >
-            <span>↺ {c.flowLoop}</span>
+            initial={reduce ? false : { opacity: 0 }}
+            whileInView={reduce ? undefined : { opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 1.8 }}
+            aria-hidden="true"
+          >
+            <span>{c.flowLoop}</span>
           </Loop>
         </Flow>
         <LoopMobile>↺ {c.flowLoop}</LoopMobile>
@@ -348,8 +368,8 @@ export default function CaseStudy() {
       <Steps>
         {c.steps.map((s, i) => (
           <Reveal as="li" key={i} delay={i * 0.12}>
-            <Step as="div">
-              <span className="num">{String(i + 1).padStart(2, '0')}</span>
+            <Step>
+              <span className="num">{['I', 'II', 'III'][i]}</span>
               <h3>{s.h}</h3>
               <p>{s.b}</p>
             </Step>

@@ -1,6 +1,7 @@
 export const cvContent = {
   de: {
     role: 'AI Product Manager · Product Builder',
+    formerName: 'geb. Gentz',
     tagline:
       'Zehn Jahre an der Schnittstelle von Business und Technik – vom Robert Bosch Konzern über die öffentliche Verwaltung bis zum eigenen SaaS-Portfolio. Ich bewerte KI-Use-Cases nach Nutzen und Risiko, baue Prototypen selbst, messe die Wirkung und bringe Lösungen in den Betrieb.',
     contact: {
@@ -141,6 +142,7 @@ export const cvContent = {
 
   en: {
     role: 'AI Product Manager · Product Builder',
+    formerName: 'formerly Gentz',
     tagline:
       'Ten years at the intersection of business and technology – from the Robert Bosch group through the public sector to my own SaaS portfolio. I assess AI use cases for value and risk, build prototypes myself, measure the impact and take solutions into production.',
     contact: {

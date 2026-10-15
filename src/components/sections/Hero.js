@@ -6,6 +6,12 @@ import MaskText from '../MaskText';
 import CountUp from '../CountUp';
 import { useLanguage } from '../../i18n/LanguageContext';
 
+/**
+ * Hero — front page of a newspaper:
+ * dateline between rules, a headline across the full measure,
+ * then three columns separated by column rules: photo · lead · facts.
+ */
+
 const ease = [0.22, 1, 0.36, 1];
 
 const Section = styled.section`
@@ -15,83 +21,177 @@ const Section = styled.section`
 const Inner = styled.div`
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  padding: clamp(40px, 7vw, 96px) ${({ theme }) => theme.gutter} 0;
+  padding: clamp(20px, 3vw, 36px) ${({ theme }) => theme.gutter} clamp(56px, 8vw, 112px);
 `;
 
-const Grid = styled.div`
+const Dateline = styled(motion.div)`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(260px, 26vw, 360px);
-  gap: clamp(32px, 6vw, 96px);
-  align-items: end;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.ink};
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.ink};
+
+  .c {
+    text-align: center;
+  }
+  .r {
+    text-align: right;
+  }
+  .time {
+    font-family: ${({ theme }) => theme.fonts.mono};
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const Eyebrow = styled(motion.p)`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.inkSoft};
-  margin-bottom: clamp(24px, 3vw, 36px);
-
-  &::before {
-    content: '';
-    width: 28px;
-    height: 1px;
-    background: ${({ theme }) => theme.colors.accent};
+    grid-template-columns: 1fr auto;
+    .c {
+      display: none;
+    }
   }
 `;
 
 const H1 = styled.h1`
-  font-size: clamp(44px, 6.6vw, 100px);
-  line-height: 1;
-  letter-spacing: -0.03em;
+  margin-top: clamp(28px, 4vw, 56px);
+  font-size: clamp(50px, 10.4vw, 168px);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
   color: ${({ theme }) => theme.colors.ink};
-
-  @media (min-width: 861px) {
-    > span > span {
-      white-space: nowrap;
-    }
-  }
 
   .accent {
     font-style: italic;
     color: ${({ theme }) => theme.colors.accent};
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+  }
+
+  @media (min-width: 901px) {
+    > span > span {
+      white-space: nowrap;
+    }
   }
 `;
 
-const Sub = styled(motion.p)`
-  margin-top: clamp(28px, 3.5vw, 44px);
-  max-width: 54ch;
-  font-size: clamp(17px, 1.35vw, 19px);
-  line-height: 1.62;
-  color: ${({ theme }) => theme.colors.inkSoft};
+const Cols = styled.div`
+  margin-top: clamp(40px, 5vw, 72px);
+  padding-top: 18px;
+  border-top: 3px solid ${({ theme }) => theme.colors.ink};
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
+
+  > * + * {
+    border-left: 1px solid ${({ theme }) => theme.colors.line};
+    padding-left: clamp(20px, 2.4vw, 36px);
+  }
+  > * {
+    padding-right: clamp(20px, 2.4vw, 36px);
+  }
+  > *:last-child {
+    padding-right: 0;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    grid-template-columns: 1fr;
+    > * + * {
+      border-left: 0;
+      padding-left: 0;
+      margin-top: 32px;
+    }
+    > * {
+      padding-right: 0;
+    }
+  }
 `;
 
-const Actions = styled(motion.div)`
-  margin-top: clamp(28px, 3.5vw, 40px);
+const Figure = styled.figure`
+  margin: 0;
+`;
+
+const Frame = styled(motion.div)`
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: ${({ theme }) => theme.colors.paperAlt};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    aspect-ratio: 4 / 3;
+  }
+`;
+
+const Img = styled(motion.img)`
+  position: absolute;
+  inset: -6% 0;
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  filter: grayscale(1) contrast(1.08) brightness(1.02);
+  transition: filter 900ms ease;
+
+  ${Frame}:hover & {
+    filter: grayscale(0) contrast(1) brightness(1);
+  }
+`;
+
+const Caption = styled(motion.figcaption)`
+  margin-top: 12px;
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.45;
+  color: ${({ theme }) => theme.colors.inkSoft};
+
+  strong {
+    font-style: normal;
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.ink};
+  }
+`;
+
+const Lead = styled(motion.div)`
+  p {
+    font-family: ${({ theme }) => theme.fonts.serif};
+    font-size: clamp(21px, 1.9vw, 26px);
+    line-height: 1.42;
+    color: ${({ theme }) => theme.colors.ink};
+    hyphens: auto;
+  }
+  p::first-letter {
+    float: left;
+    font-family: ${({ theme }) => theme.fonts.display};
+    font-size: 4.1em;
+    line-height: 0.82;
+    padding: 0.06em 0.1em 0 0;
+    color: ${({ theme }) => theme.colors.accent};
+  }
+`;
+
+const Actions = styled.div`
+  margin-top: clamp(24px, 3vw, 36px);
   display: flex;
   flex-wrap: wrap;
   gap: 12px 24px;
   align-items: center;
+  font-family: ${({ theme }) => theme.fonts.sans};
 `;
 
 const Primary = styled.a`
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  height: 52px;
-  padding: 0 24px;
-  border-radius: 999px;
+  height: 50px;
+  padding: 0 22px;
   background: ${({ theme }) => theme.colors.ink};
   color: ${({ theme }) => theme.colors.paper};
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   transition: background 240ms ease;
 
   svg {
@@ -106,136 +206,66 @@ const Primary = styled.a`
 `;
 
 const Secondary = styled(RouterLink)`
-  position: relative;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.ink};
   padding: 6px 0;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 420ms ${({ theme }) => theme.ease}, color 200ms ease;
 
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 2px;
-    height: 1px;
-    background: currentColor;
-    transform-origin: left center;
-    transition: transform 420ms ${({ theme }) => theme.ease};
-  }
-  &:hover::after {
-    transform: scaleX(0.35);
-  }
-`;
-
-const Figure = styled.figure`
-  margin: 0;
-  width: 100%;
-  justify-self: end;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    justify-self: stretch;
-    max-width: 520px;
-  }
-`;
-
-const Frame = styled(motion.div)`
-  position: relative;
-  aspect-ratio: 4 / 5;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    aspect-ratio: 5 / 4;
-  }
-  overflow: hidden;
-  background: ${({ theme }) => theme.colors.paperAlt};
-  border-radius: 2px;
-`;
-
-const Img = styled(motion.img)`
-  position: absolute;
-  inset: -6% 0;
-  width: 100%;
-  height: 112%;
-  object-fit: cover;
-  object-position: 50% 22%;
-  filter: grayscale(0.15) contrast(1.02);
-`;
-
-const Caption = styled(motion.figcaption)`
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 14px;
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.inkMute};
-
-  .time {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 12.5px;
-    color: ${({ theme }) => theme.colors.inkSoft};
-  }
-  .dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.accent};
-    margin-right: 8px;
-    vertical-align: 1px;
+  &:hover {
+    color: ${({ theme }) => theme.colors.accent};
+    background-size: 30% 2px;
   }
 `;
 
 const Facts = styled.dl`
-  margin: clamp(64px, 9vw, 128px) 0 0;
+  margin: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid ${({ theme }) => theme.colors.line};
+  gap: 0;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    margin-top: 40px !important;
+    padding-top: 16px;
+    border-top: 3px solid ${({ theme }) => theme.colors.ink};
   }
 `;
 
 const Fact = styled(motion.div)`
-  padding: 24px 24px 28px 0;
-  border-right: 1px solid ${({ theme }) => theme.colors.line};
-  padding-left: 24px;
+  padding: 14px 0 16px;
+  border-top: 1px solid ${({ theme }) => theme.colors.line};
 
   &:first-child {
-    padding-left: 0;
+    border-top: 0;
+    padding-top: 0;
   }
-  &:last-child {
-    border-right: 0;
-  }
-
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    padding: 20px 16px 22px 0;
-    &:nth-child(2n) {
-      border-right: 0;
-      padding-left: 16px;
-    }
-    &:nth-child(2n + 1) {
-      padding-left: 0;
-    }
-    &:nth-child(n + 3) {
-      border-top: 1px solid ${({ theme }) => theme.colors.line};
+    &:nth-child(2) {
+      border-top: 0;
+      padding-top: 0;
     }
   }
 
   dt {
     font-family: ${({ theme }) => theme.fonts.display};
-    font-size: clamp(36px, 4vw, 56px);
-    line-height: 1;
-    letter-spacing: -0.02em;
+    font-size: clamp(44px, 4.4vw, 68px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
     color: ${({ theme }) => theme.colors.ink};
-    margin-bottom: 10px;
   }
   dd {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.45;
+    margin: 6px 0 0;
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 13px;
+    line-height: 1.4;
     color: ${({ theme }) => theme.colors.inkSoft};
-    max-width: 22ch;
   }
 `;
 
@@ -258,7 +288,7 @@ function useHamburgTime(lang) {
 
 const Arrow = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <path d="M7 1v12M7 13l-5-5M7 13l5-5" stroke="currentColor" strokeWidth="1.4" />
+    <path d="M7 1v12M7 13l-5-5M7 13l5-5" stroke="currentColor" strokeWidth="1.5" />
   </svg>
 );
 
@@ -269,7 +299,7 @@ export default function Hero() {
   const time = useHamburgTime(lang);
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '8%']);
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '7%']);
 
   const fade = (delay) =>
     reduce
@@ -283,26 +313,25 @@ export default function Hero() {
   return (
     <Section ref={ref} aria-labelledby="hero-heading">
       <Inner>
-        <Grid>
-          <div>
-            <Eyebrow {...fade(0.1)}>{h.eyebrow}</Eyebrow>
-            <H1 id="hero-heading">
-              <MaskText lines={h.h1} accentLine={h.h1Accent} animateOnMount delay={0.2} stagger={0.06} />
-            </H1>
-            <Sub {...fade(0.75)}>{h.sub}</Sub>
-            <Actions {...fade(0.9)}>
-              <Primary href="#projekt">
-                {h.ctaPrimary} <Arrow />
-              </Primary>
-              <Secondary to="/cv">{h.ctaSecondary}</Secondary>
-            </Actions>
-          </div>
+        <Dateline {...fade(0)}>
+          <span>{h.eyebrow}</span>
+          <span className="c">{h.dateline}</span>
+          <span className="r">
+            {h.localTime}
+            <span className="time">{time}</span>
+          </span>
+        </Dateline>
 
+        <H1 id="hero-heading">
+          <MaskText lines={h.h1} accentLine={h.h1Accent} animateOnMount delay={0.15} stagger={0.07} />
+        </H1>
+
+        <Cols>
           <Figure>
             <Frame
-              initial={reduce ? false : { clipPath: 'inset(100% 0% 0% 0%)' }}
+              initial={reduce ? false : { clipPath: 'inset(0% 0% 100% 0%)' }}
               animate={reduce ? undefined : { clipPath: 'inset(0% 0% 0% 0%)' }}
-              transition={{ duration: 1.3, ease, delay: 0.35 }}
+              transition={{ duration: 1.3, ease, delay: 0.6 }}
             >
               <Img
                 src={`${process.env.PUBLIC_URL}/images/portrait-web.jpg`}
@@ -310,39 +339,47 @@ export default function Hero() {
                 width="900"
                 height="1199"
                 style={reduce ? undefined : { y: imgY }}
-                initial={reduce ? false : { scale: 1.12 }}
+                initial={reduce ? false : { scale: 1.14 }}
                 animate={reduce ? undefined : { scale: 1 }}
-                transition={{ duration: 1.8, ease, delay: 0.35 }}
+                transition={{ duration: 1.9, ease, delay: 0.6 }}
               />
             </Frame>
-            <Caption {...fade(1.2)}>
-              <span>
-                <span className="dot" aria-hidden="true" />
-                {h.place}
-              </span>
-              <span>
-                {h.localTime} <span className="time">{time}</span>
-              </span>
+            <Caption {...fade(1.1)}>
+              <strong>{h.captionName}</strong> {h.captionNote}
             </Caption>
           </Figure>
-        </Grid>
 
-        <Facts>
-          {t.facts.map((f, i) => (
-            <Fact
-              key={i}
-              initial={reduce ? false : { opacity: 0, y: 12 }}
-              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease, delay: 0.1 * i }}
-            >
-              <dt>
-                <CountUp value={f.value} prefix={f.prefix} suffix={f.suffix} locale={lang === 'de' ? 'de-DE' : 'en-GB'} />
-              </dt>
-              <dd>{f.label}</dd>
-            </Fact>
-          ))}
-        </Facts>
+          <Lead {...fade(0.9)}>
+            <p>{h.sub}</p>
+            <Actions>
+              <Primary href="#projekt">
+                {h.read} <Arrow />
+              </Primary>
+              <Secondary to="/cv">{h.ctaSecondary}</Secondary>
+            </Actions>
+          </Lead>
+
+          <Facts>
+            {t.facts.map((f, i) => (
+              <Fact
+                key={i}
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={reduce ? undefined : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease, delay: 1.1 + 0.1 * i }}
+              >
+                <dt>
+                  <CountUp
+                    value={f.value}
+                    prefix={f.prefix}
+                    suffix={f.suffix}
+                    locale={lang === 'de' ? 'de-DE' : 'en-GB'}
+                  />
+                </dt>
+                <dd>{f.label}</dd>
+              </Fact>
+            ))}
+          </Facts>
+        </Cols>
       </Inner>
     </Section>
   );

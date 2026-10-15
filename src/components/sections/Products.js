@@ -22,7 +22,7 @@ const ease = [0.22, 1, 0.36, 1];
 
 const List = styled.ol`
   margin-top: clamp(48px, 6vw, 88px);
-  border-top: 1px solid ${({ theme }) => theme.colors.ink};
+  border-top: 3px solid ${({ theme }) => theme.colors.ink};
   position: relative;
 `;
 
@@ -33,17 +33,16 @@ const Row = styled.li`
 
 const RowLink = styled.a`
   display: grid;
-  grid-template-columns: 56px minmax(0, 4fr) minmax(0, 5fr) 120px;
+  grid-template-columns: 72px minmax(0, 6fr) minmax(0, 5fr) 110px;
   gap: 24px;
   align-items: baseline;
   padding: clamp(24px, 3vw, 36px) 0;
   color: inherit;
   transition: padding 500ms ${({ theme }) => theme.ease};
 
-  @media (hover: hover) and (min-width: 861px) {
+  @media (hover: hover) and (min-width: 901px) {
     &:hover {
-      padding-left: 16px;
-      padding-right: 0;
+      padding-left: 20px;
     }
   }
 
@@ -54,9 +53,11 @@ const RowLink = styled.a`
 `;
 
 const Num = styled.span`
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.inkMute};
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-style: italic;
+  font-size: 30px;
+  line-height: 1;
+  color: ${({ theme }) => theme.colors.accent};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: none;
@@ -70,14 +71,15 @@ const NameCol = styled.div`
 `;
 
 const Name = styled.h3`
-  font-size: clamp(34px, 4.2vw, 60px);
-  line-height: 1;
-  letter-spacing: -0.025em;
+  font-size: clamp(44px, 6.4vw, 104px);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
   color: ${({ theme }) => theme.colors.ink};
   transition: color 300ms ease;
 
   ${RowLink}:hover & {
     color: ${({ theme }) => theme.colors.accent};
+    font-style: italic;
   }
   .amp {
     font-style: italic;
@@ -89,36 +91,41 @@ const Status = styled.span`
   align-items: center;
   gap: 8px;
   align-self: flex-start;
-  font-size: 13px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.inkSoft};
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.ink};
 
   i {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: ${({ $live, theme }) => ($live ? '#2F7D4F' : 'transparent')};
-    border: 1.5px solid ${({ $live, theme }) => ($live ? '#2F7D4F' : theme.colors.accent)};
+    width: 9px;
+    height: 9px;
+    background: ${({ $live, theme }) => ($live ? theme.colors.accent : 'transparent')};
+    border: 1.5px solid ${({ theme }) => theme.colors.accent};
   }
 `;
 
 const Text = styled.div`
   p.one {
-    font-size: 17px;
-    line-height: 1.55;
+    font-size: 22px;
+    line-height: 1.35;
     color: ${({ theme }) => theme.colors.ink};
-    max-width: 46ch;
+    max-width: 34ch;
   }
   p.detail {
     margin-top: 10px;
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 17px;
+    line-height: 1.5;
     color: ${({ theme }) => theme.colors.inkSoft};
-    max-width: 52ch;
+    max-width: 46ch;
+    hyphens: auto;
   }
   p.stack {
     margin-top: 14px;
-    font-size: 13px;
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
     color: ${({ theme }) => theme.colors.inkMute};
   }
 `;
@@ -128,8 +135,11 @@ const Go = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.ink};
   white-space: nowrap;
 
@@ -160,8 +170,7 @@ const InlineShot = styled.div`
   margin: 6px 0 18px;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.colors.line};
+  border: 1px solid ${({ theme }) => theme.colors.ink};
   background: ${({ theme }) => theme.colors.paperAlt};
 
   img {
@@ -181,10 +190,11 @@ const Placeholder = styled.div`
   height: 100%;
   display: grid;
   place-items: center;
-  background: ${({ theme }) => theme.colors.ink};
-  color: ${({ theme }) => theme.colors.paper};
+  background: ${({ theme }) => theme.colors.accent};
+  color: #fff;
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(28px, 3vw, 40px);
+  font-style: italic;
+  font-size: clamp(30px, 3.2vw, 44px);
   letter-spacing: -0.02em;
   text-align: center;
 
@@ -194,7 +204,11 @@ const Placeholder = styled.div`
     font-family: ${({ theme }) => theme.fonts.sans};
     font-size: 13px;
     letter-spacing: 0.02em;
-    color: ${({ theme }) => theme.colors.inkMuteOnInk};
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 11.5px;
+    color: #C9CCFF;
   }
 `;
 
@@ -206,9 +220,9 @@ const Floating = styled(motion.div)`
   width: clamp(320px, 30vw, 440px);
   aspect-ratio: 16 / 10;
   pointer-events: none;
-  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 30px 60px -20px rgba(26, 24, 20, 0.35), 0 0 0 1px rgba(26, 24, 20, 0.08);
+  border: 1.5px solid ${({ theme }) => theme.colors.ink};
+  box-shadow: 14px 14px 0 ${({ theme }) => theme.colors.accent};
   background: ${({ theme }) => theme.colors.paperAlt};
 
   img {
@@ -230,11 +244,12 @@ const More = styled.div`
   gap: 14px;
 
   .label {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-family: ${({ theme }) => theme.fonts.sans};
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.inkMute};
+    color: ${({ theme }) => theme.colors.ink};
   }
   ul {
     display: grid;
@@ -245,8 +260,8 @@ const More = styled.div`
     }
   }
   li {
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 17px;
+    line-height: 1.5;
     color: ${({ theme }) => theme.colors.inkSoft};
     max-width: 52ch;
   }
@@ -308,7 +323,7 @@ export default function Products() {
 
   return (
     <SectionFrame id="produkte" aria-labelledby="products-heading">
-      <SectionHead index="03" label={p.label} title={p.title} intro={p.intro} id="products-heading" />
+      <SectionHead index="03" label={p.label} title={p.title} intro={p.intro} aside="Solo Founder" id="products-heading" />
 
       <List ref={listRef} onMouseMove={reduce ? undefined : onMove} onMouseLeave={() => setActive(null)}>
         {p.items.map((item, i) => (

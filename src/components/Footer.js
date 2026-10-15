@@ -22,8 +22,9 @@ const Inner = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px 32px;
-  font-size: 13px;
-  line-height: 1.5;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12.5px;
+  line-height: 1.55;
 
   .left {
     display: grid;
@@ -50,7 +51,7 @@ export default function Footer() {
     <Band $ink={ink} $alt={pathname === '/cv'}>
       <Inner $ink={ink}>
         <div className="left">
-          <span>© {new Date().getFullYear()} Iver Bohnes · {t.footer.note}</span>
+          <span>© {new Date().getFullYear()} {t.footer.note}</span>
           <span>{t.footer.domain}</span>
         </div>
         <nav aria-label="Rechtliches">

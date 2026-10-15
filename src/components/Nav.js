@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, useScroll, useSpring, useReducedMotion } from 'framer-motion';
@@ -8,10 +8,8 @@ const Bar = styled.header`
   position: sticky;
   top: 0;
   z-index: 40;
-  background: ${({ $scrolled, theme }) => ($scrolled ? 'rgba(244,241,234,0.86)' : theme.colors.paper)};
-  backdrop-filter: ${({ $scrolled }) => ($scrolled ? 'saturate(140%) blur(14px)' : 'none')};
-  -webkit-backdrop-filter: ${({ $scrolled }) => ($scrolled ? 'saturate(140%) blur(14px)' : 'none')};
-  transition: background 300ms ease;
+  background: ${({ theme }) => theme.colors.paper};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.ink};
 
   @media print {
     display: none;
@@ -21,30 +19,37 @@ const Bar = styled.header`
 const Inner = styled.div`
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  height: 64px;
+  height: 60px;
   padding: 0 ${({ theme }) => theme.gutter};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 20px;
 `;
 
 const Brand = styled(RouterLink)`
   display: inline-flex;
   align-items: baseline;
   gap: 10px;
-  font-family: ${({ theme }) => theme.fonts.display};
-  font-size: 21px;
-  letter-spacing: -0.01em;
-  color: ${({ theme }) => theme.colors.ink};
   white-space: nowrap;
+  color: ${({ theme }) => theme.colors.ink};
 
-  .role {
-    font-family: ${({ theme }) => theme.fonts.sans};
-    font-size: 13px;
-    letter-spacing: 0.01em;
+  .name {
+    font-family: ${({ theme }) => theme.fonts.display};
+    font-size: 23px;
+    letter-spacing: -0.02em;
+  }
+  .former {
+    font-family: ${({ theme }) => theme.fonts.serif};
+    font-style: italic;
+    font-size: 15px;
     color: ${({ theme }) => theme.colors.inkMute};
-    @media (max-width: ${({ theme }) => theme.breakpoints.desktop}) {
+  }
+  @media (max-width: 480px) {
+    .name {
+      font-size: 21px;
+    }
+    .former {
       display: none;
     }
   }
@@ -53,13 +58,13 @@ const Brand = styled(RouterLink)`
 const Right = styled.nav`
   display: flex;
   align-items: center;
-  gap: clamp(16px, 2.4vw, 32px);
+  gap: clamp(14px, 2vw, 28px);
+  font-family: ${({ theme }) => theme.fonts.sans};
 `;
 
 const Links = styled.ul`
   display: flex;
-  gap: clamp(16px, 2.2vw, 28px);
-  font-size: 14px;
+  gap: clamp(14px, 2vw, 26px);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     display: none;
@@ -68,8 +73,11 @@ const Links = styled.ul`
 
 const NavLink = styled.a`
   position: relative;
-  color: ${({ theme }) => theme.colors.inkSoft};
-  transition: color 200ms ease;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.ink};
   padding: 6px 0;
 
   &::after {
@@ -77,15 +85,12 @@ const NavLink = styled.a`
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 1px;
-    height: 1px;
-    background: currentColor;
+    bottom: 0;
+    height: 2px;
+    background: ${({ theme }) => theme.colors.accent};
     transform: scaleX(0);
     transform-origin: right center;
-    transition: transform 380ms ${({ theme }) => theme.ease};
-  }
-  &:hover {
-    color: ${({ theme }) => theme.colors.ink};
+    transition: transform 420ms ${({ theme }) => theme.ease};
   }
   &:hover::after {
     transform: scaleX(1);
@@ -93,39 +98,42 @@ const NavLink = styled.a`
   }
 `;
 
-const CvLink = styled(RouterLink)`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.paper};
-  background: ${({ theme }) => theme.colors.ink};
-  padding: 8px 14px;
-  border-radius: 999px;
-  transition: background 220ms ease;
-  &:hover {
-    background: ${({ theme }) => theme.colors.accent};
-  }
-`;
-
 const Lang = styled.button`
   display: inline-flex;
-  gap: 6px;
-  font-size: 13px;
+  gap: 5px;
+  font-size: 12.5px;
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   background: none;
   border: 0;
-  padding: 6px 2px;
+  padding: 6px 0;
   cursor: pointer;
   color: ${({ theme }) => theme.colors.inkMute};
 
-  span {
-    transition: color 200ms ease;
-  }
-  span.on {
+  .on {
     color: ${({ theme }) => theme.colors.ink};
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
   }
-  &:hover span {
-    color: ${({ theme }) => theme.colors.ink};
+`;
+
+const CvLink = styled(RouterLink)`
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  white-space: nowrap;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.paper};
+  background: ${({ theme }) => theme.colors.ink};
+  transition: background 220ms ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.accent};
   }
 `;
 
@@ -133,39 +141,19 @@ const Progress = styled(motion.div)`
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  height: 1px;
-  background: ${({ theme }) => theme.colors.ink};
+  bottom: -1px;
+  height: 3px;
+  background: ${({ theme }) => theme.colors.accent};
   transform-origin: left center;
 `;
 
-const Base = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: ${({ theme }) => theme.colors.line};
-  opacity: ${({ $show }) => ($show ? 1 : 0)};
-  transition: opacity 300ms ease;
-`;
-
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false);
   const { lang, toggleLang, t } = useLanguage();
   const { pathname } = useLocation();
   const isHome = pathname === '/';
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   const onBrand = (e) => {
     if (isHome) {
       e.preventDefault();
@@ -176,10 +164,11 @@ export default function Nav() {
   const href = (hash) => (isHome ? `#${hash}` : `/#${hash}`);
 
   return (
-    <Bar $scrolled={scrolled}>
+    <Bar>
       <Inner>
-        <Brand to="/" onClick={onBrand} aria-label="Iver Bohnes — Start">
-          Iver Bohnes <span className="role">AI Product Manager</span>
+        <Brand to="/" onClick={onBrand} aria-label="Iver Bohnes, geb. Gentz — Start">
+          <span className="name">Iver Bohnes</span>
+          <span className="former">{lang === 'de' ? 'geb. Gentz' : 'formerly Gentz'}</span>
         </Brand>
         <Right aria-label={lang === 'de' ? 'Hauptnavigation' : 'Main navigation'}>
           <Links>
@@ -204,7 +193,6 @@ export default function Nav() {
           {pathname !== '/cv' && <CvLink to="/cv">{t.nav.cv}</CvLink>}
         </Right>
       </Inner>
-      <Base $show={scrolled} />
       {isHome && !reduce && <Progress style={{ scaleX: progress }} aria-hidden="true" />}
     </Bar>
   );

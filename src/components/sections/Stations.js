@@ -1,131 +1,122 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import SectionFrame from '../SectionFrame';
 import SectionHead from '../SectionHead';
 import { useLanguage } from '../../i18n/LanguageContext';
 
+/** Stationen — set like a newspaper table: Jahr · Position · Haus. */
+
 const ease = [0.22, 1, 0.36, 1];
 
-const Timeline = styled.div`
-  position: relative;
+const Table = styled.div`
   margin-top: clamp(48px, 6vw, 88px);
-  padding-left: 32px;
+`;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding-left: 22px;
+const HeadRow = styled.div`
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr) minmax(0, 260px);
+  gap: 24px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid ${({ theme }) => theme.colors.ink};
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  span:last-child {
+    text-align: right;
   }
-`;
-
-const Track = styled.div`
-  position: absolute;
-  left: 3px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  background: ${({ theme }) => theme.colors.line};
-`;
-
-const Fill = styled(motion.div)`
-  position: absolute;
-  inset: 0;
-  background: ${({ theme }) => theme.colors.accent};
-  transform-origin: top center;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: none;
+  }
 `;
 
 const Row = styled(motion.li)`
   position: relative;
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr) minmax(0, 220px);
+  grid-template-columns: 170px minmax(0, 1fr) minmax(0, 260px);
   gap: 24px;
   align-items: baseline;
-  padding: 26px 0;
+  padding: 24px 0 26px;
   border-bottom: 1px solid ${({ theme }) => theme.colors.line};
-
-  &:first-child {
-    padding-top: 0;
-  }
 
   &::before {
     content: '';
     position: absolute;
-    left: -32px;
-    top: 36px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.paperAlt};
-    border: 1px solid ${({ theme }) => theme.colors.inkMute};
-    transition: background 300ms ease, border-color 300ms ease;
-  }
-  &:first-child::before {
-    top: 10px;
+    left: 0;
+    top: -1px;
+    height: 3px;
+    width: 100%;
     background: ${({ theme }) => theme.colors.accent};
-    border-color: ${({ theme }) => theme.colors.accent};
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 600ms ${({ theme }) => theme.ease};
   }
   &:hover::before {
-    background: ${({ theme }) => theme.colors.ink};
-    border-color: ${({ theme }) => theme.colors.ink};
+    transform: scaleX(1);
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    &::before {
-      left: -22px;
-      top: 31px;
+    gap: 4px;
+    &:first-child {
+      border-top: 3px solid ${({ theme }) => theme.colors.ink};
     }
   }
 `;
 
 const Year = styled.span`
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 13px;
+  font-size: 13.5px;
   color: ${({ theme }) => theme.colors.inkMute};
 `;
 
 const Role = styled.div`
   h3 {
-    font-size: clamp(22px, 2.3vw, 30px);
-    line-height: 1.18;
-    letter-spacing: -0.012em;
+    font-size: clamp(26px, 2.8vw, 40px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
     color: ${({ theme }) => theme.colors.ink};
   }
   p {
-    margin-top: 6px;
-    font-size: 15px;
+    margin-top: 8px;
+    font-style: italic;
+    font-size: 17.5px;
     color: ${({ theme }) => theme.colors.inkSoft};
   }
 `;
 
-const Company = styled.span`
-  font-size: 15px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.ink};
+const House = styled.span`
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   text-align: right;
+  color: ${({ theme }) => theme.colors.ink};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     text-align: left;
     order: -1;
-    font-weight: 400;
-    color: ${({ theme }) => theme.colors.inkSoft};
   }
 `;
 
 const CvLink = styled(RouterLink)`
-  margin-top: clamp(40px, 5vw, 56px);
+  margin-top: clamp(36px, 5vw, 56px);
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  height: 52px;
-  padding: 0 24px;
-  border-radius: 999px;
-  border: 1px solid ${({ theme }) => theme.colors.ink};
-  font-size: 15px;
-  font-weight: 500;
+  height: 50px;
+  padding: 0 22px;
+  border: 1.5px solid ${({ theme }) => theme.colors.ink};
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.ink};
   transition: background 240ms ease, color 240ms ease;
 
@@ -142,19 +133,21 @@ const CvLink = styled(RouterLink)`
 `;
 
 export default function Stations() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const s = t.stations;
   const reduce = useReducedMotion();
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 75%', 'end 60%'] });
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const head = lang === 'de' ? ['Jahr', 'Position', 'Haus'] : ['Year', 'Position', 'Company'];
 
   return (
-    <SectionFrame bg="alt" id="stationen" aria-labelledby="stations-heading">
-      <SectionHead index="04" label={s.label} title={s.title} intro={s.intro} id="stations-heading" />
+    <SectionFrame id="stationen" aria-labelledby="stations-heading">
+      <SectionHead index="04" label={s.label} title={s.title} intro={s.intro} aside="2017 — 2026" id="stations-heading" />
 
-      <Timeline ref={ref}>
-        <Track aria-hidden="true">{!reduce && <Fill style={{ scaleY }} />}</Track>
+      <Table>
+        <HeadRow aria-hidden="true">
+          {head.map((h) => (
+            <span key={h}>{h}</span>
+          ))}
+        </HeadRow>
         <ol>
           {s.items.map((item, i) => (
             <Row
@@ -169,16 +162,16 @@ export default function Stations() {
                 <h3>{item.role}</h3>
                 <p>{item.note}</p>
               </Role>
-              <Company>{item.company}</Company>
+              <House>{item.company}</House>
             </Row>
           ))}
         </ol>
-      </Timeline>
+      </Table>
 
       <CvLink to="/cv">
         {s.cv}
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M1 7h12M13 7L8 2M13 7l-5 5" stroke="currentColor" strokeWidth="1.4" />
+          <path d="M1 7h12M13 7L8 2M13 7l-5 5" stroke="currentColor" strokeWidth="1.5" />
         </svg>
       </CvLink>
     </SectionFrame>

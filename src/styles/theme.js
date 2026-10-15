@@ -1,25 +1,27 @@
 /**
- * Design tokens — v2 "Editorial"
+ * Design tokens — v3 "Editorial"
  *
- * Warm paper, near-black ink, one restrained accent (vermilion).
- * Typography: Newsreader (display, self-hosted) + IBM Plex Sans (text).
- * IBM Plex Mono is reserved for numbers that should align (years, times).
+ * Newspaper/magazine logic: near-white paper, black ink, one loud accent
+ * (ultramarine) used as a colour field, not as decoration.
  *
- * All text colours meet WCAG AA on `paper`:
- *   ink 15.7:1 · inkSoft 7.8:1 · inkMute 4.8:1 · accent 5.3:1
+ * Type:
+ *   display — Bodoni Moda (headlines, numbers)
+ *   serif   — Newsreader (body copy, leads, captions)
+ *   sans    — IBM Plex Sans (navigation, labels, buttons)
+ *   mono    — IBM Plex Mono (dates, times)
  *
- * Legacy keys (bg, fg, fgMuted, crimson, …) are kept as aliases so that
- * Impressum/Datenschutz and any older component keep rendering.
+ * Contrast on paper: ink 19:1 · inkSoft 10.1:1 · inkMute 5.4:1 · accent 8:1
+ * White on accent 8.5:1.
  */
 
-const paper = '#F4F1EA';
-const paperAlt = '#ECE7DD';
-const card = '#FBFAF7';
-const ink = '#1A1814';
-const inkSoft = '#4F4A42';
-const inkMute = '#6F695E';
-const accent = '#B5361F';
-const accentOnInk = '#E8775F';
+const paper = '#F7F7F4';
+const paperAlt = '#EEEEE9';
+const card = '#FFFFFF';
+const ink = '#0D0D0D';
+const inkSoft = '#3D3D3D';
+const inkMute = '#666660';
+const accent = '#2230D6';
+const accentOnInk = '#A7ACFF';
 
 export const theme = {
   colors: {
@@ -31,12 +33,14 @@ export const theme = {
     inkMute,
     accent,
     accentOnInk,
-    line: 'rgba(26,24,20,0.12)',
-    lineStrong: 'rgba(26,24,20,0.28)',
-    lineOnInk: 'rgba(244,241,234,0.16)',
-    inkMuteOnInk: '#A9A398',
+    onAccent: '#FFFFFF',
+    onAccentMute: '#C9CCFF',
+    line: 'rgba(13,13,13,0.14)',
+    lineStrong: 'rgba(13,13,13,0.4)',
+    lineOnInk: 'rgba(247,247,244,0.18)',
+    inkMuteOnInk: '#A3A39D',
 
-    /* Legacy aliases */
+    /* Legacy aliases (Impressum, Datenschutz, older components) */
     bg: paper,
     bgElevated: paperAlt,
     bgFade: paperAlt,
@@ -44,40 +48,40 @@ export const theme = {
     fgMuted: inkSoft,
     fgDim: inkMute,
     muted: inkSoft,
-    hairline: 'rgba(26,24,20,0.12)',
-    hairlineDim: 'rgba(26,24,20,0.07)',
-    hairlineStrong: 'rgba(26,24,20,0.28)',
+    hairline: 'rgba(13,13,13,0.14)',
+    hairlineDim: 'rgba(13,13,13,0.08)',
+    hairlineStrong: 'rgba(13,13,13,0.4)',
     crimson: accent,
-    crimsonDeep: '#962C18',
-    accentLegacy: accent,
+    crimsonDeep: '#18229E',
     lime: accent,
   },
   fonts: {
-    display: "'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif",
+    display: "'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif",
+    serif: "'Newsreader', 'Iowan Old Style', Georgia, serif",
     sans: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     mono: "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace",
   },
   sizes: {
-    maxWidth: '1240px',
+    maxWidth: '1360px',
     narrowWidth: '760px',
   },
-  gutter: 'clamp(20px, 5vw, 72px)',
+  gutter: 'clamp(18px, 4vw, 56px)',
   ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
   breakpoints: {
     mobile: '620px',
-    tablet: '860px',
-    desktop: '1100px',
+    tablet: '900px',
+    desktop: '1180px',
   },
 };
 
-/* Section background helpers (used by SectionFrame) */
+/* Section colour fields used by SectionFrame */
 export function bgFor(key) {
   switch (key) {
     case 'ink':
       return ink;
+    case 'accent':
+      return accent;
     case 'alt':
-    case 'elevated':
-    case 'fade':
       return paperAlt;
     default:
       return paper;
@@ -85,13 +89,23 @@ export function bgFor(key) {
 }
 
 export function fgFor(key) {
-  return key === 'ink' ? paper : ink;
+  return key === 'ink' || key === 'accent' ? '#FFFFFF' : ink;
 }
 
 export function mutedFor(key) {
-  return key === 'ink' ? '#A9A398' : inkSoft;
+  if (key === 'ink') return '#A3A39D';
+  if (key === 'accent') return '#C9CCFF';
+  return inkSoft;
 }
 
 export function hairlineFor(key) {
-  return key === 'ink' ? 'rgba(244,241,234,0.16)' : 'rgba(26,24,20,0.12)';
+  if (key === 'ink') return 'rgba(247,247,244,0.18)';
+  if (key === 'accent') return 'rgba(255,255,255,0.28)';
+  return 'rgba(13,13,13,0.14)';
+}
+
+export function accentFor(key) {
+  if (key === 'ink') return accentOnInk;
+  if (key === 'accent') return '#FFFFFF';
+  return accent;
 }

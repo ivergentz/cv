@@ -3,9 +3,9 @@ import { Document, Page, Text, View, Image, StyleSheet, Font } from '@react-pdf/
 
 /**
  * CVPdfDocument — A4 export in the same design as the website and /cv:
- * Newsreader (display) + IBM Plex Sans (text), warm accent, label column
- * on the left, content on the right. Fonts are the self-hosted files from
- * /public/fonts (WOFF, which react-pdf can embed).
+ * Bodoni Moda (display) + Newsreader (text) + IBM Plex Sans (labels), label column
+ * on the left, content on the right. Fonts are the self-hosted TTF files
+ * from /public/fonts, which react-pdf can embed.
  *
  * Target layout: two pages.
  *   1 — Header, Profile, Core skills, Experience
@@ -15,6 +15,13 @@ import { Document, Page, Text, View, Image, StyleSheet, Font } from '@react-pdf/
 const origin = typeof window !== 'undefined' ? window.location.origin : '';
 const font = (file) => `${origin}/fonts/${file}.ttf`;
 
+Font.register({
+  family: 'Bodoni',
+  fonts: [
+    { src: font('bodoni-400') },
+    { src: font('bodoni-400-italic'), fontStyle: 'italic' },
+  ],
+});
 Font.register({
   family: 'Newsreader',
   fonts: [
@@ -27,7 +34,6 @@ Font.register({
   family: 'Plex',
   fonts: [
     { src: font('plex-sans-400') },
-    { src: font('plex-sans-400-italic'), fontStyle: 'italic' },
     { src: font('plex-sans-500'), fontWeight: 500 },
     { src: font('plex-sans-600'), fontWeight: 600 },
   ],
@@ -37,11 +43,11 @@ Font.register({ family: 'PlexMono', src: font('plex-mono-400') });
 /* Keep German compounds intact — no automatic English hyphenation. */
 Font.registerHyphenationCallback((word) => [word]);
 
-const INK = '#1A1814';
-const SOFT = '#4F4A42';
-const MUTE = '#6F695E';
-const ACCENT = '#B5361F';
-const LINE = '#DDD8CE';
+const INK = '#0D0D0D';
+const SOFT = '#3D3D3D';
+const MUTE = '#666660';
+const ACCENT = '#2230D6';
+const LINE = '#D9D9D4';
 
 const LABEL_W = 108;
 
@@ -51,9 +57,9 @@ const s = StyleSheet.create({
     paddingTop: 34,
     paddingBottom: 46,
     paddingHorizontal: 46,
-    fontFamily: 'Plex',
-    fontSize: 9.2,
-    lineHeight: 1.45,
+    fontFamily: 'Newsreader',
+    fontSize: 9.8,
+    lineHeight: 1.4,
     color: SOFT,
   },
 
@@ -62,19 +68,20 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     paddingBottom: 14,
-    borderBottomWidth: 0.8,
+    borderBottomWidth: 2,
     borderBottomColor: INK,
   },
   headerText: { flex: 1, paddingRight: 20 },
-  name: { fontFamily: 'Newsreader', fontSize: 34, color: INK, letterSpacing: -0.8, lineHeight: 1 },
+  name: { fontFamily: 'Bodoni', fontSize: 40, color: INK, letterSpacing: -1.4, lineHeight: 1 },
+  former: { fontFamily: 'Newsreader', fontStyle: 'italic', fontSize: 10.5, color: MUTE, marginTop: 9 },
   role: {
-    fontFamily: 'Newsreader',
+    fontFamily: 'Bodoni',
     fontStyle: 'italic',
-    fontSize: 14,
+    fontSize: 15,
     color: ACCENT,
-    marginTop: 5,
+    marginTop: 6,
   },
-  contact: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 9, fontSize: 8.6, color: SOFT },
+  contact: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 9, fontFamily: 'Plex', fontSize: 8.2, color: SOFT },
   dot: { color: MUTE, marginHorizontal: 5 },
   photo: { width: 70, height: 87.5, objectFit: 'cover', borderRadius: 1.5 },
 
@@ -91,15 +98,16 @@ const s = StyleSheet.create({
     paddingRight: 12,
     fontFamily: 'Plex',
     fontWeight: 600,
-    fontSize: 7.4,
-    letterSpacing: 0.9,
+    fontSize: 7.2,
+    letterSpacing: 1.1,
     color: INK,
-    paddingTop: 2,
+    paddingTop: 3,
   },
   labelNote: {
-    fontFamily: 'Plex',
+    fontFamily: 'Newsreader',
+    fontStyle: 'italic',
     fontWeight: 400,
-    fontSize: 7.6,
+    fontSize: 8.6,
     letterSpacing: 0,
     color: MUTE,
     marginTop: 4,
@@ -107,29 +115,29 @@ const s = StyleSheet.create({
   },
   content: { flex: 1 },
 
-  lead: { fontFamily: 'Newsreader', fontSize: 11.6, lineHeight: 1.42, color: INK },
+  lead: { fontFamily: 'Newsreader', fontSize: 11.4, lineHeight: 1.36, color: INK },
 
   compRow: { marginBottom: 6 },
-  compLabel: { fontWeight: 600, fontSize: 8.8, color: INK, marginBottom: 1 },
-  compItems: { fontSize: 8.9, color: SOFT, lineHeight: 1.45 },
+  compLabel: { fontFamily: 'Bodoni', fontSize: 11, lineHeight: 1.3, color: INK, marginBottom: 2 },
+  compItems: { fontSize: 9.3, color: SOFT, lineHeight: 1.36 },
 
-  entry: { marginBottom: 7.5 },
+  entry: { marginBottom: 7 },
   entryHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  title: { fontFamily: 'Newsreader', fontSize: 12.4, color: INK, flex: 1, paddingRight: 10 },
+  title: { fontFamily: 'Bodoni', fontSize: 13.4, lineHeight: 1.2, color: INK, flex: 1, paddingRight: 10, letterSpacing: -0.2 },
   period: { fontFamily: 'PlexMono', fontSize: 7.8, color: MUTE },
-  sub: { fontSize: 8.6, color: SOFT, marginTop: 1 },
-  status: { fontSize: 7.8, fontWeight: 500, color: ACCENT },
+  sub: { fontFamily: 'Plex', fontWeight: 600, fontSize: 7.2, letterSpacing: 0.8, color: SOFT, marginTop: 2 },
+  status: { fontFamily: 'Plex', fontSize: 7.2, fontWeight: 600, letterSpacing: 0.8, color: ACCENT },
 
   bullets: { marginTop: 3 },
   bullet: { flexDirection: 'row', marginBottom: 2 },
-  bulletMark: { width: 9, paddingTop: 4.6 },
-  bulletLine: { width: 4, height: 0.7, backgroundColor: ACCENT },
-  bulletText: { flex: 1, fontSize: 8.9, lineHeight: 1.45, color: SOFT },
+  bulletMark: { width: 10, paddingTop: 4.4 },
+  bulletLine: { width: 3.6, height: 3.6, backgroundColor: ACCENT },
+  bulletText: { flex: 1, fontSize: 9.3, lineHeight: 1.34, color: SOFT },
 
   langs: { flexDirection: 'row', flexWrap: 'wrap' },
   lang: { width: '50%', flexDirection: 'row', marginBottom: 3 },
-  langName: { fontSize: 9, color: INK, marginRight: 6 },
-  langLevel: { fontSize: 9, color: MUTE },
+  langName: { fontSize: 10, color: INK, marginRight: 6 },
+  langLevel: { fontSize: 10, fontStyle: 'italic', color: MUTE },
 
   footer: {
     position: 'absolute',
@@ -138,7 +146,8 @@ const s = StyleSheet.create({
     bottom: 22,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    fontSize: 7.4,
+    fontFamily: 'Plex',
+    fontSize: 7.2,
     color: MUTE,
   },
 });
@@ -184,6 +193,7 @@ export default function CVPdfDocument({ cv, lang }) {
         <View style={s.header}>
           <View style={s.headerText}>
             <Text style={s.name}>Iver Bohnes</Text>
+            <Text style={s.former}>{cv.formerName}</Text>
             <Text style={s.role}>{cv.role}</Text>
             <View style={s.contact}>
               <Text>{c.location}</Text>
@@ -218,7 +228,7 @@ export default function CVPdfDocument({ cv, lang }) {
                 <Text style={s.title}>{e.title}</Text>
                 <Text style={s.period}>{e.period}</Text>
               </View>
-              <Text style={s.sub}>{e.company}</Text>
+              <Text style={s.sub}>{e.company.toUpperCase()}</Text>
               <Bullets items={e.bullets} />
             </View>
           ))}
@@ -229,9 +239,9 @@ export default function CVPdfDocument({ cv, lang }) {
             <View key={p.name} style={s.entry} wrap={false}>
               <View style={s.entryHead}>
                 <Text style={s.title}>{p.name}</Text>
-                <Text style={s.status}>{p.status}</Text>
+                <Text style={s.status}>{p.status.toUpperCase()}</Text>
               </View>
-              <Text style={s.sub}>{p.url}</Text>
+              <Text style={s.sub}>{p.url.toUpperCase()}</Text>
               <Bullets items={p.bullets} />
             </View>
           ))}
@@ -241,10 +251,10 @@ export default function CVPdfDocument({ cv, lang }) {
           {cv.education.map((e) => (
             <View key={e.title} style={s.entry} wrap={false}>
               <View style={s.entryHead}>
-                <Text style={[s.title, { fontSize: 11.2 }]}>{e.title}</Text>
+                <Text style={[s.title, { fontSize: 12 }]}>{e.title}</Text>
                 <Text style={s.period}>{e.period}</Text>
               </View>
-              <Text style={s.sub}>{e.school}</Text>
+              <Text style={s.sub}>{e.school.toUpperCase()}</Text>
             </View>
           ))}
         </Section>
@@ -261,7 +271,7 @@ export default function CVPdfDocument({ cv, lang }) {
         </Section>
 
         <View style={s.footer} fixed>
-          <Text>Iver Bohnes — {lang === 'de' ? 'Lebenslauf' : 'Curriculum vitae'}</Text>
+          <Text>Iver Bohnes ({cv.formerName}) — {lang === 'de' ? 'Lebenslauf' : 'Curriculum vitae'}</Text>
           <Text render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
         </View>
       </Page>
