@@ -76,9 +76,9 @@ const Year = styled.span`
 
 const Role = styled.div`
   h3 {
-    font-size: clamp(26px, 2.8vw, 40px);
-    line-height: 1.05;
-    letter-spacing: -0.025em;
+    font-size: clamp(24px, 2.4vw, 34px);
+    line-height: 1.08;
+    letter-spacing: 0.005em;
     color: ${({ theme }) => theme.colors.ink};
   }
   p {
@@ -111,21 +111,21 @@ const CvLink = styled(RouterLink)`
   gap: 12px;
   height: 50px;
   padding: 0 22px;
-  border: 1.5px solid ${({ theme }) => theme.colors.ink};
+  border: 0;
+  background: ${({ theme }) => theme.colors.ink};
+  color: ${({ theme }) => theme.colors.paper};
   font-family: ${({ theme }) => theme.fonts.sans};
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.ink};
-  transition: background 240ms ease, color 240ms ease;
+  transition: background 240ms ease;
 
   svg {
     transition: transform 400ms ${({ theme }) => theme.ease};
   }
   &:hover {
-    background: ${({ theme }) => theme.colors.ink};
-    color: ${({ theme }) => theme.colors.paper};
+    background: ${({ theme }) => theme.colors.accent};
   }
   &:hover svg {
     transform: translateX(4px);
@@ -139,8 +139,8 @@ export default function Stations() {
   const head = lang === 'de' ? ['Jahr', 'Position', 'Haus'] : ['Year', 'Position', 'Company'];
 
   return (
-    <SectionFrame id="stationen" aria-labelledby="stations-heading">
-      <SectionHead index="04" label={s.label} title={s.title} intro={s.intro} aside="2017 — 2026" id="stations-heading" />
+    <SectionFrame bg="grey" id="stationen" aria-labelledby="stations-heading">
+      <SectionHead index="04" label={s.label} title={s.title} intro={s.intro} id="stations-heading" />
 
       <Table>
         <HeadRow aria-hidden="true">

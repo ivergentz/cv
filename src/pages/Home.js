@@ -1,4 +1,5 @@
 import React from 'react';
+import IntroModal from '../components/IntroModal';
 import Hero from '../components/sections/Hero';
 import Marquee from '../components/sections/Marquee';
 import Positioning from '../components/sections/Positioning';
@@ -11,6 +12,7 @@ import Contact from '../components/sections/Contact';
 export default function Home() {
   return (
     <main>
+      <IntroModal />
       <Hero />
       <Marquee />
       <Positioning />

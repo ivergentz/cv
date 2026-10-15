@@ -80,15 +80,19 @@ const Node = styled(motion.div)`
   border: 1.5px solid #fff;
   padding: 14px 20px 13px;
   font-family: ${({ theme }) => theme.fonts.display};
-  font-size: clamp(20px, 1.9vw, 26px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: clamp(18px, 1.7vw, 24px);
   line-height: 1;
   color: #fff;
   background: var(--field);
   white-space: nowrap;
 
   &.end {
-    background: #fff;
-    color: ${({ theme }) => theme.colors.accent};
+    background: ${({ theme }) => theme.colors.accent};
+    border-color: ${({ theme }) => theme.colors.accent};
+    color: #fff;
   }
 
   .n {
@@ -117,7 +121,7 @@ const Conn = styled.div`
     top: -2.5px;
     width: 6px;
     height: 6px;
-    background: #fff;
+    background: ${({ theme }) => theme.colors.accentOnInk};
     animation: ${travel} 2.6s linear infinite;
     animation-delay: ${({ $d }) => $d}s;
   }
@@ -227,15 +231,15 @@ const Step = styled.div`
   }
 
   .num {
-    font-family: ${({ theme }) => theme.fonts.display};
+    font-family: ${({ theme }) => theme.fonts.italic};
     font-style: italic;
     font-size: 44px;
     line-height: 1;
-    color: #fff;
+    color: ${({ theme }) => theme.colors.accentOnInk};
   }
   h3 {
     margin: 12px 0 10px;
-    font-size: clamp(26px, 2.4vw, 34px);
+    font-size: clamp(24px, 2.2vw, 32px);
     line-height: 1.05;
     color: #fff;
   }
@@ -280,15 +284,22 @@ const Result = styled.div`
 
   dt {
     font-family: ${({ theme }) => theme.fonts.display};
+    font-weight: 600;
+    text-transform: uppercase;
     font-size: clamp(64px, 8vw, 128px);
     line-height: 0.9;
-    letter-spacing: -0.04em;
     color: #fff;
+  }
+  &:first-child dt {
+    color: ${({ theme }) => theme.colors.accentOnInk};
   }
   dd {
     margin: 12px 0 0;
     font-family: ${({ theme }) => theme.fonts.sans};
-    font-size: 14px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: var(--muted);
   }
 `;
@@ -339,8 +350,8 @@ export default function CaseStudy() {
   });
 
   return (
-    <SectionFrame bg="accent" id="projekt" aria-labelledby="case-heading">
-      <SectionHead index="02" label={c.label} title={c.title} aside="VBG · 2025 —" id="case-heading" />
+    <SectionFrame bg="ink" id="projekt" aria-labelledby="case-heading">
+      <SectionHead index="02" label={c.label} title={c.title} id="case-heading" />
 
       <Reveal delay={0.1}>
         <Standfirst>

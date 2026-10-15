@@ -38,19 +38,19 @@ const Item = styled.span`
   align-items: center;
   white-space: nowrap;
   font-family: ${({ theme }) => theme.fonts.display};
-  font-style: italic;
-  font-size: clamp(26px, 3.4vw, 48px);
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: clamp(26px, 3.4vw, 50px);
   line-height: 1.1;
 
   &::after {
-    content: '';
-    display: inline-block;
-    width: 0.32em;
-    height: 0.32em;
-    margin: 0 0.7em;
-    background: ${({ theme }) => theme.colors.accentOnInk};
-    transform: rotate(45deg);
+    content: '&';
+    font-family: ${({ theme }) => theme.fonts.italic};
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    margin: 0 0.5em;
+    color: ${({ theme }) => theme.colors.accentOnInk};
   }
 `;
 

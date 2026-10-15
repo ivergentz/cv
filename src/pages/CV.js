@@ -106,11 +106,12 @@ const Btn = styled.button`
 const Sheet = styled(motion.article)`
   background: ${({ theme }) => theme.colors.card};
   border: 1px solid ${({ theme }) => theme.colors.line};
-  box-shadow: 10px 10px 0 ${({ theme }) => theme.colors.ink};
+  border-top: 6px solid ${({ theme }) => theme.colors.ink};
+  box-shadow: 10px 10px 0 ${({ theme }) => theme.colors.accent};
   padding: clamp(28px, 6vw, 72px) clamp(20px, 6vw, 72px);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    box-shadow: 6px 6px 0 ${({ theme }) => theme.colors.ink};
+    box-shadow: 6px 6px 0 ${({ theme }) => theme.colors.accent};
   }
 
   @media print {
@@ -136,24 +137,31 @@ const Header = styled.header`
 `;
 
 const Name = styled.h1`
-  font-size: clamp(44px, 7.4vw, 84px);
-  line-height: 0.92;
-  letter-spacing: -0.04em;
+  font-size: clamp(48px, 8vw, 92px);
+  line-height: 0.9;
+  font-weight: 700;
   color: ${({ theme }) => theme.colors.ink};
+
+  .b {
+    color: ${({ theme }) => theme.colors.accent};
+  }
 `;
 
 const Former = styled.p`
-  margin-top: 8px;
+  margin-top: 10px;
+  font-family: ${({ theme }) => theme.fonts.italic};
   font-style: italic;
-  font-size: 17px;
+  font-size: 18px;
   color: ${({ theme }) => theme.colors.inkMute};
 `;
 
 const Role = styled.p`
   margin-top: 14px;
   font-family: ${({ theme }) => theme.fonts.display};
-  font-style: italic;
-  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: clamp(18px, 2vw, 22px);
   line-height: 1.1;
   color: ${({ theme }) => theme.colors.accent};
 `;
@@ -215,7 +223,7 @@ const Label = styled.h2`
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.ink};
+  color: ${({ theme }) => theme.colors.accent};
   padding-top: 5px;
 
   small {
@@ -246,8 +254,11 @@ const Comp = styled.dl`
 
   dt {
     font-family: ${({ theme }) => theme.fonts.display};
-    font-size: 20px;
-    line-height: 1.15;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 17px;
+    line-height: 1.2;
     color: ${({ theme }) => theme.colors.ink};
     margin-bottom: 3px;
   }
@@ -278,9 +289,9 @@ const EntryHead = styled.div`
   }
 
   h3 {
-    font-size: 25px;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
+    font-size: 23px;
+    line-height: 1.1;
+    letter-spacing: 0.01em;
     color: ${({ theme }) => theme.colors.ink};
   }
   .period {
@@ -427,7 +438,9 @@ export default function CV() {
         >
           <Header>
             <div>
-              <Name>Iver Bohnes</Name>
+              <Name>
+                Iver <span className="b">Bohnes</span>
+              </Name>
               <Former>{cv.formerName}</Former>
               <Role>{cv.role}</Role>
               <Contact>

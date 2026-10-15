@@ -11,10 +11,10 @@ const Grid = styled.ol`
   margin-top: clamp(48px, 6vw, 88px);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 3px solid ${({ theme }) => theme.colors.ink};
+  border-top: 3px solid var(--ink);
 
   > li + li > div {
-    border-left: 1px solid ${({ theme }) => theme.colors.line};
+    border-left: 1px solid var(--line);
   }
   > li:first-child > div {
     padding-left: 0;
@@ -27,14 +27,14 @@ const Grid = styled.ol`
       padding-left: 0;
     }
     > li:nth-child(n + 3) > div {
-      border-top: 1px solid ${({ theme }) => theme.colors.line};
+      border-top: 1px solid var(--line);
     }
   }
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     grid-template-columns: 1fr;
     > li + li > div {
       border-left: 0;
-      border-top: 1px solid ${({ theme }) => theme.colors.line};
+      border-top: 1px solid var(--line);
     }
   }
 `;
@@ -45,23 +45,22 @@ const Item = styled.div`
 
   .n {
     display: block;
-    font-family: ${({ theme }) => theme.fonts.display};
+    font-family: ${({ theme }) => theme.fonts.italic};
     font-style: italic;
     font-size: clamp(56px, 6vw, 88px);
     line-height: 0.9;
-    color: ${({ theme }) => theme.colors.accent};
+    color: var(--accent);
   }
   h3 {
     margin: 18px 0 12px;
-    font-size: clamp(26px, 2.3vw, 34px);
-    line-height: 1.02;
-    letter-spacing: -0.025em;
-    color: ${({ theme }) => theme.colors.ink};
+    font-size: clamp(24px, 2.2vw, 32px);
+    line-height: 1.05;
+    color: var(--ink);
   }
   p {
     font-size: 17.5px;
     line-height: 1.5;
-    color: ${({ theme }) => theme.colors.inkSoft};
+    color: var(--muted);
     hyphens: auto;
   }
 
@@ -74,7 +73,7 @@ export default function Principles() {
   const { t } = useLanguage();
   const p = t.principles;
   return (
-    <SectionFrame bg="alt" id="arbeitsweise" aria-labelledby="principles-heading">
+    <SectionFrame bg="ink" id="arbeitsweise" aria-labelledby="principles-heading">
       <SectionHead index="05" label={p.label} title={p.title} id="principles-heading" />
       <Grid>
         {p.items.map((item, i) => (

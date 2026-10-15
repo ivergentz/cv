@@ -3,7 +3,8 @@ import { Document, Page, Text, View, Image, StyleSheet, Font } from '@react-pdf/
 
 /**
  * CVPdfDocument — A4 export in the same design as the website and /cv:
- * Bodoni Moda (display) + Newsreader (text) + IBM Plex Sans (labels), label column
+ * Oswald (display) + Bodoni Moda italic (accents) + Newsreader (text) +
+ * IBM Plex Sans (labels), crimson accent, label column
  * on the left, content on the right. Fonts are the self-hosted TTF files
  * from /public/fonts, which react-pdf can embed.
  *
@@ -15,6 +16,14 @@ import { Document, Page, Text, View, Image, StyleSheet, Font } from '@react-pdf/
 const origin = typeof window !== 'undefined' ? window.location.origin : '';
 const font = (file) => `${origin}/fonts/${file}.ttf`;
 
+Font.register({
+  family: 'Oswald',
+  fonts: [
+    { src: font('oswald-500'), fontWeight: 500 },
+    { src: font('oswald-600'), fontWeight: 600 },
+    { src: font('oswald-700'), fontWeight: 700 },
+  ],
+});
 Font.register({
   family: 'Bodoni',
   fonts: [
@@ -43,11 +52,11 @@ Font.register({ family: 'PlexMono', src: font('plex-mono-400') });
 /* Keep German compounds intact — no automatic English hyphenation. */
 Font.registerHyphenationCallback((word) => [word]);
 
-const INK = '#0D0D0D';
-const SOFT = '#3D3D3D';
-const MUTE = '#666660';
-const ACCENT = '#2230D6';
-const LINE = '#D9D9D4';
+const INK = '#111111';
+const SOFT = '#3B3B3B';
+const MUTE = '#66665F';
+const ACCENT = '#C8102E';
+const LINE = '#DADAD6';
 
 const LABEL_W = 108;
 
@@ -68,16 +77,19 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     paddingBottom: 14,
-    borderBottomWidth: 2,
+    borderBottomWidth: 2.5,
     borderBottomColor: INK,
   },
   headerText: { flex: 1, paddingRight: 20 },
-  name: { fontFamily: 'Bodoni', fontSize: 40, color: INK, letterSpacing: -1.4, lineHeight: 1 },
-  former: { fontFamily: 'Newsreader', fontStyle: 'italic', fontSize: 10.5, color: MUTE, marginTop: 9 },
+  nameRow: { flexDirection: 'row' },
+  name: { fontFamily: 'Oswald', fontWeight: 700, fontSize: 40, color: INK, lineHeight: 1.05 },
+  nameB: { fontFamily: 'Oswald', fontWeight: 700, fontSize: 40, color: ACCENT, lineHeight: 1.05 },
+  former: { fontFamily: 'Bodoni', fontStyle: 'italic', fontSize: 11.5, color: MUTE, marginTop: 7 },
   role: {
-    fontFamily: 'Bodoni',
-    fontStyle: 'italic',
-    fontSize: 15,
+    fontFamily: 'Oswald',
+    fontWeight: 600,
+    fontSize: 11.5,
+    letterSpacing: 0.6,
     color: ACCENT,
     marginTop: 6,
   },
@@ -100,11 +112,11 @@ const s = StyleSheet.create({
     fontWeight: 600,
     fontSize: 7.2,
     letterSpacing: 1.1,
-    color: INK,
+    color: ACCENT,
     paddingTop: 3,
   },
   labelNote: {
-    fontFamily: 'Newsreader',
+    fontFamily: 'Bodoni',
     fontStyle: 'italic',
     fontWeight: 400,
     fontSize: 8.6,
@@ -118,12 +130,12 @@ const s = StyleSheet.create({
   lead: { fontFamily: 'Newsreader', fontSize: 11.4, lineHeight: 1.36, color: INK },
 
   compRow: { marginBottom: 6 },
-  compLabel: { fontFamily: 'Bodoni', fontSize: 11, lineHeight: 1.3, color: INK, marginBottom: 2 },
+  compLabel: { fontFamily: 'Oswald', fontWeight: 600, fontSize: 9.6, letterSpacing: 0.3, lineHeight: 1.3, color: INK, marginBottom: 1 },
   compItems: { fontSize: 9.3, color: SOFT, lineHeight: 1.36 },
 
   entry: { marginBottom: 7 },
   entryHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  title: { fontFamily: 'Bodoni', fontSize: 13.4, lineHeight: 1.2, color: INK, flex: 1, paddingRight: 10, letterSpacing: -0.2 },
+  title: { fontFamily: 'Oswald', fontWeight: 600, fontSize: 11.8, lineHeight: 1.25, color: INK, flex: 1, paddingRight: 10, letterSpacing: 0.2 },
   period: { fontFamily: 'PlexMono', fontSize: 7.8, color: MUTE },
   sub: { fontFamily: 'Plex', fontWeight: 600, fontSize: 7.2, letterSpacing: 0.8, color: SOFT, marginTop: 2 },
   status: { fontFamily: 'Plex', fontSize: 7.2, fontWeight: 600, letterSpacing: 0.8, color: ACCENT },
@@ -192,7 +204,10 @@ export default function CVPdfDocument({ cv, lang }) {
       <Page size="A4" style={s.page}>
         <View style={s.header}>
           <View style={s.headerText}>
-            <Text style={s.name}>Iver Bohnes</Text>
+            <View style={s.nameRow}>
+              <Text style={s.name}>IVER </Text>
+              <Text style={s.nameB}>BOHNES</Text>
+            </View>
             <Text style={s.former}>{cv.formerName}</Text>
             <Text style={s.role}>{cv.role}</Text>
             <View style={s.contact}>
@@ -215,7 +230,7 @@ export default function CVPdfDocument({ cv, lang }) {
         <Section label={L.competencies}>
           {cv.competencies.map((k) => (
             <View key={k.label} style={s.compRow}>
-              <Text style={s.compLabel}>{k.label}</Text>
+              <Text style={s.compLabel}>{k.label.toUpperCase()}</Text>
               <Text style={s.compItems}>{k.items}</Text>
             </View>
           ))}
@@ -225,7 +240,7 @@ export default function CVPdfDocument({ cv, lang }) {
           {cv.experience.map((e) => (
             <View key={e.period} style={s.entry} wrap={false}>
               <View style={s.entryHead}>
-                <Text style={s.title}>{e.title}</Text>
+                <Text style={s.title}>{e.title.toUpperCase()}</Text>
                 <Text style={s.period}>{e.period}</Text>
               </View>
               <Text style={s.sub}>{e.company.toUpperCase()}</Text>
@@ -238,7 +253,7 @@ export default function CVPdfDocument({ cv, lang }) {
           {cv.products.map((p) => (
             <View key={p.name} style={s.entry} wrap={false}>
               <View style={s.entryHead}>
-                <Text style={s.title}>{p.name}</Text>
+                <Text style={s.title}>{p.name.toUpperCase()}</Text>
                 <Text style={s.status}>{p.status.toUpperCase()}</Text>
               </View>
               <Text style={s.sub}>{p.url.toUpperCase()}</Text>
@@ -251,7 +266,7 @@ export default function CVPdfDocument({ cv, lang }) {
           {cv.education.map((e) => (
             <View key={e.title} style={s.entry} wrap={false}>
               <View style={s.entryHead}>
-                <Text style={[s.title, { fontSize: 12 }]}>{e.title}</Text>
+                <Text style={[s.title, { fontSize: 10.8 }]}>{e.title.toUpperCase()}</Text>
                 <Text style={s.period}>{e.period}</Text>
               </View>
               <Text style={s.sub}>{e.school.toUpperCase()}</Text>

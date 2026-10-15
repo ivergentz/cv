@@ -12,9 +12,11 @@ const face = (family, file, weight, style = 'normal') => css`
 `;
 
 export const GlobalStyle = createGlobalStyle`
+  ${face('Oswald', 'oswald-500', 500)}
+  ${face('Oswald', 'oswald-600', 600)}
+  ${face('Oswald', 'oswald-700', 700)}
   ${face('Bodoni Moda', 'bodoni-400', 400)}
   ${face('Bodoni Moda', 'bodoni-400-italic', 400, 'italic')}
-  ${face('Bodoni Moda', 'bodoni-500', 500)}
   ${face('Newsreader', 'newsreader-400', 400)}
   ${face('Newsreader', 'newsreader-400-italic', 400, 'italic')}
   ${face('Newsreader', 'newsreader-500', 500)}
@@ -64,9 +66,23 @@ export const GlobalStyle = createGlobalStyle`
   h1, h2, h3, h4 {
     margin: 0;
     font-family: ${({ theme }) => theme.fonts.display};
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    font-feature-settings: 'kern' 1, 'lnum' 1;
+  }
+
+  /* italic serif accent inside condensed headlines */
+  .it {
+    font-family: ${({ theme }) => theme.fonts.italic};
+    font-style: italic;
     font-weight: 400;
+    text-transform: none;
     letter-spacing: -0.02em;
-    font-feature-settings: 'kern' 1, 'liga' 1, 'lnum' 1;
+  }
+
+  .acc {
+    color: var(--accent, ${({ theme }) => theme.colors.accent});
   }
 
   p { margin: 0; }

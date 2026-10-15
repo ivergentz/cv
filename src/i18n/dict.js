@@ -14,18 +14,30 @@ export const dict = {
     },
     hero: {
       eyebrow: 'AI Product Manager · Product Builder',
-      h1: ['Ich bringe KI', 'vom Prototyp', 'in den Betrieb.'],
-      h1Accent: 2,
+      h1: ['Ich bringe KI', '*vom* Prototyp', '^in den Betrieb.^'],
       sub: 'Zehn Jahre zwischen Business und Technik – vom Robert Bosch Konzern über die öffentliche Verwaltung bis zum eigenen SaaS-Portfolio. Ich finde die Use Cases, die sich lohnen, baue die ersten Prototypen selbst und sorge dafür, dass sie im Alltag bestehen.',
       ctaPrimary: 'Ausgewähltes Projekt',
       ctaSecondary: 'Lebenslauf',
       place: 'Hamburg',
       localTime: 'Ortszeit',
       portraitAlt: 'Porträt von Iver Bohnes',
+      nameLine: 'geb. Gentz — daher die Adresse ivergentz.de.',
       captionName: 'Iver Bohnes, geb. Gentz.',
       captionNote: 'Daher die Adresse ivergentz.de – sie stammt aus der Zeit vor der Namensänderung.',
       dateline: 'Produktmanagement · KI · Hamburg',
       read: 'Projekt lesen',
+    },
+    intro: {
+      first: 'Iver',
+      from: 'Gentz',
+      to: 'Bohnes',
+      formerLabel: 'geb.',
+      kicker: 'Eine Namensänderung',
+      note: 'Gleicher Mensch. Neuer Name.',
+      sub: 'Darum heißt die Adresse noch ivergentz.de.',
+      skip: 'Überspringen',
+      enter: 'Zur Seite',
+      replay: 'Namensänderung noch einmal ansehen',
     },
     marquee: ['Use Cases bewerten', 'Prototypen bauen', 'Wirkung messen', 'Menschen befähigen', 'In Betrieb nehmen'],
     facts: [
@@ -36,7 +48,7 @@ export const dict = {
     ],
     profile: {
       label: 'Profil',
-      lead: 'Ich arbeite an der Stelle, an der KI aufhört, eine Demo zu sein.',
+      lead: 'Dort, wo KI aufhört, eine ^Demo^ *zu sein.*',
       body: [
         'Meine Wurzeln liegen in Marketing und Vertrieb, mein Handwerk ist Produktmanagement. Bei Robert Bosch habe ich globale SaaS-Portfolios betreut und fünf neue Märkte erschlossen. Heute verantworte ich bei der VBG interne Systeme – und habe dort die KI-gestützte Verarbeitung des Posteingangs aufgebaut: von der Use-Case-Bewertung über ein On-Premise-Konzept bis zum eigenen Prototyp.',
         'Parallel entwickle ich als Solo Founder eigene Produkte, KI-nativ mit Claude und der Claude API. Dadurch weiß ich aus erster Hand, was Sprachmodelle zuverlässig können, wo sie scheitern, was sie kosten – und wie man das misst, bevor man es skaliert.',
@@ -44,7 +56,7 @@ export const dict = {
     },
     caseStudy: {
       label: 'Ausgewähltes Projekt',
-      title: 'KI für 800 Eingänge am Tag.',
+      title: 'KI für ^800^ Eingänge *am* Tag.',
       org: 'Posteingang der VBG (gesetzliche Unfallversicherung) · seit 2025',
       intro: 'Mehrere Postfächer, rund 800 Eingänge pro Tag, viele Anhänge, strenge Datenschutzvorgaben. Jede falsch zugeordnete Nachricht kostet Bearbeitungszeit in den Fachbereichen.',
       steps: [
@@ -72,7 +84,7 @@ export const dict = {
     },
     products: {
       label: 'Eigene Produkte',
-      title: 'Was ich selbst baue.',
+      title: 'Was ich *selbst* baue.',
       intro: 'Vier Produkte, alle als Solo Founder: Strategie, Pricing, Architektur und Umsetzung aus einer Hand – KI-nativ entwickelt.',
       status: { live: 'Live', mvp: 'Kurz vor MVP' },
       visit: 'Ansehen',
@@ -82,7 +94,7 @@ export const dict = {
           name: 'RankBrief',
           url: 'https://rankbrief.com',
           domain: 'rankbrief.com',
-          img: 'rankbrief.jpg',
+          shot: 'rankbrief',
           status: 'live',
           one: 'Vollautomatisierte monatliche SEO-Reports für Agenturen – inklusive KI-generierter Executive Summary.',
           detail: 'Google-Search-Console-Anbindung, monatliche Pipeline über pg_cron, Zusammenfassung per Claude API, PDF und Versand. Modulares Pricing ab 19 € pro Property.',
@@ -93,7 +105,7 @@ export const dict = {
           name: 'S&I. Wedding',
           url: 'https://sarahiver.com',
           domain: 'sarahiver.com',
-          img: 'sarahiver.jpg',
+          shot: 'sarahiver-com',
           status: 'live',
           one: 'Premium-Plattform für Hochzeitswebsites im DACH-Raum mit zahlenden Kundinnen und Kunden.',
           detail: 'Multi-Tenant-Architektur, sieben eigene Themes, RSVP mit Dubletten-Check, Partnerschaft mit Hochzeitsplaza. A/B-Test: Variante B mit dreifacher Sitzungsdauer.',
@@ -104,7 +116,7 @@ export const dict = {
           name: 'WERKRUF',
           url: 'https://werkruf.com',
           domain: 'werkruf.com',
-          img: 'werkruf.jpg',
+          shot: 'werkruf',
           status: 'mvp',
           one: 'Local SEO für Handwerksbetriebe: Google-Profil, Bewertungen und Sichtbarkeit an einem Ort.',
           detail: 'KI-Antworten auf Bewertungen, dynamisches Profil-Audit, Review-Link- und QR-Generator. Anbindung an Google Places und Business Profile API.',
@@ -115,7 +127,7 @@ export const dict = {
           name: 'sarahiver.de',
           url: 'https://sarahiver.de',
           domain: 'sarahiver.de',
-          img: null,
+          shot: 'sarahiver-de',
           status: 'mvp',
           one: 'Self-Service-Hochzeitswebsites für den preisbewussten Markt – als eigene Marke neben dem Premium-Produkt.',
           detail: 'Zweite Marke statt zweiter Preisstufe: eigene Positionierung und eigene Themes, gemeinsamer technischer Unterbau.',
@@ -140,7 +152,7 @@ export const dict = {
     },
     stations: {
       label: 'Stationen',
-      title: 'Zehn Jahre, ein roter Faden.',
+      title: 'Zehn Jahre, *ein* ^roter^ Faden.',
       intro: 'Konzern, Startup, öffentlicher Dienst und eigene Produkte – überall dieselbe Frage: Was braucht der Nutzer, und wie bekommen wir es zuverlässig in den Betrieb?',
       cv: 'Vollständiger Lebenslauf',
       items: [
@@ -178,7 +190,7 @@ export const dict = {
     },
     principles: {
       label: 'Arbeitsweise',
-      title: 'Wie ich KI-Vorhaben führe.',
+      title: 'Wie ich KI-Vorhaben *führe.*',
       items: [
         {
           h: 'Use Case vor Tool.',
@@ -200,7 +212,7 @@ export const dict = {
     },
     contact: {
       label: 'Kontakt',
-      title: 'Lassen Sie uns sprechen.',
+      title: 'Lassen Sie *uns* ^sprechen.^',
       body: 'Ich bin offen für Rollen, in denen KI im Unternehmen ankommen soll – als AI Product Manager, AI Program Manager oder in der Produktverantwortung.',
       copy: 'Kopieren',
       copied: 'Kopiert',
@@ -234,18 +246,30 @@ export const dict = {
     },
     hero: {
       eyebrow: 'AI Product Manager · Product Builder',
-      h1: ['I take AI', 'from prototype', 'to production.'],
-      h1Accent: 2,
+      h1: ['I take AI', '*from* prototype', '^to production.^'],
       sub: 'Ten years between business and technology – from the Robert Bosch group through the public sector to my own SaaS portfolio. I find the use cases worth doing, build the first prototypes myself and make sure they hold up in day-to-day work.',
       ctaPrimary: 'Selected project',
       ctaSecondary: 'CV',
       place: 'Hamburg',
       localTime: 'Local time',
       portraitAlt: 'Portrait of Iver Bohnes',
+      nameLine: 'formerly Gentz — hence the address ivergentz.de.',
       captionName: 'Iver Bohnes, formerly Gentz.',
       captionNote: 'Hence the address ivergentz.de – it dates from before the change of name.',
       dateline: 'Product management · AI · Hamburg',
       read: 'Read the case',
+    },
+    intro: {
+      first: 'Iver',
+      from: 'Gentz',
+      to: 'Bohnes',
+      formerLabel: 'formerly',
+      kicker: 'A change of name',
+      note: 'Same person. New name.',
+      sub: 'That is why the address is still ivergentz.de.',
+      skip: 'Skip',
+      enter: 'Enter',
+      replay: 'Replay the change of name',
     },
     marquee: ['Assess use cases', 'Build prototypes', 'Measure impact', 'Enable people', 'Ship to production'],
     facts: [
@@ -256,7 +280,7 @@ export const dict = {
     ],
     profile: {
       label: 'Profile',
-      lead: 'I work where AI stops being a demo.',
+      lead: 'Where AI stops *being a* ^demo.^',
       body: [
         'My roots are in marketing and sales; my craft is product management. At Robert Bosch I looked after global SaaS portfolios and opened five new markets. Today I own internal systems at VBG – where I built up AI-assisted processing of the inbound queue: from use-case assessment and an on-premise concept to a prototype I built myself.',
         'In parallel, I build my own products as a solo founder, AI-natively with Claude and the Claude API. So I know first-hand what language models do reliably, where they fail, what they cost – and how to measure all that before scaling it.',
@@ -264,7 +288,7 @@ export const dict = {
     },
     caseStudy: {
       label: 'Selected project',
-      title: 'AI for 800 inbound items a day.',
+      title: 'AI for ^800^ inbound items *a* day.',
       org: 'Inbound processing at VBG (statutory accident insurance) · since 2025',
       intro: 'Several mailboxes, around 800 items a day, plenty of attachments, strict data-protection rules. Every misrouted message costs processing time in the departments.',
       steps: [
@@ -292,7 +316,7 @@ export const dict = {
     },
     products: {
       label: 'Own products',
-      title: 'What I build myself.',
+      title: 'What I build *myself.*',
       intro: 'Four products, all as a solo founder: strategy, pricing, architecture and execution from one hand – built AI-natively.',
       status: { live: 'Live', mvp: 'Close to MVP' },
       visit: 'Visit',
@@ -302,7 +326,7 @@ export const dict = {
           name: 'RankBrief',
           url: 'https://rankbrief.com',
           domain: 'rankbrief.com',
-          img: 'rankbrief.jpg',
+          shot: 'rankbrief',
           status: 'live',
           one: 'Fully automated monthly SEO reports for agencies – including an AI-generated executive summary.',
           detail: 'Google Search Console integration, monthly pipeline via pg_cron, summaries via the Claude API, PDF and delivery. Modular pricing from €19 per property.',
@@ -313,7 +337,7 @@ export const dict = {
           name: 'S&I. Wedding',
           url: 'https://sarahiver.com',
           domain: 'sarahiver.com',
-          img: 'sarahiver.jpg',
+          shot: 'sarahiver-com',
           status: 'live',
           one: 'Premium platform for wedding websites in the DACH market, with paying customers.',
           detail: 'Multi-tenant architecture, seven custom themes, RSVP with duplicate check, Hochzeitsplaza partnership. A/B test: variant B tripled session duration.',
@@ -324,7 +348,7 @@ export const dict = {
           name: 'WERKRUF',
           url: 'https://werkruf.com',
           domain: 'werkruf.com',
-          img: 'werkruf.jpg',
+          shot: 'werkruf',
           status: 'mvp',
           one: 'Local SEO for trades: Google profile, reviews and visibility in one place.',
           detail: 'AI replies to reviews, dynamic profile audit, review-link and QR generator. Integrates the Google Places and Business Profile APIs.',
@@ -335,7 +359,7 @@ export const dict = {
           name: 'sarahiver.de',
           url: 'https://sarahiver.de',
           domain: 'sarahiver.de',
-          img: null,
+          shot: 'sarahiver-de',
           status: 'mvp',
           one: 'Self-service wedding websites for the price-conscious market – a separate brand next to the premium product.',
           detail: 'A second brand rather than a second price tier: its own positioning and themes, a shared technical foundation.',
@@ -360,7 +384,7 @@ export const dict = {
     },
     stations: {
       label: 'Experience',
-      title: 'Ten years, one common thread.',
+      title: 'Ten years, *one* ^common^ thread.',
       intro: 'Corporate, startup, public sector and my own products – always the same question: what does the user need, and how do we get it into production reliably?',
       cv: 'Full CV',
       items: [
@@ -398,7 +422,7 @@ export const dict = {
     },
     principles: {
       label: 'Approach',
-      title: 'How I run AI initiatives.',
+      title: 'How I *run* AI initiatives.',
       items: [
         {
           h: 'Use case before tool.',
@@ -420,7 +444,7 @@ export const dict = {
     },
     contact: {
       label: 'Contact',
-      title: 'Let’s talk.',
+      title: 'Let’s ^talk.^',
       body: 'I am open to roles where AI is meant to land inside an organisation – as AI Product Manager, AI Program Manager or in product ownership.',
       copy: 'Copy',
       copied: 'Copied',

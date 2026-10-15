@@ -1,68 +1,66 @@
 /**
- * Design tokens — v3 "Editorial"
+ * Design tokens — v4 "Editorial · Black / White / Crimson"
  *
- * Newspaper/magazine logic: near-white paper, black ink, one loud accent
- * (ultramarine) used as a colour field, not as decoration.
+ * Fashion-magazine logic: black and white bands, black-and-white photography,
+ * one crimson accent. Condensed uppercase headlines, an italic serif for the
+ * small connective words, a book serif for reading text.
  *
  * Type:
- *   display — Bodoni Moda (headlines, numbers)
+ *   display — Oswald (headlines, names, big numbers; uppercase)
+ *   italic  — Bodoni Moda italic (accents: "&", "vom", roman numerals)
  *   serif   — Newsreader (body copy, leads, captions)
  *   sans    — IBM Plex Sans (navigation, labels, buttons)
  *   mono    — IBM Plex Mono (dates, times)
  *
- * Contrast on paper: ink 19:1 · inkSoft 10.1:1 · inkMute 5.4:1 · accent 8:1
- * White on accent 8.5:1.
+ * Contrast (WCAG): ink on paper 18.9:1 · inkMute 5.5:1 ·
+ * crimson on paper 5.6:1 · white on crimson 5.9:1 · crimsonOnInk on ink 5.2:1
  */
 
-const paper = '#F7F7F4';
-const paperAlt = '#EEEEE9';
+const paper = '#FAFAF8';
+const grey = '#ECECEA';
 const card = '#FFFFFF';
-const ink = '#0D0D0D';
-const inkSoft = '#3D3D3D';
-const inkMute = '#666660';
-const accent = '#2230D6';
-const accentOnInk = '#A7ACFF';
+const ink = '#111111';
+const inkSoft = '#3B3B3B';
+const inkMute = '#66665F';
+const accent = '#C8102E';
+const accentOnInk = '#F0485F';
 
 export const theme = {
   colors: {
     paper,
-    paperAlt,
+    paperAlt: grey,
+    grey,
     card,
     ink,
     inkSoft,
     inkMute,
     accent,
     accentOnInk,
-    onAccent: '#FFFFFF',
-    onAccentMute: '#C9CCFF',
-    line: 'rgba(13,13,13,0.14)',
-    lineStrong: 'rgba(13,13,13,0.4)',
-    lineOnInk: 'rgba(247,247,244,0.18)',
-    inkMuteOnInk: '#A3A39D',
+    line: 'rgba(17,17,17,0.14)',
+    lineStrong: 'rgba(17,17,17,0.4)',
+    lineOnInk: 'rgba(250,250,248,0.18)',
+    inkMuteOnInk: '#A5A5A0',
 
-    /* Legacy aliases (Impressum, Datenschutz, older components) */
+    /* Legacy aliases (Impressum, Datenschutz) */
     bg: paper,
-    bgElevated: paperAlt,
-    bgFade: paperAlt,
+    bgElevated: grey,
     fg: ink,
     fgMuted: inkSoft,
     fgDim: inkMute,
     muted: inkSoft,
-    hairline: 'rgba(13,13,13,0.14)',
-    hairlineDim: 'rgba(13,13,13,0.08)',
-    hairlineStrong: 'rgba(13,13,13,0.4)',
+    hairline: 'rgba(17,17,17,0.14)',
+    hairlineStrong: 'rgba(17,17,17,0.4)',
     crimson: accent,
-    crimsonDeep: '#18229E',
-    lime: accent,
   },
   fonts: {
-    display: "'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif",
+    display: "'Oswald', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif",
+    italic: "'Bodoni Moda', 'Didot', Georgia, serif",
     serif: "'Newsreader', 'Iowan Old Style', Georgia, serif",
     sans: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     mono: "'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace",
   },
   sizes: {
-    maxWidth: '1360px',
+    maxWidth: '1320px',
     narrowWidth: '760px',
   },
   gutter: 'clamp(18px, 4vw, 56px)',
@@ -74,38 +72,25 @@ export const theme = {
   },
 };
 
-/* Section colour fields used by SectionFrame */
+/* Section colour fields used by SectionFrame: 'paper' | 'grey' | 'ink' */
 export function bgFor(key) {
-  switch (key) {
-    case 'ink':
-      return ink;
-    case 'accent':
-      return accent;
-    case 'alt':
-      return paperAlt;
-    default:
-      return paper;
-  }
+  if (key === 'ink') return ink;
+  if (key === 'grey' || key === 'alt') return grey;
+  return paper;
 }
 
 export function fgFor(key) {
-  return key === 'ink' || key === 'accent' ? '#FFFFFF' : ink;
+  return key === 'ink' ? paper : ink;
 }
 
 export function mutedFor(key) {
-  if (key === 'ink') return '#A3A39D';
-  if (key === 'accent') return '#C9CCFF';
-  return inkSoft;
+  return key === 'ink' ? '#A5A5A0' : inkSoft;
 }
 
 export function hairlineFor(key) {
-  if (key === 'ink') return 'rgba(247,247,244,0.18)';
-  if (key === 'accent') return 'rgba(255,255,255,0.28)';
-  return 'rgba(13,13,13,0.14)';
+  return key === 'ink' ? 'rgba(250,250,248,0.18)' : 'rgba(17,17,17,0.14)';
 }
 
 export function accentFor(key) {
-  if (key === 'ink') return accentOnInk;
-  if (key === 'accent') return '#FFFFFF';
-  return accent;
+  return key === 'ink' ? accentOnInk : accent;
 }

@@ -7,175 +7,97 @@ import CountUp from '../CountUp';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * Hero — front page of a newspaper:
- * dateline between rules, a headline across the full measure,
- * then three columns separated by column rules: photo · lead · facts.
+ * Hero — black field, condensed caps headline, black-and-white portrait
+ * bleeding off the right edge. Below: a white "in numbers" band set like a
+ * countdown (big condensed figures, tiny labels, crimson dash).
  */
 
 const ease = [0.22, 1, 0.36, 1];
 
-const Section = styled.section`
-  background: ${({ theme }) => theme.colors.paper};
+const Dark = styled.section`
+  position: relative;
+  background: ${({ theme }) => theme.colors.ink};
+  color: ${({ theme }) => theme.colors.paper};
+  overflow: hidden;
 `;
 
-const Inner = styled.div`
-  max-width: ${({ theme }) => theme.sizes.maxWidth};
-  margin: 0 auto;
-  padding: clamp(20px, 3vw, 36px) ${({ theme }) => theme.gutter} clamp(56px, 8vw, 112px);
-`;
-
-const Dateline = styled(motion.div)`
+const Grid = styled.div`
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 16px;
-  padding: 10px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.ink};
-  font-family: ${({ theme }) => theme.fonts.sans};
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.ink};
-
-  .c {
-    text-align: center;
-  }
-  .r {
-    text-align: right;
-  }
-  .time {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    letter-spacing: 0;
-    margin-left: 6px;
-  }
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  min-height: min(calc(100vh - 60px), 920px);
+  min-height: min(calc(100svh - 60px), 920px);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr auto;
-    .c {
-      display: none;
-    }
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+`;
+
+const TextCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(40px, 6vw, 88px) clamp(20px, 4vw, 64px) clamp(40px, 6vw, 80px)
+    max(${({ theme }) => theme.gutter}, calc((100vw - ${({ theme }) => theme.sizes.maxWidth}) / 2 + 56px));
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    padding: 32px ${({ theme }) => theme.gutter} 48px;
+  }
+`;
+
+const Kicker = styled(motion.p)`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.accentOnInk};
+  margin-bottom: clamp(20px, 3vw, 32px);
+
+  &::before {
+    content: '';
+    width: 28px;
+    height: 2px;
+    background: currentColor;
   }
 `;
 
 const H1 = styled.h1`
-  margin-top: clamp(28px, 4vw, 56px);
-  font-size: clamp(50px, 10.4vw, 168px);
-  line-height: 0.9;
-  letter-spacing: -0.045em;
-  color: ${({ theme }) => theme.colors.ink};
-
-  .accent {
-    font-style: italic;
-    color: ${({ theme }) => theme.colors.accent};
-    letter-spacing: -0.03em;
-  }
+  --accent: ${({ theme }) => theme.colors.accentOnInk};
+  font-size: clamp(54px, 7vw, 124px);
+  line-height: 0.92;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.paper};
 
   @media (min-width: 901px) {
     > span > span {
       white-space: nowrap;
     }
   }
-`;
 
-const Cols = styled.div`
-  margin-top: clamp(40px, 5vw, 72px);
-  padding-top: 18px;
-  border-top: 3px solid ${({ theme }) => theme.colors.ink};
-  display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 5fr) minmax(0, 3fr);
-
-  > * + * {
-    border-left: 1px solid ${({ theme }) => theme.colors.line};
-    padding-left: clamp(20px, 2.4vw, 36px);
-  }
-  > * {
-    padding-right: clamp(20px, 2.4vw, 36px);
-  }
-  > *:last-child {
-    padding-right: 0;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-    > * + * {
-      border-left: 0;
-      padding-left: 0;
-      margin-top: 32px;
-    }
-    > * {
-      padding-right: 0;
-    }
+  .it {
+    font-size: 0.82em;
+    color: ${({ theme }) => theme.colors.paper};
   }
 `;
 
-const Figure = styled.figure`
-  margin: 0;
-`;
-
-const Frame = styled(motion.div)`
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: ${({ theme }) => theme.colors.paperAlt};
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    aspect-ratio: 4 / 3;
-  }
-`;
-
-const Img = styled(motion.img)`
-  position: absolute;
-  inset: -6% 0;
-  width: 100%;
-  height: 112%;
-  object-fit: cover;
-  object-position: 50% 22%;
-  filter: grayscale(1) contrast(1.08) brightness(1.02);
-  transition: filter 900ms ease;
-
-  ${Frame}:hover & {
-    filter: grayscale(0) contrast(1) brightness(1);
-  }
-`;
-
-const Caption = styled(motion.figcaption)`
-  margin-top: 12px;
+const Lead = styled(motion.p)`
+  margin-top: clamp(24px, 3vw, 36px);
+  max-width: 48ch;
   font-family: ${({ theme }) => theme.fonts.serif};
-  font-style: italic;
-  font-size: 15px;
-  line-height: 1.45;
-  color: ${({ theme }) => theme.colors.inkSoft};
-
-  strong {
-    font-style: normal;
-    font-weight: 500;
-    color: ${({ theme }) => theme.colors.ink};
-  }
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.5;
+  color: ${({ theme }) => theme.colors.inkMuteOnInk};
 `;
 
-const Lead = styled(motion.div)`
-  p {
-    font-family: ${({ theme }) => theme.fonts.serif};
-    font-size: clamp(21px, 1.9vw, 26px);
-    line-height: 1.42;
-    color: ${({ theme }) => theme.colors.ink};
-    hyphens: auto;
-  }
-  p::first-letter {
-    float: left;
-    font-family: ${({ theme }) => theme.fonts.display};
-    font-size: 4.1em;
-    line-height: 0.82;
-    padding: 0.06em 0.1em 0 0;
-    color: ${({ theme }) => theme.colors.accent};
-  }
-`;
-
-const Actions = styled.div`
+const Actions = styled(motion.div)`
   margin-top: clamp(24px, 3vw, 36px);
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 24px;
+  gap: 14px 26px;
   align-items: center;
   font-family: ${({ theme }) => theme.fonts.sans};
 `;
@@ -184,21 +106,22 @@ const Primary = styled.a`
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  height: 50px;
-  padding: 0 22px;
-  background: ${({ theme }) => theme.colors.ink};
-  color: ${({ theme }) => theme.colors.paper};
+  height: 52px;
+  padding: 0 24px;
+  background: ${({ theme }) => theme.colors.accent};
+  color: #fff;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  transition: background 240ms ease;
+  transition: background 240ms ease, color 240ms ease;
 
   svg {
     transition: transform 400ms ${({ theme }) => theme.ease};
   }
   &:hover {
-    background: ${({ theme }) => theme.colors.accent};
+    background: ${({ theme }) => theme.colors.paper};
+    color: ${({ theme }) => theme.colors.ink};
   }
   &:hover svg {
     transform: translateY(3px);
@@ -208,65 +131,157 @@ const Primary = styled.a`
 const Secondary = styled(RouterLink)`
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.ink};
   padding: 6px 0;
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 100% 2px;
   background-position: 0 100%;
   background-repeat: no-repeat;
-  transition: background-size 420ms ${({ theme }) => theme.ease}, color 200ms ease;
+  transition: background-size 420ms ${({ theme }) => theme.ease};
 
   &:hover {
-    color: ${({ theme }) => theme.colors.accent};
     background-size: 30% 2px;
   }
 `;
 
-const Facts = styled.dl`
-  margin: 0;
-  display: grid;
-  gap: 0;
+const Name = styled(motion.p)`
+  margin-top: clamp(32px, 4vw, 56px);
+  padding-top: 14px;
+  border-top: 1px solid ${({ theme }) => theme.colors.lineOnInk};
+  font-family: ${({ theme }) => theme.fonts.italic};
+  font-style: italic;
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.inkMuteOnInk};
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 20px;
-    margin-top: 40px !important;
-    padding-top: 16px;
-    border-top: 3px solid ${({ theme }) => theme.colors.ink};
+  strong {
+    font-family: ${({ theme }) => theme.fonts.display};
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: ${({ theme }) => theme.colors.paper};
+    margin-right: 8px;
   }
 `;
 
-const Fact = styled(motion.div)`
-  padding: 14px 0 16px;
-  border-top: 1px solid ${({ theme }) => theme.colors.line};
+const PhotoCol = styled(motion.div)`
+  position: relative;
+  overflow: hidden;
+  background: #1c1c1c;
 
-  &:first-child {
-    border-top: 0;
-    padding-top: 0;
-  }
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    &:nth-child(2) {
-      border-top: 0;
-      padding-top: 0;
-    }
+    order: -1;
+    aspect-ratio: 1 / 1;
+    max-height: 70vh;
+  }
+`;
+
+const Photo = styled(motion.img)`
+  position: absolute;
+  inset: -6% 0;
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  object-position: 50% 20%;
+  filter: grayscale(1) contrast(1.12) brightness(0.92);
+`;
+
+const Shade = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(17, 17, 17, 0.55) 0%, rgba(17, 17, 17, 0) 28%),
+    linear-gradient(0deg, rgba(17, 17, 17, 0.55) 0%, rgba(17, 17, 17, 0) 30%);
+  pointer-events: none;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    background: linear-gradient(0deg, rgba(17, 17, 17, 0.85) 0%, rgba(17, 17, 17, 0) 40%);
+  }
+`;
+
+const PhotoMeta = styled(motion.div)`
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  display: flex;
+  justify-content: space-between;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.paper};
+
+  .time {
+    font-family: ${({ theme }) => theme.fonts.mono};
+    font-weight: 400;
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
+`;
+
+/* ---------- Numbers band ---------- */
+
+const Light = styled.section`
+  background: ${({ theme }) => theme.colors.paper};
+  padding: clamp(56px, 8vw, 104px) ${({ theme }) => theme.gutter};
+  text-align: center;
+`;
+
+const Small = styled.p`
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.accent};
+`;
+
+const Big = styled.h2`
+  margin-top: 8px;
+  font-size: clamp(28px, 3vw, 40px);
+`;
+
+const Numbers = styled.dl`
+  margin: clamp(24px, 3vw, 36px) auto 0;
+  max-width: 980px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 32px;
   }
 
   dt {
     font-family: ${({ theme }) => theme.fonts.display};
-    font-size: clamp(44px, 4.4vw, 68px);
+    font-weight: 600;
+    font-size: clamp(56px, 7vw, 104px);
     line-height: 0.95;
-    letter-spacing: -0.03em;
     color: ${({ theme }) => theme.colors.ink};
   }
   dd {
-    margin: 6px 0 0;
+    margin: 10px auto 0;
+    max-width: 20ch;
     font-family: ${({ theme }) => theme.fonts.sans};
-    font-size: 13px;
-    line-height: 1.4;
-    color: ${({ theme }) => theme.colors.inkSoft};
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.5;
+    color: ${({ theme }) => theme.colors.inkMute};
   }
+`;
+
+const Dash = styled(motion.span)`
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin: clamp(28px, 3.5vw, 40px) auto 0;
+  background: ${({ theme }) => theme.colors.accent};
 `;
 
 function useHamburgTime(lang) {
@@ -288,7 +303,7 @@ function useHamburgTime(lang) {
 
 const Arrow = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <path d="M7 1v12M7 13l-5-5M7 13l5-5" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M7 1v12M7 13l-5-5M7 13l5-5" stroke="currentColor" strokeWidth="1.6" />
   </svg>
 );
 
@@ -299,7 +314,7 @@ export default function Hero() {
   const time = useHamburgTime(lang);
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '7%']);
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '9%']);
 
   const fade = (delay) =>
     reduce
@@ -311,76 +326,81 @@ export default function Hero() {
         };
 
   return (
-    <Section ref={ref} aria-labelledby="hero-heading">
-      <Inner>
-        <Dateline {...fade(0)}>
-          <span>{h.eyebrow}</span>
-          <span className="c">{h.dateline}</span>
-          <span className="r">
-            {h.localTime}
-            <span className="time">{time}</span>
-          </span>
-        </Dateline>
-
-        <H1 id="hero-heading">
-          <MaskText lines={h.h1} accentLine={h.h1Accent} animateOnMount delay={0.15} stagger={0.07} />
-        </H1>
-
-        <Cols>
-          <Figure>
-            <Frame
-              initial={reduce ? false : { clipPath: 'inset(0% 0% 100% 0%)' }}
-              animate={reduce ? undefined : { clipPath: 'inset(0% 0% 0% 0%)' }}
-              transition={{ duration: 1.3, ease, delay: 0.6 }}
-            >
-              <Img
-                src={`${process.env.PUBLIC_URL}/images/portrait-web.jpg`}
-                alt={h.portraitAlt}
-                width="900"
-                height="1199"
-                style={reduce ? undefined : { y: imgY }}
-                initial={reduce ? false : { scale: 1.14 }}
-                animate={reduce ? undefined : { scale: 1 }}
-                transition={{ duration: 1.9, ease, delay: 0.6 }}
-              />
-            </Frame>
-            <Caption {...fade(1.1)}>
-              <strong>{h.captionName}</strong> {h.captionNote}
-            </Caption>
-          </Figure>
-
-          <Lead {...fade(0.9)}>
-            <p>{h.sub}</p>
-            <Actions>
+    <>
+      <Dark ref={ref} aria-labelledby="hero-heading">
+        <Grid>
+          <TextCol>
+            <Kicker {...fade(0.1)}>{h.eyebrow}</Kicker>
+            <H1 id="hero-heading">
+              <MaskText lines={h.h1} animateOnMount delay={0.2} stagger={0.07} />
+            </H1>
+            <Lead {...fade(0.9)}>{h.sub}</Lead>
+            <Actions {...fade(1.05)}>
               <Primary href="#projekt">
                 {h.read} <Arrow />
               </Primary>
               <Secondary to="/cv">{h.ctaSecondary}</Secondary>
             </Actions>
-          </Lead>
+            <Name {...fade(1.2)}>
+              <strong>Iver Bohnes</strong>
+              {h.nameLine}
+            </Name>
+          </TextCol>
 
-          <Facts>
-            {t.facts.map((f, i) => (
-              <Fact
-                key={i}
-                initial={reduce ? false : { opacity: 0, y: 12 }}
-                animate={reduce ? undefined : { opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease, delay: 1.1 + 0.1 * i }}
-              >
-                <dt>
-                  <CountUp
-                    value={f.value}
-                    prefix={f.prefix}
-                    suffix={f.suffix}
-                    locale={lang === 'de' ? 'de-DE' : 'en-GB'}
-                  />
-                </dt>
-                <dd>{f.label}</dd>
-              </Fact>
-            ))}
-          </Facts>
-        </Cols>
-      </Inner>
-    </Section>
+          <PhotoCol
+            initial={reduce ? false : { clipPath: 'inset(0% 0% 0% 100%)' }}
+            animate={reduce ? undefined : { clipPath: 'inset(0% 0% 0% 0%)' }}
+            transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1], delay: 0.15 }}
+          >
+            <Photo
+              src={`${process.env.PUBLIC_URL}/images/portrait-web.jpg`}
+              alt={h.portraitAlt}
+              width="900"
+              height="1199"
+              style={reduce ? undefined : { y: imgY }}
+              initial={reduce ? false : { scale: 1.18 }}
+              animate={reduce ? undefined : { scale: 1 }}
+              transition={{ duration: 2, ease, delay: 0.15 }}
+            />
+            <Shade />
+            <PhotoMeta {...fade(1.3)}>
+              <span>{h.place}</span>
+              <span>
+                {h.localTime}
+                <span className="time">{time}</span>
+              </span>
+            </PhotoMeta>
+          </PhotoCol>
+        </Grid>
+      </Dark>
+
+      <Light aria-label={lang === 'de' ? 'In Zahlen' : 'In numbers'}>
+        <Small>{lang === 'de' ? 'Kurz gesagt' : 'In short'}</Small>
+        <Big>{lang === 'de' ? 'In Zahlen' : 'In numbers'}</Big>
+        <Numbers>
+          {t.facts.map((f, i) => (
+            <motion.div
+              key={i}
+              initial={reduce ? false : { opacity: 0, y: 14 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease, delay: 0.08 * i }}
+            >
+              <dt>
+                <CountUp value={f.value} prefix={f.prefix} suffix={f.suffix} locale={lang === 'de' ? 'de-DE' : 'en-GB'} />
+              </dt>
+              <dd>{f.label}</dd>
+            </motion.div>
+          ))}
+        </Numbers>
+        <Dash
+          aria-hidden="true"
+          initial={reduce ? false : { scaleX: 0 }}
+          whileInView={reduce ? undefined : { scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease, delay: 0.3 }}
+        />
+      </Light>
+    </>
   );
 }

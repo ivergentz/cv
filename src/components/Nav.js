@@ -8,8 +8,8 @@ const Bar = styled.header`
   position: sticky;
   top: 0;
   z-index: 40;
-  background: ${({ theme }) => theme.colors.paper};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.ink};
+  background: ${({ theme }) => theme.colors.ink};
+  color: ${({ theme }) => theme.colors.paper};
 
   @media print {
     display: none;
@@ -27,31 +27,48 @@ const Inner = styled.div`
   gap: 20px;
 `;
 
-const Brand = styled(RouterLink)`
+const BrandWrap = styled.div`
   display: inline-flex;
   align-items: baseline;
-  gap: 10px;
+  gap: 12px;
   white-space: nowrap;
-  color: ${({ theme }) => theme.colors.ink};
+`;
 
-  .name {
-    font-family: ${({ theme }) => theme.fonts.display};
-    font-size: 23px;
-    letter-spacing: -0.02em;
+const Brand = styled(RouterLink)`
+  font-family: ${({ theme }) => theme.fonts.display};
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+
+  .b {
+    color: ${({ theme }) => theme.colors.accentOnInk};
   }
-  .former {
-    font-family: ${({ theme }) => theme.fonts.serif};
-    font-style: italic;
-    font-size: 15px;
-    color: ${({ theme }) => theme.colors.inkMute};
+`;
+
+const Former = styled.button`
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-family: ${({ theme }) => theme.fonts.italic};
+  font-style: italic;
+  font-size: 15px;
+  color: ${({ theme }) => theme.colors.inkMuteOnInk};
+  border-bottom: 1px dotted rgba(250, 250, 248, 0.35);
+  transition: color 200ms ease, border-color 200ms ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.paper};
+    border-color: ${({ theme }) => theme.colors.paper};
   }
+  &:disabled {
+    cursor: default;
+    border-bottom: 0;
+  }
+
   @media (max-width: 480px) {
-    .name {
-      font-size: 21px;
-    }
-    .former {
-      display: none;
-    }
+    display: none;
   }
 `;
 
@@ -73,11 +90,10 @@ const Links = styled.ul`
 
 const NavLink = styled.a`
   position: relative;
-  font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.ink};
   padding: 6px 0;
 
   &::after {
@@ -87,7 +103,7 @@ const NavLink = styled.a`
     right: 0;
     bottom: 0;
     height: 2px;
-    background: ${({ theme }) => theme.colors.accent};
+    background: ${({ theme }) => theme.colors.accentOnInk};
     transform: scaleX(0);
     transform-origin: right center;
     transition: transform 420ms ${({ theme }) => theme.ease};
@@ -101,20 +117,17 @@ const NavLink = styled.a`
 const Lang = styled.button`
   display: inline-flex;
   gap: 5px;
-  font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   background: none;
   border: 0;
   padding: 6px 0;
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.inkMute};
+  color: ${({ theme }) => theme.colors.inkMuteOnInk};
 
   .on {
-    color: ${({ theme }) => theme.colors.ink};
-    text-decoration: underline;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 4px;
+    color: ${({ theme }) => theme.colors.paper};
   }
 `;
 
@@ -124,16 +137,17 @@ const CvLink = styled(RouterLink)`
   height: 36px;
   padding: 0 14px;
   white-space: nowrap;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.paper};
-  background: ${({ theme }) => theme.colors.ink};
-  transition: background 220ms ease;
+  color: #fff;
+  background: ${({ theme }) => theme.colors.accent};
+  transition: background 220ms ease, color 220ms ease;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.accent};
+    background: ${({ theme }) => theme.colors.paper};
+    color: ${({ theme }) => theme.colors.ink};
   }
 `;
 
@@ -141,9 +155,9 @@ const Progress = styled(motion.div)`
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -1px;
-  height: 3px;
-  background: ${({ theme }) => theme.colors.accent};
+  bottom: 0;
+  height: 2px;
+  background: ${({ theme }) => theme.colors.accentOnInk};
   transform-origin: left center;
 `;
 
@@ -154,6 +168,7 @@ export default function Nav() {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
+
   const onBrand = (e) => {
     if (isHome) {
       e.preventDefault();
@@ -166,10 +181,20 @@ export default function Nav() {
   return (
     <Bar>
       <Inner>
-        <Brand to="/" onClick={onBrand} aria-label="Iver Bohnes, geb. Gentz — Start">
-          <span className="name">Iver Bohnes</span>
-          <span className="former">{lang === 'de' ? 'geb. Gentz' : 'formerly Gentz'}</span>
-        </Brand>
+        <BrandWrap>
+          <Brand to="/" onClick={onBrand} aria-label="Iver Bohnes — Start">
+            Iver <span className="b">Bohnes</span>
+          </Brand>
+          <Former
+            type="button"
+            disabled={!isHome}
+            onClick={() => window.dispatchEvent(new Event('replay-name-intro'))}
+            aria-label={t.intro.replay}
+            title={isHome ? t.intro.replay : undefined}
+          >
+            {lang === 'de' ? 'geb. Gentz' : 'formerly Gentz'}
+          </Former>
+        </BrandWrap>
         <Right aria-label={lang === 'de' ? 'Hauptnavigation' : 'Main navigation'}>
           <Links>
             <li>

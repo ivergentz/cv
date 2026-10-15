@@ -5,120 +5,95 @@ import MaskText from './MaskText';
 import Reveal from './Reveal';
 
 /**
- * SectionHead — newspaper running head + display headline.
+ * SectionHead — centred editorial heading:
  *
- *   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  (heavy rule, draws in)
- *   Nº 02     AUSGEWÄHLTES PROJEKT              aside
- *
- *   Huge Bodoni headline, words rising out of a mask
- *   (optional intro in a narrow column)
+ *            Nº 02 · AUSGEWÄHLTES PROJEKT        (small, crimson)
+ *        KI FÜR 800 EINGÄNGE am TAG.             (condensed caps, words rise)
+ *                    ——                          (crimson dash, draws in)
+ *          short standfirst in the book serif
  */
 
-const Rule = styled(motion.div)`
-  height: 3px;
-  background: var(--ink);
-  transform-origin: left center;
+const Wrap = styled.header`
+  text-align: center;
+  display: grid;
+  justify-items: center;
 `;
 
-const Folio = styled.div`
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: baseline;
-  padding: 12px 0 0;
+const Kicker = styled.p`
   font-family: ${({ theme }) => theme.fonts.sans};
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--accent);
+  margin-bottom: clamp(14px, 2vw, 22px);
 
   .no {
-    font-family: ${({ theme }) => theme.fonts.display};
+    font-family: ${({ theme }) => theme.fonts.italic};
     font-style: italic;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 17px;
     letter-spacing: 0;
     text-transform: none;
-    color: var(--accent);
-  }
-  .aside {
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    text-align: right;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    grid-template-columns: 64px minmax(0, 1fr);
-    .aside {
-      display: none;
-    }
-  }
-`;
-
-const Grid = styled.div`
-  margin-top: clamp(32px, 5vw, 72px);
-  display: grid;
-  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-  gap: clamp(24px, 4vw, 64px);
-  align-items: end;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-    gap: 24px;
+    margin-right: 10px;
   }
 `;
 
 const Title = styled.h2`
-  font-size: clamp(46px, 8.2vw, 132px);
-  line-height: 0.94;
-  letter-spacing: -0.035em;
+  font-size: clamp(44px, 7.4vw, 118px);
+  line-height: 0.95;
+  letter-spacing: -0.005em;
   color: var(--ink);
-  max-width: 16ch;
+  max-width: 15ch;
+  text-wrap: balance;
 
-  em {
-    font-style: italic;
-    color: var(--accent);
+  .it {
+    font-size: 0.86em;
   }
 `;
 
-const Intro = styled.p`
-  font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: 19px;
-  line-height: 1.5;
-  color: var(--muted);
-  max-width: 36ch;
-  padding-left: 18px;
-  border-left: 1px solid var(--line);
+const Dash = styled(motion.span)`
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin-top: clamp(18px, 2.4vw, 28px);
+  background: var(--accent);
 `;
 
-export default function SectionHead({ index, label, title, intro, aside, id }) {
+const Intro = styled.p`
+  margin-top: clamp(16px, 2vw, 24px);
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 46ch;
+`;
+
+export default function SectionHead({ index, label, title, intro, id }) {
   const reduce = useReducedMotion();
   return (
-    <header>
-      <Rule
+    <Wrap>
+      <Reveal>
+        <Kicker>
+          <span className="no">Nº {index}</span>
+          {label}
+        </Kicker>
+      </Reveal>
+      <Title id={id}>
+        <MaskText text={title} />
+      </Title>
+      <Dash
         aria-hidden="true"
         initial={reduce ? false : { scaleX: 0 }}
         whileInView={reduce ? undefined : { scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
       />
-      <Folio>
-        <span className="no">Nº {index}</span>
-        <span>{label}</span>
-        {aside && <span className="aside">{aside}</span>}
-      </Folio>
-      <Grid>
-        <Title id={id}>
-          <MaskText text={title} />
-        </Title>
-        {intro && (
-          <Reveal delay={0.25}>
-            <Intro>{intro}</Intro>
-          </Reveal>
-        )}
-      </Grid>
-    </header>
+      {intro && (
+        <Reveal delay={0.25}>
+          <Intro>{intro}</Intro>
+        </Reveal>
+      )}
+    </Wrap>
   );
 }
