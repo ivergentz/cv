@@ -3,7 +3,7 @@ export const cvContent = {
     role: 'AI Product Manager · Product Builder',
     formerName: 'geb. Gentz',
     tagline:
-      'Zehn Jahre an der Schnittstelle von Business und Technik – vom Robert Bosch Konzern über die öffentliche Verwaltung bis zum eigenen SaaS-Portfolio. Ich bewerte KI-Use-Cases nach Nutzen und Risiko, baue Prototypen selbst, messe die Wirkung und bringe Lösungen in den Betrieb.',
+      'Zehn Jahre an der Schnittstelle von Business und Technik – vom Robert Bosch Konzern über die öffentliche Verwaltung bis zum eigenen SaaS-Portfolio. Ich bewerte KI-Use-Cases nach Nutzen und Risiko und denke Produkte ganzheitlich: Prototyp und MVP selbst bauen, laufend verbessern, selbst vermarkten – und die Wirkung messen.',
     contact: {
       location: 'Hamburg, Deutschland',
       email: 'iverbohnes@gmail.com',
@@ -14,7 +14,7 @@ export const cvContent = {
       profile: 'Profil',
       competencies: 'Kernkompetenzen',
       products: 'Eigene Produkte',
-      productsNote: 'Solo Founder – Strategie, Pricing, Architektur und Umsetzung',
+      productsNote: 'Solo Founder, gebootstrappt – Strategie, Bau, Weiterentwicklung und Vermarktung',
       experience: 'Berufserfahrung',
       education: 'Ausbildung',
       languages: 'Sprachen',
@@ -27,11 +27,11 @@ export const cvContent = {
     competencies: [
       {
         label: 'KI & Automatisierung',
-        items: 'Use-Case-Bewertung und Priorisierung · Prototyping mit Claude, Claude Code und Claude API · Prompt- und Workflow-Design · LLM-Evaluation gegen Ground Truth · API- und Token-Kosten',
+        items: 'Use-Case-Bewertung und Priorisierung · Prototyping und MVP-Entwicklung mit Claude, Claude Code und Claude API · Prompt- und Workflow-Design · LLM-Evaluation gegen Ground Truth · API- und Token-Kosten',
       },
       {
         label: 'Produkt & Programm',
-        items: 'Roadmaps und Backlog · Business Cases und KPIs · Stakeholder-Management · Workshops und Präsentation vor Entscheidern · agile und meilensteinbasierte Steuerung',
+        items: 'Roadmaps und Backlog · Business Cases und KPIs · Bootstrapping und Go-to-Market (Ads, Social Media, Cold Outreach) · Stakeholder-Management · Workshops und Präsentation vor Entscheidern · agile und meilensteinbasierte Steuerung',
       },
       {
         label: 'Technik & Governance',
@@ -45,7 +45,7 @@ export const cvContent = {
         company: 'VBG Hamburg',
         bullets: [
           'Aufbau der KI-gestützten Posteingangsverarbeitung (ca. 800 Eingänge pro Tag): Use Cases mit den Fachbereichen bewertet, On-Premise-Konzept entwickelt und vor Entscheidern präsentiert.',
-          'Prototyp (MVP) selbst gebaut: Erkennung von Anlagentyp, Fachbereich und Dokumentklasse, Übergabe sicherer Fälle per Knopfdruck, Lernschleife aus händischen Korrekturen.',
+          'MVP selbst gebaut: Erkennung von Anlagentyp, Fachbereich und Dokumentklasse, Übergabe sicherer Fälle per Knopfdruck, Lernschleife aus händischen Korrekturen.',
           'KI-gestützte Verschlagwortung eingeführt: Auslesequote +13 %, Warteschlangen-Aufleger −20 %.',
           'Produktverantwortung für die Telefonieplattform; Teilprojektleitung für die Einführung von SharePoint und Teams.',
         ],
@@ -142,7 +142,7 @@ export const cvContent = {
     role: 'AI Product Manager · Product Builder',
     formerName: 'formerly Gentz',
     tagline:
-      'Ten years at the intersection of business and technology – from the Robert Bosch group through the public sector to my own SaaS portfolio. I assess AI use cases for value and risk, build prototypes myself, measure the impact and take solutions into production.',
+      'Ten years at the intersection of business and technology – from the Robert Bosch group through the public sector to my own SaaS portfolio. I assess AI use cases for value and risk and think products end to end: build the prototype and the MVP myself, keep improving, take them to market – and measure the impact.',
     contact: {
       location: 'Hamburg, Germany',
       email: 'iverbohnes@gmail.com',
@@ -153,7 +153,7 @@ export const cvContent = {
       profile: 'Profile',
       competencies: 'Core skills',
       products: 'Own products',
-      productsNote: 'Solo founder – strategy, pricing, architecture and execution',
+      productsNote: 'Solo founder, bootstrapped – strategy, build, iteration and marketing',
       experience: 'Experience',
       education: 'Education',
       languages: 'Languages',
@@ -166,11 +166,11 @@ export const cvContent = {
     competencies: [
       {
         label: 'AI & automation',
-        items: 'Use-case assessment and prioritisation · Prototyping with Claude, Claude Code and the Claude API · Prompt and workflow design · LLM evaluation against ground truth · API and token costs',
+        items: 'Use-case assessment and prioritisation · Prototyping and MVP development with Claude, Claude Code and the Claude API · Prompt and workflow design · LLM evaluation against ground truth · API and token costs',
       },
       {
         label: 'Product & programme',
-        items: 'Roadmaps and backlog · Business cases and KPIs · Stakeholder management · Workshops and executive presentations · Agile and milestone-based delivery',
+        items: 'Roadmaps and backlog · Business cases and KPIs · Bootstrapping and go-to-market (ads, social media, cold outreach) · Stakeholder management · Workshops and executive presentations · Agile and milestone-based delivery',
       },
       {
         label: 'Technology & governance',
@@ -184,7 +184,7 @@ export const cvContent = {
         company: 'VBG Hamburg (statutory accident insurance)',
         bullets: [
           'Built up AI-assisted processing of the inbound queue (approx. 800 items a day): assessed use cases with the departments, designed an on-premise concept and presented it to decision-makers.',
-          'Built the prototype (MVP) myself: detection of attachment type, department and document class, one-click hand-over of confident cases, learning loop from manual corrections.',
+          'Built the MVP myself: detection of attachment type, department and document class, one-click hand-over of confident cases, learning loop from manual corrections.',
           'Introduced AI-assisted tagging: read rate +13 %, queue drop-offs −20 %.',
           'Product ownership for the telephony platform; sub-project lead for the SharePoint and Teams rollout.',
         ],

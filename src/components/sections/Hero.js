@@ -7,8 +7,8 @@ import CountUp from '../CountUp';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 /**
- * Hero — black field, condensed caps headline, black-and-white portrait
- * bleeding off the right edge. Below: a white "in numbers" band set like a
+ * Hero — full-bleed photo (person left, dark wall right); the headline and
+ * text sit on the dark half. Below: a white "in numbers" band set like a
  * countdown (big condensed figures, tiny labels, crimson dash).
  */
 
@@ -19,33 +19,111 @@ const Dark = styled.section`
   background: ${({ theme }) => theme.colors.ink};
   color: ${({ theme }) => theme.colors.paper};
   overflow: hidden;
+
+  @media (min-width: 901px) {
+    min-height: min(calc(100vh - 60px), 980px);
+    min-height: min(calc(100svh - 60px), 980px);
+    display: grid;
+  }
+`;
+
+/* full-bleed photo: person on the left, the dark wall on the right carries the text */
+const Bg = styled(motion.div)`
+  position: absolute;
+  inset: 0;
+
+  picture {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+  img {
+    position: absolute;
+    inset: -4% 0;
+    width: 100%;
+    height: 108%;
+    object-fit: cover;
+    object-position: 22% 30%;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(17, 17, 17, 0) 34%, rgba(17, 17, 17, 0.72) 52%, rgba(17, 17, 17, 0.94) 70%),
+      linear-gradient(0deg, rgba(17, 17, 17, 0.6) 0%, rgba(17, 17, 17, 0) 22%);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 4 / 4.2;
+    max-height: 72vh;
+    width: 100%;
+
+    img {
+      object-position: 50% 20%;
+    }
+    &::after {
+      background: linear-gradient(0deg, rgba(17, 17, 17, 1) 0%, rgba(17, 17, 17, 0) 30%);
+    }
+  }
 `;
 
 const Grid = styled.div`
+  position: relative;
+  z-index: 1;
+  width: 100%;
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   margin: 0 auto;
-  padding: clamp(40px, 5vw, 72px) ${({ theme }) => theme.gutter} clamp(48px, 6vw, 88px);
+  padding: clamp(40px, 5vw, 72px) ${({ theme }) => theme.gutter} clamp(56px, 7vw, 96px);
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: clamp(32px, 5vw, 80px);
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
   align-items: end;
-  min-height: min(calc(100vh - 60px), 960px);
-  min-height: min(calc(100svh - 60px), 960px);
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
-    min-height: 0;
-    padding-top: 24px;
-    gap: 32px;
+    padding-top: 8px;
   }
 `;
 
 const TextCol = styled.div`
+  grid-column: 2;
   container-type: inline-size;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   min-width: 0;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    grid-column: 1;
+  }
+`;
+
+const Meta = styled(motion.div)`
+  position: absolute;
+  z-index: 1;
+  left: ${({ theme }) => theme.gutter};
+  bottom: clamp(20px, 3vw, 32px);
+  display: flex;
+  gap: 24px;
+  font-family: ${({ theme }) => theme.fonts.sans};
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.paper};
+
+  .time {
+    font-family: ${({ theme }) => theme.fonts.mono};
+    font-weight: 400;
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: none;
+  }
 `;
 
 const Kicker = styled(motion.p)`
@@ -173,69 +251,6 @@ const Name = styled(motion.p)`
   }
 `;
 
-const Figure = styled.figure`
-  margin: 0;
-  width: 100%;
-  /* keep the 4:5 photo inside the first screen */
-  max-width: min(100%, calc((100svh - 60px - 200px) * 0.8));
-  justify-self: end;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    order: -1;
-    max-width: none;
-    justify-self: stretch;
-  }
-`;
-
-const PhotoCol = styled(motion.div)`
-  position: relative;
-  overflow: hidden;
-  background: #1c1c1c;
-  aspect-ratio: 4 / 5;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    aspect-ratio: 5 / 4;
-  }
-`;
-
-const Photo = styled(motion.img)`
-  position: absolute;
-  inset: -6% 0;
-  width: 100%;
-  height: 112%;
-  object-fit: cover;
-  object-position: 50% 20%;
-  filter: grayscale(1) contrast(1.12) brightness(0.92);
-`;
-
-const Shade = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, rgba(17, 17, 17, 0.35) 0%, rgba(17, 17, 17, 0) 35%);
-  pointer-events: none;
-`;
-
-const PhotoMeta = styled(motion.figcaption)`
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid ${({ theme }) => theme.colors.lineOnInk};
-  display: flex;
-  justify-content: space-between;
-  font-family: ${({ theme }) => theme.fonts.sans};
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.paper};
-
-  .time {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-weight: 400;
-    letter-spacing: 0;
-    margin-left: 6px;
-  }
-`;
-
 /* ---------- Numbers band ---------- */
 
 const Light = styled.section`
@@ -328,7 +343,7 @@ export default function Hero() {
   const time = useHamburgTime(lang);
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '9%']);
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '6%']);
 
   const fade = (delay) =>
     reduce
@@ -342,51 +357,48 @@ export default function Hero() {
   return (
     <>
       <Dark ref={ref} aria-labelledby="hero-heading">
+        <Bg
+          initial={reduce ? false : { opacity: 0 }}
+          animate={reduce ? undefined : { opacity: 1 }}
+          transition={{ duration: 1.2, ease }}
+        >
+          <motion.picture
+            style={reduce ? undefined : { y: imgY }}
+            initial={reduce ? false : { scale: 1.08 }}
+            animate={reduce ? undefined : { scale: 1 }}
+            transition={{ duration: 2.2, ease }}
+          >
+            <source media="(max-width: 900px)" srcSet={`${process.env.PUBLIC_URL}/images/hero-mobile.jpg`} />
+            <img src={`${process.env.PUBLIC_URL}/images/hero.jpg`} alt={h.portraitAlt} width="1672" height="941" />
+          </motion.picture>
+        </Bg>
+
+        <Meta {...fade(1.3)}>
+          <span>{h.place}</span>
+          <span>
+            {h.localTime}
+            <span className="time">{time}</span>
+          </span>
+        </Meta>
+
         <Grid>
           <TextCol>
-            <Kicker {...fade(0.1)}>{h.eyebrow}</Kicker>
+            <Kicker {...fade(0.3)}>{h.eyebrow}</Kicker>
             <H1 id="hero-heading">
-              <MaskText lines={h.h1} animateOnMount delay={0.2} stagger={0.07} />
+              <MaskText lines={h.h1} animateOnMount delay={0.4} stagger={0.07} />
             </H1>
-            <Lead {...fade(0.9)}>{h.sub}</Lead>
-            <Actions {...fade(1.05)}>
+            <Lead {...fade(1.0)}>{h.sub}</Lead>
+            <Actions {...fade(1.15)}>
               <Primary href="#projekt">
                 {h.read} <Arrow />
               </Primary>
               <Secondary to="/cv">{h.ctaSecondary}</Secondary>
             </Actions>
-            <Name {...fade(1.2)}>
+            <Name {...fade(1.3)}>
               <strong>Iver Bohnes</strong>
               {h.nameLine}
             </Name>
           </TextCol>
-
-          <Figure>
-            <PhotoCol
-              initial={reduce ? false : { clipPath: 'inset(0% 0% 0% 100%)' }}
-              animate={reduce ? undefined : { clipPath: 'inset(0% 0% 0% 0%)' }}
-              transition={{ duration: 1.4, ease: [0.76, 0, 0.24, 1], delay: 0.15 }}
-            >
-              <Photo
-                src={`${process.env.PUBLIC_URL}/images/portrait-web.jpg`}
-                alt={h.portraitAlt}
-                width="900"
-                height="1199"
-                style={reduce ? undefined : { y: imgY }}
-                initial={reduce ? false : { scale: 1.18 }}
-                animate={reduce ? undefined : { scale: 1 }}
-                transition={{ duration: 2, ease, delay: 0.15 }}
-              />
-              <Shade />
-            </PhotoCol>
-            <PhotoMeta {...fade(1.3)}>
-              <span>{h.place}</span>
-              <span>
-                {h.localTime}
-                <span className="time">{time}</span>
-              </span>
-            </PhotoMeta>
-          </Figure>
         </Grid>
       </Dark>
 

@@ -14,8 +14,8 @@ export const dict = {
     },
     hero: {
       eyebrow: 'AI Product Manager · Product Builder',
-      h1: ['Ich bringe KI', '*vom* Prototyp', '^in den Betrieb.^'],
-      sub: 'Zehn Jahre zwischen Business und Technik – vom Robert Bosch Konzern über die öffentliche Verwaltung bis zum eigenen SaaS-Portfolio. Ich finde die Use Cases, die sich lohnen, baue die ersten Prototypen selbst und sorge dafür, dass sie im Alltag bestehen.',
+      h1: ['KI-Produkte', '*von der* Idee', '^bis zum Markt.^'],
+      sub: 'Zehn Jahre zwischen Business und Technik – vom Robert Bosch Konzern über die öffentliche Verwaltung bis zum eigenen SaaS-Portfolio. Ich denke Produkte ganzheitlich: den Use Case finden, Prototyp und MVP bauen, laufend verbessern – und sie selbst vermarkten, von Ads über Social Media bis Cold Outreach.',
       ctaPrimary: 'Ausgewähltes Projekt',
       ctaSecondary: 'Lebenslauf',
       place: 'Hamburg',
@@ -39,19 +39,19 @@ export const dict = {
       enter: 'Zur Seite',
       replay: 'Namensänderung noch einmal ansehen',
     },
-    marquee: ['Use Cases bewerten', 'Prototypen bauen', 'Wirkung messen', 'Menschen befähigen', 'In Betrieb nehmen'],
+    marquee: ['Use Cases bewerten', 'Produkte bauen', 'Wirkung messen', 'Menschen befähigen', 'In Betrieb nehmen'],
     facts: [
       { value: 10, suffix: '', label: 'Jahre Produkt, Marketing & Vertrieb' },
       { value: 800, prefix: '~', suffix: '', label: 'Eingänge pro Tag im KI-Konzept' },
       { value: 13, prefix: '+', suffix: ' %', label: 'Auslesequote durch KI-Verschlagwortung' },
-      { value: 4, suffix: '', label: 'eigene Produkte, zwei davon live' },
+      { value: 4, suffix: '', label: 'eigene Produkte, gebootstrappt – zwei live' },
     ],
     profile: {
       label: 'Profil',
       lead: 'Dort, wo KI aufhört, eine ^Demo^ *zu sein.*',
       body: [
-        'Meine Wurzeln liegen in Marketing und Vertrieb, mein Handwerk ist Produktmanagement. Bei Robert Bosch habe ich globale SaaS-Portfolios betreut und fünf neue Märkte erschlossen. Heute verantworte ich bei der VBG interne Systeme – und habe dort die KI-gestützte Verarbeitung des Posteingangs aufgebaut: von der Use-Case-Bewertung über ein On-Premise-Konzept bis zum eigenen Prototyp.',
-        'Parallel entwickle ich als Solo Founder eigene Produkte, KI-nativ mit Claude und der Claude API. Dadurch weiß ich aus erster Hand, was Sprachmodelle zuverlässig können, wo sie scheitern, was sie kosten – und wie man das misst, bevor man es skaliert.',
+        'Meine Wurzeln liegen in Marketing und Vertrieb, mein Handwerk ist Produktmanagement. Bei Robert Bosch habe ich globale SaaS-Portfolios betreut und fünf neue Märkte erschlossen. Heute verantworte ich bei der VBG interne Systeme – und habe dort die KI-gestützte Verarbeitung des Posteingangs aufgebaut: von der Use-Case-Bewertung über ein On-Premise-Konzept bis zum selbst gebauten MVP.',
+        'Parallel baue und bootstrappe ich als Solo Founder eigene Produkte – vom ersten Prototyp über das MVP und die laufende Weiterentwicklung bis zur Vermarktung mit Ads, Social Media und Cold Outreach. Alles KI-nativ mit Claude und der Claude API. Dadurch weiß ich aus erster Hand, was Sprachmodelle zuverlässig können, wo sie scheitern, was sie kosten – und wie man das misst, bevor man es skaliert.',
       ],
     },
     caseStudy: {
@@ -69,7 +69,7 @@ export const dict = {
           b: 'On-Premise-Architektur mit drei Hebeln: Erkennung der Unternehmensnummer, Klassifikation nach Dokumentklasse und Fachbereich, automatische Weiterleitung mit Lernschleife. Präsentiert vor Entscheidern.',
         },
         {
-          h: 'Prototyp selbst gebaut',
+          h: 'MVP selbst gebaut',
           b: 'MVP, das alle Eingänge zusammenführt, Anlagentyp, Bereich und Dokumentklasse erkennt und sichere Fälle per Knopfdruck übergibt. Was händisch korrigiert wird, fließt zurück ins Modell.',
         },
       ],
@@ -85,7 +85,7 @@ export const dict = {
     products: {
       label: 'Eigene Produkte',
       title: 'Was ich *selbst* baue.',
-      intro: 'Vier Produkte, alle als Solo Founder: Strategie, Pricing, Architektur und Umsetzung aus einer Hand – KI-nativ entwickelt.',
+      intro: 'Vier Produkte, alle gebootstrappt als Solo Founder: Strategie, Pricing, Architektur, Bau, Weiterentwicklung und Vermarktung aus einer Hand – von Ads über Social Media bis Cold Outreach.',
       status: { live: 'Live', mvp: 'Kurz vor MVP' },
       visit: 'Ansehen',
       items: [
@@ -246,8 +246,8 @@ export const dict = {
     },
     hero: {
       eyebrow: 'AI Product Manager · Product Builder',
-      h1: ['I take AI', '*from* prototype', '^to production.^'],
-      sub: 'Ten years between business and technology – from the Robert Bosch group through the public sector to my own SaaS portfolio. I find the use cases worth doing, build the first prototypes myself and make sure they hold up in day-to-day work.',
+      h1: ['AI products', '*from* idea', '^to market.^'],
+      sub: 'Ten years between business and technology – from the Robert Bosch group through the public sector to my own SaaS portfolio. I think products end to end: find the use case, build the prototype and the MVP, keep improving – and take them to market myself, from ads and social media to cold outreach.',
       ctaPrimary: 'Selected project',
       ctaSecondary: 'CV',
       place: 'Hamburg',
@@ -271,19 +271,19 @@ export const dict = {
       enter: 'Enter',
       replay: 'Replay the change of name',
     },
-    marquee: ['Assess use cases', 'Build prototypes', 'Measure impact', 'Enable people', 'Ship to production'],
+    marquee: ['Assess use cases', 'Build products', 'Measure impact', 'Enable people', 'Ship to production'],
     facts: [
       { value: 10, suffix: '', label: 'years in product, marketing & sales' },
       { value: 800, prefix: '~', suffix: '', label: 'items per day in the AI concept' },
       { value: 13, prefix: '+', suffix: ' %', label: 'read rate through AI tagging' },
-      { value: 4, suffix: '', label: 'own products, two of them live' },
+      { value: 4, suffix: '', label: 'own products, bootstrapped – two live' },
     ],
     profile: {
       label: 'Profile',
       lead: 'Where AI stops *being a* ^demo.^',
       body: [
-        'My roots are in marketing and sales; my craft is product management. At Robert Bosch I looked after global SaaS portfolios and opened five new markets. Today I own internal systems at VBG – where I built up AI-assisted processing of the inbound queue: from use-case assessment and an on-premise concept to a prototype I built myself.',
-        'In parallel, I build my own products as a solo founder, AI-natively with Claude and the Claude API. So I know first-hand what language models do reliably, where they fail, what they cost – and how to measure all that before scaling it.',
+        'My roots are in marketing and sales; my craft is product management. At Robert Bosch I looked after global SaaS portfolios and opened five new markets. Today I own internal systems at VBG – where I built up AI-assisted processing of the inbound queue: from use-case assessment and an on-premise concept to an MVP I built myself.',
+        'In parallel, I build and bootstrap my own products as a solo founder – from the first prototype through the MVP and continuous improvement to marketing with ads, social media and cold outreach. All AI-natively with Claude and the Claude API. So I know first-hand what language models do reliably, where they fail, what they cost – and how to measure all that before scaling it.',
       ],
     },
     caseStudy: {
@@ -301,7 +301,7 @@ export const dict = {
           b: 'On-premise architecture with three levers: company-ID recognition, classification by document type and department, automatic routing with a learning loop. Presented to decision-makers.',
         },
         {
-          h: 'Built the prototype',
+          h: 'Built the MVP',
           b: 'An MVP that merges all inboxes, detects attachment type, department and document class and hands over confident cases at the push of a button. Manual corrections feed back into the model.',
         },
       ],
@@ -317,7 +317,7 @@ export const dict = {
     products: {
       label: 'Own products',
       title: 'What I build *myself.*',
-      intro: 'Four products, all as a solo founder: strategy, pricing, architecture and execution from one hand – built AI-natively.',
+      intro: 'Four products, all bootstrapped as a solo founder: strategy, pricing, architecture, build, iteration and marketing from one hand – from ads and social media to cold outreach.',
       status: { live: 'Live', mvp: 'Close to MVP' },
       visit: 'Visit',
       items: [

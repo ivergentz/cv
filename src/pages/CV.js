@@ -193,8 +193,7 @@ const Photo = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 22%;
-    filter: grayscale(1) contrast(1.06);
+    object-position: 50% 20%;
   }
 `;
 
