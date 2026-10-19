@@ -51,7 +51,7 @@ export const cvContent = {
         ],
       },
       {
-        period: '03/2023 — 03/2024',
+        period: '03/2023 — 04/2024',
         title: 'Produktmanager Global (IT)',
         company: 'Robert Bosch GmbH',
         bullets: [
@@ -190,7 +190,7 @@ export const cvContent = {
         ],
       },
       {
-        period: '03/2023 — 03/2024',
+        period: '03/2023 — 04/2024',
         title: 'Product Manager Global (IT)',
         company: 'Robert Bosch GmbH',
         bullets: [
