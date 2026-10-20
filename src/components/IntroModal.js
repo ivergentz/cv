@@ -196,7 +196,18 @@ const Enter = styled.button`
   }
 `;
 
+/* Auf iverbohnes.de / iverbohnes.com kennt der Besucher den neuen Namen schon —
+   dort startet die Seite direkt, ohne Intro. ivergentz.de zeigt es weiter. */
+function isBohnesDomain() {
+  try {
+    return /bohnes/i.test(window.location.hostname);
+  } catch (e) {
+    return false;
+  }
+}
+
 function readSeen() {
+  if (isBohnesDomain()) return true;
   try {
     return window.sessionStorage.getItem(KEY) === '1';
   } catch (e) {

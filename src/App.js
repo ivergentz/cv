@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Impressum from './pages/Impressum';
 import Datenschutz from './pages/Datenschutz';
 import CV from './pages/CV';
+import { trackSeite } from './tracking';
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -37,6 +38,15 @@ function ScrollToTop() {
   return null;
 }
 
+/** Meldet Seitenwechsel — nur wenn der Besuch über einen Bewerbungs-Link kam. */
+function SeitenTracking() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    trackSeite(pathname);
+  }, [pathname]);
+  return null;
+}
+
 function TitleSync() {
   const { t } = useLanguage();
   const { pathname } = useLocation();
@@ -55,6 +65,7 @@ function Shell() {
     <>
       <ScrollToTop />
       <TitleSync />
+      <SeitenTracking />
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />

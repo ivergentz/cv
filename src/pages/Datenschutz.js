@@ -130,11 +130,22 @@ function DE({ t }) {
       </Block>
 
       <Block>
-        <h2>6. Keine Cookies, kein Tracking</h2>
+        <h2>6. Keine Cookies, kein Analyse-Dienst</h2>
         <p>
-          Diese Website setzt keine Cookies, nutzt kein Google Analytics und kein
-          anderes Tracking. Es werden ausschließlich technisch notwendige Daten
-          verarbeitet.
+          Diese Website setzt keine Cookies und nutzt weder Google Analytics noch
+          einen anderen Analyse-Dienst.
+        </p>
+        <p>
+          Einzige Ausnahme: Ich verschicke Bewerbungen mit einem persönlichen Link
+          (z. B. iverbohnes.de/firmenname). Wird eine Seite über einen solchen
+          Link aufgerufen, speichere ich das Kürzel, den Zeitpunkt, die
+          aufgerufenen Unterseiten, die Verweildauer und die Geräteart (Desktop
+          oder Mobil). IP-Adressen und Cookies werden dafür nicht verwendet; ein
+          Rückschluss auf einzelne Personen ist nicht beabsichtigt. Zweck ist zu
+          erfahren, ob meine Bewerbung angesehen wurde. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO. Die Daten werden auf Servern meiner
+          Hosting-Dienstleister (Vercel Inc., Supabase Inc.) gespeichert und
+          spätestens nach Abschluss des Bewerbungsverfahrens gelöscht.
         </p>
       </Block>
 
@@ -171,7 +182,7 @@ function DE({ t }) {
 
       <Block>
         <h2>10. Aktualität</h2>
-        <p>Stand dieser Datenschutzerklärung: April 2026.</p>
+        <p>Stand dieser Datenschutzerklärung: Oktober 2026.</p>
       </Block>
     </Wrap>
   );
@@ -245,10 +256,21 @@ function EN({ t }) {
       </Block>
 
       <Block>
-        <h2>6. No cookies, no tracking</h2>
+        <h2>6. No cookies, no analytics service</h2>
         <p>
-          This website sets no cookies, uses no Google Analytics or any other
-          tracking. Only technically necessary data is processed.
+          This website sets no cookies and uses neither Google Analytics nor any
+          other analytics service.
+        </p>
+        <p>
+          One exception: I send applications with a personal link (e.g.
+          iverbohnes.de/companyname). When the site is opened via such a link, I
+          store the code, the time, the pages viewed, the time spent and the
+          device type (desktop or mobile). No IP addresses or cookies are used,
+          and identifying individual people is not intended. The purpose is to
+          learn whether my application was viewed. Legal basis: Art. 6(1)(f)
+          GDPR. The data is stored with my hosting providers (Vercel Inc.,
+          Supabase Inc.) and deleted once the application process has ended at
+          the latest.
         </p>
       </Block>
 
@@ -283,7 +305,7 @@ function EN({ t }) {
 
       <Block>
         <h2>10. Last updated</h2>
-        <p>April 2026.</p>
+        <p>October 2026.</p>
       </Block>
     </Wrap>
   );
